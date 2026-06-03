@@ -8,7 +8,8 @@
     <meta name="description" content="Kona AI is an advanced global search engine providing analytical data synthesis with exact inline references.">
     <link rel="manifest" href="manifest.json">
     
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Stable Markdown Engine Wrapper Link -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     
     <style>
         :root { --surface: #070a13; --card: #111827; --primary: #2563eb; --font: #f9fafb; --font-dim: #9ca3af; }
@@ -27,16 +28,17 @@
         button { background: var(--primary); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 600; cursor: pointer; }
         .system-wait { font-style: italic; color: var(--font-dim); }
 
-        /* Compiled Markdown Render Layout Elements Typography Rules */
-        .markdown-body pre { background: rgba(0, 0, 0, 0.5); padding: 16px; border-radius: 10px; margin: 12px 0; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); display: block; width: 100%; }
-        .markdown-body code { font-family: 'Fira Code', 'Courier New', Courier, monospace; color: #34d399; font-size: 14px; background: rgba(255,255,255,0.04); padding: 2px 6px; border-radius: 4px; }
-        .markdown-body pre code { background: transparent; padding: 0; border-radius: 0; display: block; white-space: pre; }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 { margin: 18px 0 8px 0; color: #60a5fa; }
-        .markdown-body h1 { font-size: 22px; }
-        .markdown-body h2 { font-size: 20px; }
-        .markdown-body h3 { font-size: 18px; }
-        .markdown-body ul, .markdown-body ol { margin-left: 20px; padding-left: 5px; margin-bottom: 10px; }
-        .markdown-body p { margin-bottom: 12px; }
+        /* Typography & Code Layout Enhancements */
+        .markdown-body pre { background: #000000; padding: 18px; border-radius: 10px; margin: 16px 0; overflow-x: auto; border: 1px solid rgba(255,255,255,0.08); display: block; width: 100%; }
+        .markdown-body code { font-family: 'Fira Code', 'Courier New', Courier, monospace; color: #34d399; font-size: 14px; background: rgba(255,255,255,0.06); padding: 3px 6px; border-radius: 4px; }
+        .markdown-body pre code { background: transparent; padding: 0; border-radius: 0; display: block; white-space: pre; color: #f9fafb; }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { margin: 20px 0 10px 0; color: #60a5fa; font-weight: 700; }
+        .markdown-body h1 { font-size: 24px; }
+        .markdown-body h2 { font-size: 21px; }
+        .markdown-body h3 { font-size: 19px; }
+        .markdown-body ul, .markdown-body ol { margin-left: 24px; margin-bottom: 14px; }
+        .markdown-body li { margin-bottom: 6px; }
+        .markdown-body p { margin-bottom: 14px; }
     </style>
 </head>
 <body>
@@ -103,7 +105,7 @@
                 let citationsAdded = false;
                 konaBox.rawDataString = "";
 
-                // Configure parsing options globally to handle line breaks elegantly
+                // Initialize stable markdown parsing settings
                 marked.setOptions({
                     breaks: true,
                     gfm: true
@@ -132,10 +134,10 @@
                                 });
                                 citationsAdded = true;
                             } else if(dataPayload.type === "token") {
-                                // Accumulate string chunk frames safely
+                                // Save stream tokens securely
                                 konaBox.rawDataString += dataPayload.text;
                                 
-                                // Render compiled data layouts with strict code block generation rules
+                                // Render markdown onto your screen layout with code styling rules
                                 textBodyBlock.innerHTML = marked.parse(konaBox.rawDataString);
                             } else if(dataPayload.type === "error") {
                                 textBodyBlock.innerHTML += `<span style='color:#ef4444;'>\n[Engine Error: ${dataPayload.message}]</span>`;
