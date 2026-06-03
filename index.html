@@ -4,12 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kona AI | Real-Time Multilingual Search Engine</title>
-    
     <meta name="description" content="Kona AI is an advanced global search engine providing analytical data synthesis with exact inline references.">
     <link rel="manifest" href="manifest.json">
-    
-    <!-- Stable Markdown Engine Wrapper Link -->
-    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     
     <style>
         :root { --surface: #070a13; --card: #111827; --primary: #2563eb; --font: #f9fafb; --font-dim: #9ca3af; }
@@ -28,17 +24,11 @@
         button { background: var(--primary); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 600; cursor: pointer; }
         .system-wait { font-style: italic; color: var(--font-dim); }
 
-        /* Typography & Code Layout Enhancements */
-        .markdown-body pre { background: #000000; padding: 18px; border-radius: 10px; margin: 16px 0; overflow-x: auto; border: 1px solid rgba(255,255,255,0.08); display: block; width: 100%; }
-        .markdown-body code { font-family: 'Fira Code', 'Courier New', Courier, monospace; color: #34d399; font-size: 14px; background: rgba(255,255,255,0.06); padding: 3px 6px; border-radius: 4px; }
-        .markdown-body pre code { background: transparent; padding: 0; border-radius: 0; display: block; white-space: pre; color: #f9fafb; }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 { margin: 20px 0 10px 0; color: #60a5fa; font-weight: 700; }
-        .markdown-body h1 { font-size: 24px; }
-        .markdown-body h2 { font-size: 21px; }
-        .markdown-body h3 { font-size: 19px; }
-        .markdown-body ul, .markdown-body ol { margin-left: 24px; margin-bottom: 14px; }
-        .markdown-body li { margin-bottom: 6px; }
-        .markdown-body p { margin-bottom: 14px; }
+        /* Rendered Code Blocks Design Styles */
+        .parsed-response p { margin-bottom: 14px; }
+        .parsed-response .code-window-block { background: #000000; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 18px; margin: 16px 0; overflow-x: auto; font-family: 'Fira Code', 'Courier New', Courier, monospace; font-size: 14px; color: #f9fafb; line-height: 1.5; white-space: pre; display: block; }
+        .parsed-response h3 { margin: 20px 0 10px 0; color: #60a5fa; font-weight: 700; font-size: 19px; }
+        .parsed-response .inline-code-token { font-family: monospace; color: #34d399; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -60,6 +50,44 @@
 
     <script>
         const SERVER_ROUTER = "https://dattu2004-konaai-backend.hf.space/api/v1/search"; 
+
+        // Native parsing engine that extracts raw triple backticks into stylized layout windows
+        function nativeRenderMarkdown(rawString) {
+            let processedHtml = "";
+            let dataSegments = rawString.split("```");
+            
+            for (let idx = 0; idx < dataSegments.length; idx++) {
+                if (idx % 2 === 1) {
+                    // This is an isolated block of source code
+                    let codeLines = dataSegments[idx].split("\n");
+                    if (codeLines[0].trim() === "python" || codeLines[0].trim() === "javascript") {
+                        codeLines.shift(); // Remove the code identifier top string line
+                    }
+                    processedHtml += `<div class="code-window-block">${codeLines.join("\n").trim()}</div>`;
+                } else {
+                    // Normal text segments processing
+                    let currentTextSegment = dataSegments[idx];
+                    
+                    // Convert header strings (### Header)
+                    currentTextSegment = currentTextSegment.replace(/###\s+(.*)/g, "<h3>$1</h3>");
+                    
+                    // Convert bold elements (**text**)
+                    currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+                    
+                    // Convert inline codes (`code`)
+                    currentTextSegment = currentTextSegment.replace(/`(.*?)`/g, '<code class="inline-code-token">$1</code>');
+                    
+                    // Clean structural formatting adjustments for line items
+                    processedHtml += currentTextSegment.split("\n").map(sentence => {
+                        if (sentence.trim().startsWith("<h3>") || sentence.trim().startsWith("<div")) {
+                            return sentence;
+                        }
+                        return sentence.trim() ? `<p>${sentence}</p>` : "";
+                    }).join("");
+                }
+            }
+            return processedHtml;
+        }
 
         async function dispatchKonaEngine() {
             const inputField = document.getElementById("user-query");
@@ -99,17 +127,11 @@
                 konaBox.appendChild(citationWrapper);
 
                 const textBodyBlock = document.createElement("div");
-                textBodyBlock.className = "markdown-body";
+                textBodyBlock.className = "parsed-response";
                 konaBox.appendChild(textBodyBlock);
                 
                 let citationsAdded = false;
                 konaBox.rawDataString = "";
-
-                // Initialize stable markdown parsing settings
-                marked.setOptions({
-                    breaks: true,
-                    gfm: true
-                });
 
                 while(true) {
                     const { value, done } = await streamReader.read();
@@ -134,11 +156,8 @@
                                 });
                                 citationsAdded = true;
                             } else if(dataPayload.type === "token") {
-                                // Save stream tokens securely
                                 konaBox.rawDataString += dataPayload.text;
-                                
-                                // Render markdown onto your screen layout with code styling rules
-                                textBodyBlock.innerHTML = marked.parse(konaBox.rawDataString);
+                                textBodyBlock.innerHTML = nativeRenderMarkdown(konaBox.rawDataString);
                             } else if(dataPayload.type === "error") {
                                 textBodyBlock.innerHTML += `<span style='color:#ef4444;'>\n[Engine Error: ${dataPayload.message}]</span>`;
                             }
