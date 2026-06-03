@@ -1,0 +1,1 @@
+// Service worker asset proxy shell configuration.

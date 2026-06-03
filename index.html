@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kona AI | Global AI Search Engine</title>
+    
+    <meta name="description" content="Kona AI is an advanced enterprise search platform capable of analyzing global datasets with instant inline source citations in all major global and regional languages.">
+    <meta name="keywords" content="Kona AI, KonaAI, Multilingual AI, AI Search Engine, India AI">
+    
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root { --surface: #070a13; --card: #111827; --primary: #2563eb; --font: #f9fafb; --font-dim: #9ca3af; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--surface); color: var(--font); height: 100vh; display: flex; flex-direction: column; }
+        header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); letter-spacing: -0.5px; }
+        #chat-canvas { flex: 1; overflow-y: auto; padding: 40px 15%; display: flex; flex-direction: column; gap: 30px; }
+        .message-row { max-width: 85%; padding: 20px 24px; border-radius: 16px; font-size: 16px; line-height: 1.7; word-wrap: break-word; }
+        .user-side { background-color: var(--primary); align-self: flex-end; border-bottom-right-radius: 3px; box-shadow: 0 4px 14px rgba(37,99,235,0.2); }
+        .kona-side { background-color: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid rgba(255,255,255,0.04); }
+        .citation-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
+        .citation-card { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #60a5fa; padding: 6px 14px; border-radius: 8px; font-size: 13px; text-decoration: none; font-weight: 500; transition: all 0.2s ease; display: inline-flex; align-items: center; }
+        .citation-card:hover { background: rgba(37, 99, 235, 0.2); transform: translateY(-1px); }
+        #input-dock { padding: 30px 15%; background: linear-gradient(to top, var(--surface) 80%, transparent); position: sticky; bottom: 0; }
+        .interactive-bar { display: flex; background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 8px 16px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input { flex: 1; background: transparent; border: none; color: white; padding: 12px; font-size: 16px; outline: none; }
+        input::placeholder { color: var(--font-dim); }
+        button { background: var(--primary); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: background 0.2s ease; font-size: 15px; }
+        button:hover { background: #1d4ed8; }
+        .system-wait { font-style: italic; color: var(--font-dim); }
+    </style>
+</head>
+<body>
+
+    <header>⚡ Kona AI</header>
+    
+    <div id="chat-canvas">
+        <div class="message-row kona-side">
+            Welcome to Kona AI. Search or ask questions in any preferred language. I will crawl live global indices and synthesize a comprehensive answer in your chosen language with inline references.
+        </div>
+    </div>
+
+    <div id="input-dock">
+        <div class="interactive-bar">
+            <input type="text" id="user-query" placeholder="Ask Kona AI in your language... (e.g., आज की मुख्य खबरें क्या हैं?)" onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
+            <button onclick="dispatchKonaEngine()">Search</button>
+        </div>
+    </div>
+
+    <script>
+        // TARGET SERVER DISTRIBUTION GATEWAY
+        // Update this placeholder address with your generated Google Cloud Run URL upon deployment.
+        const SERVER_ROUTER = "https://dattu2004-konaai-backend.hf.space/api/v1/search"; 
+
+        async function dispatchKonaEngine() {
+            const inputField = document.getElementById("user-query");
+            const rawPrompt = inputField.value.trim();
+            if(!rawPrompt) return;
+            inputField.value = "";
+
+            const canvas = document.getElementById("chat-canvas");
+            
+            // Build out user interface message node
+            const userBox = document.createElement("div");
+            userBox.className = "message-row user-side";
+            userBox.innerText = rawPrompt;
+            canvas.appendChild(userBox);
+
+            // Construct viewport node for incoming tokens
+            const konaBox = document.createElement("div");
+            konaBox.className = "message-row kona-side";
+            
+            const stateLoader = document.createElement("span");
+            stateLoader.className = "system-wait";
+            stateLoader.innerText = "Analyzing query & connecting to global networks...";
+            konaBox.appendChild(stateLoader);
+            
+            canvas.appendChild(konaBox);
+            canvas.scrollTop = canvas.scrollHeight;
+
+            try {
+                const response = await fetch(SERVER_ROUTER, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: rawPrompt })
+                });
+
+                if(!response.ok) throw new Error("Gateway connection dropping.");
+
+                const streamReader = response.body.getReader();
+                const stringDecoder = new TextDecoder("utf-8"); // Force explicitly safe UTF-8 decoding
+                
+                konaBox.innerHTML = ""; // Clear loader block
+                
+                const citationWrapper = document.createElement("div");
+                citationWrapper.className = "citation-container";
+                citationWrapper.style.display = "none";
+                konaBox.appendChild(citationWrapper);
+
+                const textBodyBlock = document.createElement("span");
+                konaBox.appendChild(textBodyBlock);
+
+                let citationsAdded = false;
+
+                while(true) {
+                    const { value, done } = await streamReader.read();
+                    if(done) break;
+
+                    const rawChunk = stringDecoder.decode(value, { stream: true });
+                    const structuralLines = rawChunk.split("\n");
+
+                    for(const structuralLine of structuralLines) {
+                        if(structuralLine.startsWith("data: ")) {
+                            const dataPayload = JSON.parse(structuralLine.slice(6));
+                            
+                            if(dataPayload.type === "metadata" && !citationsAdded && dataPayload.sources.length > 0) {
+                                citationWrapper.style.display = "flex";
+                                dataPayload.sources.forEach(sourceItem => {
+                                    const sourceButton = document.createElement("a");
+                                    sourceButton.className = "citation-card";
+                                    sourceButton.href = sourceItem.url;
+                                    sourceButton.target = "_blank";
+                                    sourceButton.innerText = `[${sourceItem.id}] ${sourceItem.title.substring(0,20)}...`;
+                                    citationWrapper.appendChild(sourceButton);
+                                });
+                                citationsAdded = true;
+                            } else if(dataPayload.type === "token") {
+                                // Native TextNodes guarantee complex fonts render perfectly without breaking layout
+                                const standaloneToken = document.createTextNode(dataPayload.text);
+                                textBodyBlock.appendChild(standaloneToken);
+                            } else if(dataPayload.type === "error") {
+                                textBodyBlock.appendChild(document.createTextNode(`\n[Engine Error: ${dataPayload.message}]`));
+                            }
+                        }
+                    }
+                    canvas.scrollTop = canvas.scrollHeight;
+                }
+            } catch (networkError) {
+                konaBox.innerHTML = "<span style='color:#ef4444;'>Connection lost. Verify your backend service status.</span>";
+            }
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>
