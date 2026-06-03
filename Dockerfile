@@ -1,24 +1,15 @@
-# Multi-stage compilation environment to guarantee ultra-light container footprint
-FROM python:3.11-slim AS compiler
-
-WORKDIR /install
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
-
-FROM python:3.11-slim AS runtime
+FROM python:3.11-slim
 
 WORKDIR /app
-COPY --from=compiler /root/.local /root/.local
+
+# Copy dependency requirements first to leverage caching layers
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the server script directly into the workspace root
 COPY main.py .
 
-ENV PATH=/root/.local/bin:$PATH
-ENV PYTHONUNBUFFERED=1
+# Hugging Face strictly requires exposing and binding to port 7860
+EXPOSE 7860
 
-# Production Security Compliance: Run container as non-root
-RUN useradd -u 1005 kona_worker && chown -R kona_worker:kona_worker /app
-USER kona_worker
-
-EXPOSE 8080
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
