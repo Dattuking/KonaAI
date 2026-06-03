@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kona AI | Real-Time Multilingual Search Engine</title>
-    <meta name="description" content="Kona AI is an advanced global search engine providing analytical data synthesis with exact inline references.">
-    <link rel="manifest" href="manifest.json">
-    
+    <title>Kona AI | Secured Multilingual Context Search Engine</title>
     <style>
         :root { --surface: #070a13; --card: #111827; --primary: #2563eb; --font: #f9fafb; --font-dim: #9ca3af; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--surface); color: var(--font); height: 100vh; display: flex; flex-direction: column; }
-        header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); letter-spacing: -0.5px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--surface); color: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* Login Screen Overlay */
+        #auth-gate { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--surface); display: flex; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.3s ease; }
+        .auth-card { background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .auth-card h2 { margin-bottom: 20px; color: var(--primary); font-size: 26px; }
+        .auth-card input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: white; font-size: 16px; margin-bottom: 20px; outline: none; text-align: center; }
+        .auth-card button { width: 100%; padding: 14px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; }
+        .auth-error { color: #ef4444; font-size: 14px; margin-top: 12px; display: none; }
+
+        /* Main Workspace Interface Layout */
+        header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        .logout-btn { font-size: 14px; color: var(--font-dim); background: transparent; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 6px; cursor: pointer; }
         #chat-canvas { flex: 1; overflow-y: auto; padding: 40px 15%; display: flex; flex-direction: column; gap: 30px; }
         .message-row { max-width: 85%; padding: 20px 24px; border-radius: 16px; font-size: 16px; line-height: 1.7; word-wrap: break-word; }
         .user-side { background-color: var(--primary); align-self: flex-end; border-bottom-right-radius: 3px; }
@@ -20,68 +28,97 @@
         .citation-card { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #60a5fa; padding: 6px 14px; border-radius: 8px; font-size: 13px; text-decoration: none; font-weight: 500; }
         #input-dock { padding: 30px 15%; background: var(--surface); position: sticky; bottom: 0; }
         .interactive-bar { display: flex; background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 8px 16px; align-items: center; }
-        input { flex: 1; background: transparent; border: none; color: white; padding: 12px; font-size: 16px; outline: none; }
-        button { background: var(--primary); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+        .interactive-bar input { flex: 1; background: transparent; border: none; color: white; padding: 12px; font-size: 16px; outline: none; }
+        .interactive-bar button { background: var(--primary); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 600; cursor: pointer; }
         .system-wait { font-style: italic; color: var(--font-dim); }
 
-        /* Rendered Code Blocks Design Styles */
+        /* Output Formatter Render Design Engine Layout Rules */
         .parsed-response p { margin-bottom: 14px; }
-        .parsed-response .code-window-block { background: #000000; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 18px; margin: 16px 0; overflow-x: auto; font-family: 'Fira Code', 'Courier New', Courier, monospace; font-size: 14px; color: #f9fafb; line-height: 1.5; white-space: pre; display: block; }
+        .parsed-response .code-window-block { background: #000000; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 18px; margin: 16px 0; overflow-x: auto; font-family: monospace; font-size: 14px; color: #f9fafb; line-height: 1.5; white-space: pre; display: block; }
         .parsed-response h3 { margin: 20px 0 10px 0; color: #60a5fa; font-weight: 700; font-size: 19px; }
         .parsed-response .inline-code-token { font-family: monospace; color: #34d399; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <header>⚡ Kona AI</header>
+    <!-- Authentication Window Lock -->
+    <div id="auth-gate">
+        <div class="auth-card">
+            <h2>Kona AI Security</h2>
+            <input type="password" id="access-pass" placeholder="Enter Access Password" onkeydown="if(event.key==='Enter') validateAuthToken()">
+            <button onclick="validateAuthToken()">Unlock Terminal</button>
+            <div id="error-alert" class="auth-error">Incorrect Access Password. Please try again.</div>
+        </div>
+    </div>
+
+    <!-- Main Dynamic Application Workspace Layout Screen Layer -->
+    <header>
+        <span>⚡ Kona AI</span>
+        <button class="logout-btn" onclick="terminateSession()">Lock App</button>
+    </header>
     
     <div id="chat-canvas">
         <div class="message-row kona-side">
-            Welcome to Kona AI. Search or ask questions in any language. I will crawl live indexes and stream your response with verified citation cards.
+            Welcome to Kona AI. Context memory tracking is now enabled. You can ask queries and request changes to code layouts natively.
         </div>
     </div>
 
     <div id="input-dock">
         <div class="interactive-bar">
-            <input type="text" id="user-query" placeholder="Ask Kona AI in any language..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
+            <input type="text" id="user-query" placeholder="Ask anything or request structural changes..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
             <button onclick="dispatchKonaEngine()">Search</button>
         </div>
     </div>
 
     <script>
         const SERVER_ROUTER = "https://dattu2004-konaai-backend.hf.space/api/v1/search"; 
+        
+        // Context Track Memory Array Array elements mapping layout stack
+        let conversationHistory = [];
 
-        // Native parsing engine that extracts raw triple backticks into stylized layout windows
+        // Simple runtime validation rule token checking
+        function checkSystemAuth() {
+            if (localStorage.getItem("kona_session_active") === "true") {
+                document.getElementById("auth-gate").style.display = "none";
+            }
+        }
+
+        function validateAuthToken() {
+            const passwordInput = document.getElementById("access-pass").value;
+            // Set your custom security authorization password key here
+            if (passwordInput === "admin123") { 
+                localStorage.setItem("kona_session_active", "true");
+                document.getElementById("auth-gate").style.display = "none";
+                document.getElementById("error-alert").style.display = "none";
+            } else {
+                document.getElementById("error-alert").style.display = "block";
+            }
+        }
+
+        function terminateSession() {
+            localStorage.removeItem("kona_session_active");
+            document.getElementById("access-pass").value = "";
+            document.getElementById("auth-gate").style.display = "flex";
+        }
+
         function nativeRenderMarkdown(rawString) {
             let processedHtml = "";
             let dataSegments = rawString.split("```");
-            
             for (let idx = 0; idx < dataSegments.length; idx++) {
                 if (idx % 2 === 1) {
-                    // This is an isolated block of source code
                     let codeLines = dataSegments[idx].split("\n");
-                    if (codeLines[0].trim() === "python" || codeLines[0].trim() === "javascript") {
-                        codeLines.shift(); // Remove the code identifier top string line
+                    let cleanLang = codeLines[0].trim().toLowerCase();
+                    if (["python", "javascript", "c", "cpp", "html"].includes(cleanLang)) {
+                        codeLines.shift();
                     }
                     processedHtml += `<div class="code-window-block">${codeLines.join("\n").trim()}</div>`;
                 } else {
-                    // Normal text segments processing
                     let currentTextSegment = dataSegments[idx];
-                    
-                    // Convert header strings (### Header)
                     currentTextSegment = currentTextSegment.replace(/###\s+(.*)/g, "<h3>$1</h3>");
-                    
-                    // Convert bold elements (**text**)
                     currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-                    
-                    // Convert inline codes (`code`)
                     currentTextSegment = currentTextSegment.replace(/`(.*?)`/g, '<code class="inline-code-token">$1</code>');
-                    
-                    // Clean structural formatting adjustments for line items
                     processedHtml += currentTextSegment.split("\n").map(sentence => {
-                        if (sentence.trim().startsWith("<h3>") || sentence.trim().startsWith("<div")) {
-                            return sentence;
-                        }
+                        if (sentence.trim().startsWith("<h3>") || sentence.trim().startsWith("<div")) return sentence;
                         return sentence.trim() ? `<p>${sentence}</p>` : "";
                     }).join("");
                 }
@@ -101,20 +138,24 @@
             userBox.innerText = rawPrompt;
             canvas.appendChild(userBox);
 
+            // Push fresh entry array elements frame token maps into memory array list
+            conversationHistory.push({ role: "user", content: rawPrompt });
+
             const konaBox = document.createElement("div");
             konaBox.className = "message-row kona-side";
             const stateLoader = document.createElement("span");
             stateLoader.className = "system-wait";
-            stateLoader.innerText = "Connecting to global networks...";
+            stateLoader.innerText = "Scanning contextual indexes...";
             konaBox.appendChild(stateLoader);
             canvas.appendChild(konaBox);
             canvas.scrollTop = canvas.scrollHeight;
 
             try {
+                // Send the entire tracked memory stack downstream onto your backend route handler
                 const response = await fetch(SERVER_ROUTER, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: rawPrompt })
+                    body: JSON.stringify({ history: conversationHistory })
                 });
 
                 const streamReader = response.body.getReader();
@@ -131,7 +172,7 @@
                 konaBox.appendChild(textBodyBlock);
                 
                 let citationsAdded = false;
-                konaBox.rawDataString = "";
+                let streamingResponseTracker = "";
 
                 while(true) {
                     const { value, done } = await streamReader.read();
@@ -156,8 +197,8 @@
                                 });
                                 citationsAdded = true;
                             } else if(dataPayload.type === "token") {
-                                konaBox.rawDataString += dataPayload.text;
-                                textBodyBlock.innerHTML = nativeRenderMarkdown(konaBox.rawDataString);
+                                streamingResponseTracker += dataPayload.text;
+                                textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
                             } else if(dataPayload.type === "error") {
                                 textBodyBlock.innerHTML += `<span style='color:#ef4444;'>\n[Engine Error: ${dataPayload.message}]</span>`;
                             }
@@ -165,16 +206,17 @@
                     }
                     canvas.scrollTop = canvas.scrollHeight;
                 }
+
+                // Append the fully synthesized response into the memory buffer for the next question turn
+                conversationHistory.push({ role: "assistant", content: streamingResponseTracker });
+
             } catch (networkError) {
                 konaBox.innerHTML = "<span style='color:#ef4444;'>Connection lost. Verify your backend Space status.</span>";
             }
         }
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(() => {});
-            });
-        }
+        // Run security checks on page initial boot cycles
+        window.onload = checkSystemAuth;
     </script>
 </body>
 </html>
