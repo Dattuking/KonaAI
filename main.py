@@ -112,3 +112,7 @@ async def execute_kona_search_v1(payload: SearchQueryPayload):
         process_and_stream_response(payload.message),
         media_type="text/event-stream"
     )
+# Make sure app is lowercase here to match app = FastAPI() at the top
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=7860, reload=False)
