@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kona AI | Secured Production RAG Platform</title>
     <style>
-        :root { --surface: #070a13; --card: #111827; --primary: #2563eb; --font: #f9fafb; --font-dim: #9ca3af; }
+        :root { --surface: #070a13; --card: #111827; --primary: #2563eb; --font: #f9fafb; --font-dim: #9ca3af; --sidebar-w: 260px; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--surface); color: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--surface); color: var(--font); height: 100vh; display: flex; overflow: hidden; }
         
         /* Interactive Auth Gate Panel Container Window Styles */
         #auth-gate { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 10, 19, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
@@ -19,15 +19,30 @@
         .auth-card input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: white; font-size: 15px; outline: none; transition: border-color 0.2s; }
         .auth-card input:focus { border-color: var(--primary); }
         .auth-card button { width: 100%; padding: 14px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-        .auth-card button:hover { background: #1d4ed8; }
         .auth-toggle-area { margin-top: 20px; font-size: 14px; color: var(--font-dim); }
         .auth-toggle-link { color: var(--primary); cursor: pointer; font-weight: 600; text-decoration: underline; }
         .auth-msg { font-size: 14px; margin-top: 16px; display: none; padding: 12px; border-radius: 8px; text-align: left; line-height: 1.4; }
         .msg-error { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
         .msg-success { background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); }
 
-        /* Main Workspace System Shell View Layout Rules */
+        /* Left Navigation Sidebar Layout Styles */
+        #left-sidebar { width: var(--sidebar-w); background-color: #0b0f19; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; padding: 20px 14px; z-index: 10; transition: transform 0.3s ease; }
+        .sidebar-brand { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; margin-bottom: 24px; padding-left: 8px; display: flex; align-items: center; gap: 8px; }
+        .new-chat-btn { display: flex; align-items: center; justify-content: flex-start; gap: 10px; width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 10px; color: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; text-align: left; margin-bottom: 20px; transition: background 0.2s; }
+        .new-chat-btn:hover { background: rgba(255,255,255,0.07); }
+        .sidebar-nav-section { display: flex; flex-direction: column; gap: 4px; margin-bottom: 24px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+        .nav-item:hover, .nav-item.active { color: var(--font); background: rgba(255,255,255,0.04); }
+        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 10px 0 20px 0; }
+        .section-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; padding-left: 12px; }
+        #history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+        .history-item { font-size: 13px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+        .history-item:hover { background: rgba(255,255,255,0.03); color: var(--font); }
+        
+        /* Main Workspace Container Shell Layout */
+        #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; }
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; letter-spacing: -0.5px; }
+        .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
         .logout-btn { font-size: 13px; color: var(--font-dim); background: transparent; border: 1px solid rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
         .logout-btn:hover { color: #f87171; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05); }
         #chat-canvas { flex: 1; overflow-y: auto; padding: 40px 15%; display: flex; flex-direction: column; gap: 30px; }
@@ -42,16 +57,23 @@
         .interactive-bar button { background: var(--primary); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 600; cursor: pointer; }
         .system-wait { font-style: italic; color: var(--font-dim); }
 
-        /* Document Component Token Parser Text Formatter Rules */
+        /* Output Markdown Formatter Design Core Rules */
         .parsed-response p { margin-bottom: 14px; }
         .parsed-response .code-window-block { background: #000000; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 18px; margin: 16px 0; overflow-x: auto; font-family: monospace; font-size: 14px; color: #f9fafb; line-height: 1.5; white-space: pre; display: block; }
         .parsed-response h3 { margin: 20px 0 10px 0; color: #60a5fa; font-weight: 700; font-size: 19px; }
         .parsed-response .inline-code-token { font-family: monospace; color: #34d399; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 14px; }
 
-        /* --- HIGHLY OPTIMIZED MOBILE VIEWPORT RULES --- */
+        /* Responsive Breakpoints Viewports Layout Control */
+        @media (max-width: 1024px) {
+            #chat-canvas { padding: 40px 8%; }
+            #input-dock { padding: 30px 8%; }
+        }
         @media (max-width: 768px) {
-            header { padding: 15px 20px; font-size: 20px; }
-            .logout-btn { padding: 6px 12px; font-size: 12px; }
+            .menu-toggle-btn { display: block; margin-right: 12px; }
+            #left-sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); }
+            #left-sidebar.open { transform: translateX(0); }
+            header { padding: 15px 20px; font-size: 20px; justify-content: flex-start; }
+            .logout-btn { margin-left: auto; padding: 6px 12px; font-size: 12px; }
             #chat-canvas { padding: 20px 15px; gap: 20px; }
             .message-row { max-width: 95%; padding: 14px 18px; font-size: 15px; }
             #input-dock { padding: 15px 15px; }
@@ -59,8 +81,6 @@
             .interactive-bar input { padding: 8px; font-size: 15px; }
             .interactive-bar button { padding: 10px 18px; font-size: 14px; border-radius: 8px; }
             .auth-card { margin: 0 16px; padding: 30px 20px; width: calc(100% - 32px); }
-            .auth-card h2 { font-size: 24px; }
-            .auth-card input { padding: 12px; font-size: 14px; }
         }
     </style>
 </head>
@@ -89,35 +109,101 @@
         </div>
     </div>
 
-    <header>
-        <span>⚡ Kona AI</span>
-        <button class="logout-btn" onclick="terminateSession()">Lock Terminal</button>
-    </header>
-    
-    <div id="chat-canvas">
-        <div class="message-row kona-side">
-            Welcome to Kona AI. Your production session is secure. Submit a query in any language to execute vector and real-time hybrid searches.
+    <aside id="left-sidebar">
+        <div class="sidebar-brand">
+            <span>⚡ Kona AI</span>
         </div>
-    </div>
+        
+        <button class="new-chat-btn" onclick="clearActiveSessionChat()">
+            📝 New chat
+        </button>
+        
+        <div class="sidebar-nav-section">
+            <div class="nav-item active" onclick="closeMobileSidebar()"><span style="font-size:16px;">🔍</span> Search chats</div>
+            <div class="nav-item" onclick="closeMobileSidebar()"><span style="font-size:16px;">📚</span> Library</div>
+            <div class="nav-item" onclick="closeMobileSidebar()"><span style="font-size:16px;">📁</span> Projects</div>
+            <div class="nav-item" onclick="closeMobileSidebar()"><span style="font-size:16px;">🧩</span> Apps</div>
+            <div class="nav-item" onclick="closeMobileSidebar()"><span style="font-size:16px;">💻</span> Codex</div>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="section-label">Recents</div>
+        <div id="history-list">
+            <div class="history-item">No recent searches</div>
+        </div>
+    </aside>
 
-    <div id="input-dock">
-        <div class="interactive-bar">
-            <input type="text" id="user-query" placeholder="Ask anything or request modifications..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
-            <button onclick="dispatchKonaEngine()">Search</button>
+    <main id="workspace-container" onclick="closeMobileSidebarFromCanvas(event)">
+        <header>
+            <button class="menu-toggle-btn" onclick="toggleMobileSidebar(event)">☰</button>
+            <span style="font-size: 20px; font-weight: 700; color: var(--font);">Console Monitor</span>
+            <button class="logout-btn" onclick="terminateSession()">Lock Terminal</button>
+        </header>
+        
+        <div id="chat-canvas">
+            <div class="message-row kona-side">
+                Welcome to Kona AI. Your production session is secure. Submit a query in any language to execute vector and real-time hybrid searches.
+            </div>
         </div>
-    </div>
+
+        <div id="input-dock">
+            <div class="interactive-bar">
+                <input type="text" id="user-query" placeholder="Ask anything or request modifications..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
+                <button onclick="dispatchKonaEngine()">Search</button>
+            </div>
+        </div>
+    </main>
 
     <script>
         const API_BASE = "https://dattu2004-konaai-backend.hf.space/api/v1"; 
         let conversationHistory = [];
         let isRegisterMode = false;
 
-        // Perform authorization cache token parameter checks on viewport instantiation
         window.onload = function() {
             if (localStorage.getItem("kona_jwt_token")) {
                 document.getElementById("auth-gate").style.display = "none";
+                renderHistoryLogs();
             }
         };
+
+        // UI Responsive Navigation Controls
+        function toggleMobileSidebar(e) {
+            e.stopPropagation();
+            document.getElementById("left-sidebar").classList.toggle("open");
+        }
+        function closeMobileSidebar() {
+            document.getElementById("left-sidebar").classList.remove("open");
+        }
+        function closeMobileSidebarFromCanvas(e) {
+            if (window.innerWidth <= 768) {
+                closeMobileSidebar();
+            }
+        }
+
+        function clearActiveSessionChat() {
+            conversationHistory = [];
+            document.getElementById("chat-canvas").innerHTML = `
+                <div class="message-row kona-side">Started a completely fresh search thread context.</div>
+            `;
+            closeMobileSidebar();
+        }
+
+        function renderHistoryLogs() {
+            const listContainer = document.getElementById("history-list");
+            if (conversationHistory.length === 0) {
+                listContainer.innerHTML = `<div class="history-item">No recent searches</div>`;
+                return;
+            }
+            listContainer.innerHTML = "";
+            const userQueries = conversationHistory.filter(msg => msg.role === "user");
+            userQueries.slice().reverse().forEach(msg => {
+                const node = document.createElement("div");
+                node.className = "history-item";
+                node.innerText = msg.content;
+                listContainer.appendChild(node);
+            });
+        }
 
         function toggleAuthMode(toRegister) {
             isRegisterMode = toRegister;
@@ -154,20 +240,16 @@
 
             try {
                 if (isRegisterMode) {
-                    // Registration Router Node Execution Endpoint (JSON formatting payload)
                     const res = await fetch(`${API_BASE}/auth/register`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ email: email, password: password })
                     });
                     const data = await res.json();
-                    
                     if (!res.ok) throw new Error(data.detail || "Registration processing encountered an anomaly.");
-                    
                     showFeedback("Onboarding step complete! Swapping interfaces to authorization gate...", false);
                     setTimeout(() => toggleAuthMode(false), 1500);
                 } else {
-                    // Login Verification Engine Thread execution (OAuth2 rules parameter binding configuration mandates form urlencoded payloads)
                     const formData = new URLSearchParams();
                     formData.append("username", email);
                     formData.append("password", password);
@@ -178,15 +260,14 @@
                         body: formData
                     });
                     const data = await res.json();
-
                     if (!res.ok) throw new Error(data.detail || "Access token synthesis rejected due to bad credentials.");
 
-                    // Bind token string mapping values securely into internal memory storage layers
                     localStorage.setItem("kona_jwt_token", data.access_token);
                     showFeedback("Node authenticated successfully! Unlocking active terminal monitor canvas layout...", false);
                     setTimeout(() => {
                         document.getElementById("auth-gate").style.display = "none";
                         feedback.style.display = "none";
+                        renderHistoryLogs();
                     }, 1000);
                 }
             } catch (err) {
@@ -210,6 +291,7 @@
             document.getElementById("auth-email").value = "";
             document.getElementById("auth-password").value = "";
             document.getElementById("auth-gate").style.display = "flex";
+            renderHistoryLogs();
             toggleAuthMode(false);
         }
 
@@ -251,6 +333,7 @@
             canvas.appendChild(userBox);
 
             conversationHistory.push({ role: "user", content: rawPrompt });
+            renderHistoryLogs();
 
             const konaBox = document.createElement("div");
             konaBox.className = "message-row kona-side";
