@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kona AI | Secured Multilingual Context Search Engine</title>
+    <title>Kona AI | Secured Production RAG Platform</title>
     <style>
         :root { --surface: #070a13; --card: #111827; --primary: #2563eb; --font: #f9fafb; --font-dim: #9ca3af; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--surface); color: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Login Screen Overlay */
-        #auth-gate { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--surface); display: flex; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.3s ease; }
-        .auth-card { background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .auth-card h2 { margin-bottom: 20px; color: var(--primary); font-size: 26px; }
-        .auth-card input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: white; font-size: 16px; margin-bottom: 20px; outline: none; text-align: center; }
-        .auth-card button { width: 100%; padding: 14px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; }
-        .auth-error { color: #ef4444; font-size: 14px; margin-top: 12px; display: none; }
+        /* Production Auth Gate Panel Overlay styles */
+        #auth-gate { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--surface); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .auth-card { background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 40px; border-radius: 16px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .auth-card h2 { margin-bottom: 8px; color: var(--font); font-size: 26px; font-weight: 800; }
+        .auth-card p { color: var(--font-dim); font-size: 14px; margin-bottom: 24px; }
+        .auth-card input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: white; font-size: 15px; margin-bottom: 16px; outline: none; }
+        .auth-card button { width: 100%; padding: 14px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; margin-top: 8px; }
+        .auth-toggle-link { color: var(--primary); margin-top: 16px; font-size: 14px; cursor: pointer; display: inline-block; text-decoration: underline; }
+        .auth-msg { font-size: 14px; margin-top: 12px; display: none; padding: 10px; border-radius: 6px; }
+        .msg-error { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .msg-success { background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); }
 
-        /* Main Workspace Interface Layout */
+        /* Main Workspace Application UI Styling */
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
-        .logout-btn { font-size: 14px; color: var(--font-dim); background: transparent; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 6px; cursor: pointer; }
+        .logout-btn { font-size: 14px; color: var(--font-dim); background: transparent; border: 1px solid rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; }
         #chat-canvas { flex: 1; overflow-y: auto; padding: 40px 15%; display: flex; flex-direction: column; gap: 30px; }
         .message-row { max-width: 85%; padding: 20px 24px; border-radius: 16px; font-size: 16px; line-height: 1.7; word-wrap: break-word; }
         .user-side { background-color: var(--primary); align-self: flex-end; border-bottom-right-radius: 3px; }
@@ -32,7 +36,7 @@
         .interactive-bar button { background: var(--primary); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 600; cursor: pointer; }
         .system-wait { font-style: italic; color: var(--font-dim); }
 
-        /* Output Formatter Render Design Engine Layout Rules */
+        /* Structural Text Formatting Custom Parser Render Styles */
         .parsed-response p { margin-bottom: 14px; }
         .parsed-response .code-window-block { background: #000000; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 18px; margin: 16px 0; overflow-x: auto; font-family: monospace; font-size: 14px; color: #f9fafb; line-height: 1.5; white-space: pre; display: block; }
         .parsed-response h3 { margin: 20px 0 10px 0; color: #60a5fa; font-weight: 700; font-size: 19px; }
@@ -41,64 +45,145 @@
 </head>
 <body>
 
-    <!-- Authentication Window Lock -->
     <div id="auth-gate">
         <div class="auth-card">
-            <h2>Kona AI Security</h2>
-            <input type="password" id="access-pass" placeholder="Enter Access Password" onkeydown="if(event.key==='Enter') validateAuthToken()">
-            <button onclick="validateAuthToken()">Unlock Terminal</button>
-            <div id="error-alert" class="auth-error">Incorrect Access Password. Please try again.</div>
+            <h2 id="auth-title">⚡ Kona AI</h2>
+            <p id="auth-subtitle">Sign in to your encrypted search node</p>
+            
+            <input type="email" id="auth-email" placeholder="Email Address">
+            <input type="password" id="auth-password" placeholder="Password">
+            
+            <button id="auth-submit-btn" onclick="executeAuthAction()">Sign In</button>
+            
+            <div id="auth-toggle-msg">
+                New to Kona AI? <span class="auth-toggle-link" onclick="toggleAuthMode(true)">Create an Account</span>
+            </div>
+            
+            <div id="status-feedback" class="auth-msg"></div>
         </div>
     </div>
 
-    <!-- Main Dynamic Application Workspace Layout Screen Layer -->
     <header>
         <span>⚡ Kona AI</span>
-        <button class="logout-btn" onclick="terminateSession()">Lock App</button>
+        <button class="logout-btn" onclick="terminateSession()">Lock Console</button>
     </header>
     
     <div id="chat-canvas">
         <div class="message-row kona-side">
-            Welcome to Kona AI. Context memory tracking is now enabled. You can ask queries and request changes to code layouts natively.
+            Welcome to Kona AI. Your production session is secure. Submit a query in any language to execute vector and real-time hybrid searches.
         </div>
     </div>
 
     <div id="input-dock">
         <div class="interactive-bar">
-            <input type="text" id="user-query" placeholder="Ask anything or request structural changes..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
+            <input type="text" id="user-query" placeholder="Ask anything or request modifications..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
             <button onclick="dispatchKonaEngine()">Search</button>
         </div>
     </div>
 
     <script>
-        const SERVER_ROUTER = "https://dattu2004-konaai-backend.hf.space/api/v1/search"; 
-        
-        // Context Track Memory Array Array elements mapping layout stack
+        const API_BASE = "https://dattu2004-konaai-backend.hf.space/api/v1"; 
         let conversationHistory = [];
+        let isRegisterMode = false;
 
-        // Simple runtime validation rule token checking
-        function checkSystemAuth() {
-            if (localStorage.getItem("kona_session_active") === "true") {
+        // Verify session status on system startup
+        window.onload = function() {
+            if (localStorage.getItem("kona_jwt_token")) {
                 document.getElementById("auth-gate").style.display = "none";
+            }
+        };
+
+        function toggleAuthMode(toRegister) {
+            isRegisterMode = toRegister;
+            const title = document.getElementById("auth-title");
+            const subtitle = document.getElementById("auth-subtitle");
+            const btn = document.getElementById("auth-submit-btn");
+            const toggleArea = document.getElementById("auth-toggle-msg");
+            const feedback = document.getElementById("status-feedback");
+            
+            feedback.style.display = "none";
+            
+            if (isRegisterMode) {
+                title.innerText = "Register Node";
+                subtitle.innerText = "Create an profile to start querying";
+                btn.innerText = "Register";
+                toggleArea.innerHTML = `Already registered? <span class="auth-toggle-link" onclick="toggleAuthMode(false)">Sign In</span>`;
+            } else {
+                title.innerText = "⚡ Kona AI";
+                subtitle.innerText = "Sign in to your encrypted search node";
+                btn.innerText = "Sign In";
+                toggleArea.innerHTML = `New to Kona AI? <span class="auth-toggle-link" onclick="toggleAuthMode(true)">Create an Account</span>`;
             }
         }
 
-        function validateAuthToken() {
-            const passwordInput = document.getElementById("access-pass").value;
-            // Set your custom security authorization password key here
-            if (passwordInput === "Dattu@2004") { 
-                localStorage.setItem("kona_session_active", "true");
-                document.getElementById("auth-gate").style.display = "none";
-                document.getElementById("error-alert").style.display = "none";
-            } else {
-                document.getElementById("error-alert").style.display = "block";
+        async function executeAuthAction() {
+            const email = document.getElementById("auth-email").value.trim();
+            const password = document.getElementById("auth-password").value;
+            const feedback = document.getElementById("status-feedback");
+
+            if (!email || !password) {
+                showFeedback("Please fill out all credentials.", true);
+                return;
             }
+
+            try {
+                if (isRegisterMode) {
+                    // Registration Path (JSON payload match)
+                    const res = await fetch(`${API_BASE}/auth/register`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: email, password: password })
+                    });
+                    const data = await res.json();
+                    
+                    if (!res.ok) throw new Error(data.detail || "Registration failed.");
+                    
+                    showFeedback("Registration complete! Switching to Sign In...", false);
+                    setTimeout(() => toggleAuthMode(false), 1500);
+                } else {
+                    // Login Path (OAuth2 specifications require x-www-form-urlencoded payloads)
+                    const formData = new URLSearchParams();
+                    formData.append("username", email);
+                    formData.append("password", password);
+
+                    const res = await fetch(`${API_BASE}/auth/login`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: formData
+                    });
+                    const data = await res.json();
+
+                    if (!res.ok) throw new Error(data.detail || "Login authorization failed.");
+
+                    // Save the cryptographically signed JWT token inside application storage arrays
+                    localStorage.setItem("kona_jwt_token", data.access_token);
+                    showFeedback("Node authenticated! Loading terminal...", false);
+                    setTimeout(() => {
+                        document.getElementById("auth-gate").style.display = "none";
+                    }, 1000);
+                }
+            } catch (err) {
+                showFeedback(err.message, true);
+            }
+        }
+
+        function showFeedback(msg, isError) {
+            const el = document.getElementById("status-feedback");
+            el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`;
+            el.innerText = msg;
+            el.style.display = "block";
         }
 
         function terminateSession() {
-            localStorage.removeItem("kona_session_active");
-            document.getElementById("access-pass").value = "";
+            localStorage.removeItem("kona_jwt_token");
+            conversationHistory = [];
+            document.getElementById("chat-canvas").innerHTML = `
+                <div class="message-row kona-side">Console locked. Session logs cleared safely.</div>
+            `;
+            document.getElementById("auth-email").value = "";
+            document.getElementById("auth-password").value = "";
             document.getElementById("auth-gate").style.display = "flex";
+            toggleAuthMode(false);
         }
 
         function nativeRenderMarkdown(rawString) {
@@ -138,25 +223,32 @@
             userBox.innerText = rawPrompt;
             canvas.appendChild(userBox);
 
-            // Push fresh entry array elements frame token maps into memory array list
             conversationHistory.push({ role: "user", content: rawPrompt });
 
             const konaBox = document.createElement("div");
             konaBox.className = "message-row kona-side";
             const stateLoader = document.createElement("span");
             stateLoader.className = "system-wait";
-            stateLoader.innerText = "Scanning contextual indexes...";
+            stateLoader.innerText = "Interrogating hybrid retrieval indexes...";
             konaBox.appendChild(stateLoader);
             canvas.appendChild(konaBox);
             canvas.scrollTop = canvas.scrollHeight;
 
+            const secureToken = localStorage.getItem("kona_jwt_token");
+
             try {
-                // Send the entire tracked memory stack downstream onto your backend route handler
-                const response = await fetch(SERVER_ROUTER, {
+                const response = await fetch(`${API_BASE}/search`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${secureToken}` // Attach secure bearer authorization token payload headers
+                    },
                     body: JSON.stringify({ history: conversationHistory })
                 });
+
+                if(response.status === 401) {
+                    throw new Error("Session expired. Please log out and authenticate again.");
+                }
 
                 const streamReader = response.body.getReader();
                 const stringDecoder = new TextDecoder("utf-8");
@@ -207,16 +299,12 @@
                     canvas.scrollTop = canvas.scrollHeight;
                 }
 
-                // Append the fully synthesized response into the memory buffer for the next question turn
                 conversationHistory.push({ role: "assistant", content: streamingResponseTracker });
 
-            } catch (networkError) {
-                konaBox.innerHTML = "<span style='color:#ef4444;'>Connection lost. Verify your backend Space status.</span>";
+            } catch (err) {
+                konaBox.innerHTML = `<span style='color:#ef4444;'>Security Block: ${err.message}</span>`;
             }
         }
-
-        // Run security checks on page initial boot cycles
-        window.onload = checkSystemAuth;
     </script>
 </body>
 </html>
