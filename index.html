@@ -1,241 +1,337 @@
-import os
-import json
-import asyncio
-from datetime import datetime, timedelta
-from typing import List, Optional
-from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.responses import StreamingResponse
-from pydantic import BaseModel, EmailStr
-from passlib.context import CryptContext
-from jose import jwt, JWTError
-from openai import OpenAI
-from tavily import AsyncTavilyClient
-from pinecone import Pinecone
-
-# --- 1. CONFIGURATION INTERFACE & FRAMEWORK STARTUP ---
-app = FastAPI(
-    title="KonaAI Enterprise Production Engine",
-    description="Unified API structural cluster node orchestrating JWT data flows and contextual hybrid RAG stream pipelines.",
-    version="2.0.0"
-)
-
-# Open secure Cross-Origin Resource Sharing bindings for the client layout workspace view
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
-)
-
-# Pull secure cloud cluster variables from Hugging Face Secrets Vault
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Holds Groq key 'gsk_...'
-TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
-PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "GLOBAL_SYSTEM_MASTER_PRODUCTION_TOKEN_KEY_FRAME")
-
-# Security Encryption Protocol Suite settings instantiation
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # Access window parameters (24 hours)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
-
-if not OPENAI_API_KEY or not TAVILY_API_KEY:
-    print("CRITICAL WARNING: Infrastructure backend cluster environment secrets are unassigned.")
-    openai_client = None
-    tavily_async_client = None
-    pc_vector_index = None
-else:
-    # Direct official OpenAI SDK initialization parameters to talk directly to Groq hardware LPU layers
-    openai_client = OpenAI(base_url="[https://api.groq.com/openai/v1](https://api.groq.com/openai/v1)", api_key=OPENAI_API_KEY)
-    tavily_async_client = AsyncTavilyClient(api_key=TAVILY_API_KEY)
-    
-    # Establish persistent secure connection context link to Pinecone infrastructure nodes
-    if PINECONE_API_KEY:
-        try:
-            pc = Pinecone(api_key=PINECONE_API_KEY)
-            pc_vector_index = pc.Index("kona-knowledge-base")
-        except Exception:
-            pc_vector_index = None
-    else:
-        pc_vector_index = None
-
-# --- 2. STORAGE MANAGEMENT LAYER MAPS (IN-MEMORY PERSISTENCE DB) ---
-# Persistent operational user data store dictionary frame tracking layout elements
-PERSISTENT_USER_DB = {}
-
-class UserOnboardSchema(BaseModel):
-    email: EmailStr
-    password: str
-    language_preference: Optional[str] = "English"
-
-class TokenPayload(BaseModel):
-    access_token: str
-    token_type: str
-    email: str
-
-class ChatMessage(BaseModel):
-    role: str
-    content: str
-
-class SearchPayload(BaseModel):
-    history: List[ChatMessage]
-
-# --- 3. CRYPTOGRAPHIC PROTECTION HELPER UTILITIES ---
-def generate_hashed_bytes(password: str) -> str:
-    return pwd_context.hash(password)
-
-def verify_hashed_bytes(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
-def sign_access_session_token(data: dict) -> str:
-    payload_bundle = data.copy()
-    expiration_horizon = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    payload_bundle.update({"exp": expiration_horizon})
-    return jwt.encode(payload_bundle, JWT_SECRET_KEY, algorithm=ALGORITHM)
-
-def verify_active_session(token: str = Depends(oauth2_scheme)) -> str:
-    """Interrogates incoming Authorization headers to parse and confirm valid user identity mappings."""
-    try:
-        decoded_bundle = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
-        user_identity: str = decoded_bundle.get("sub")
-        if user_identity is None:
-            raise HTTPException(status_code=401, detail="Session verification faulted due to absent identity descriptor parameters.")
-        return user_identity
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Session expired or token validation checksum signature mismatch.")
-
-# --- 4. HYBRID SEMANTIC DATA EXTRACTION PIPELINE ENGINE (RAG) ---
-async def parse_vector_database_context(prompt_string: str) -> str:
-    """Queries semantic collection parameters to retrieve matched facts from internal repository document files."""
-    if not pc_vector_index or not openai_client:
-        return ""
-    try:
-        embed_response = openai_client.embeddings.create(
-            input=[prompt_string],
-            model="text-embedding-3-small"
-        )
-        query_coordinates = embed_response.data[0].embedding
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kona AI | Secured Production RAG Platform</title>
+    <style>
+        :root { --surface: #070a13; --card: #111827; --primary: #2563eb; --font: #f9fafb; --font-dim: #9ca3af; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--surface); color: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        matches_matrix = pc_vector_index.query(
-            vector=query_coordinates,
-            top_k=3,
-            include_metadata=True
-        )
-        
-        compiled_vectors_context = ""
-        for match_item in matches_matrix.get('matches', []):
-            if 'text' in match_item.get('metadata', {}):
-                compiled_vectors_context += f"[Internal Verified Repository Document]: {match_item['metadata']['text']}\n"
-        return compiled_vectors_context
-    except Exception:
-        # Fall back gracefully if the index is brand new or not fully compiled
-        return ""
+        /* Interactive Auth Gate Panel Container Window Styles */
+        #auth-gate { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 10, 19, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
+        .auth-card { background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 40px; border-radius: 16px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6); transition: all 0.3s ease; }
+        .auth-card h2 { margin-bottom: 8px; color: var(--font); font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+        .auth-card p { color: var(--font-dim); font-size: 14px; margin-bottom: 24px; }
+        .auth-field-group { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; text-align: left; }
+        .auth-field-group label { font-size: 13px; color: var(--font-dim); font-weight: 500; margin-left: 2px; }
+        .auth-card input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: white; font-size: 15px; outline: none; transition: border-color 0.2s; }
+        .auth-card input:focus { border-color: var(--primary); }
+        .auth-card button { width: 100%; padding: 14px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .auth-card button:hover { background: #1d4ed8; }
+        .auth-toggle-area { margin-top: 20px; font-size: 14px; color: var(--font-dim); }
+        .auth-toggle-link { color: var(--primary); cursor: pointer; font-weight: 600; text-decoration: underline; }
+        .auth-msg { font-size: 14px; margin-top: 16px; display: none; padding: 12px; border-radius: 8px; text-align: left; line-height: 1.4; }
+        .msg-error { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .msg-success { background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); }
 
-async def aggregate_hybrid_rag_stream(history: List[ChatMessage]):
-    latest_user_prompt = history[-1].content
-    context_stream_accumulator = ""
-    citations_payload_tracker = []
+        /* Main Workspace System Shell View Layout Rules */
+        header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; letter-spacing: -0.5px; }
+        .logout-btn { font-size: 13px; color: var(--font-dim); background: transparent; border: 1px solid rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .logout-btn:hover { color: #f87171; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05); }
+        #chat-canvas { flex: 1; overflow-y: auto; padding: 40px 15%; display: flex; flex-direction: column; gap: 30px; }
+        .message-row { max-width: 85%; padding: 20px 24px; border-radius: 16px; font-size: 16px; line-height: 1.7; word-wrap: break-word; }
+        .user-side { background-color: var(--primary); align-self: flex-end; border-bottom-right-radius: 3px; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2); }
+        .kona-side { background-color: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid rgba(255,255,255,0.04); }
+        .citation-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
+        .citation-card { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #60a5fa; padding: 6px 14px; border-radius: 8px; font-size: 13px; text-decoration: none; font-weight: 500; }
+        #input-dock { padding: 30px 15%; background: var(--surface); position: sticky; bottom: 0; }
+        .interactive-bar { display: flex; background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 8px 16px; align-items: center; width: 100%; }
+        .interactive-bar input { flex: 1; background: transparent; border: none; color: white; padding: 12px; font-size: 16px; outline: none; }
+        .interactive-bar button { background: var(--primary); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+        .system-wait { font-style: italic; color: var(--font-dim); }
 
-    # Run dual context collection workflows concurrently to avoid blocking system threads
-    async def track_web_crawlers():
-        nonlocal context_stream_accumulator
-        try:
-            crawl_response = await tavily_async_client.search(query=latest_user_prompt, max_results=3)
-            for structural_idx, resource in enumerate(crawl_response.get('results', [])):
-                anchor_id = structural_idx + 1
-                context_stream_accumulator += f"[{anchor_id}] URL reference: {resource['url']}\nData Summary: {resource['content']}\n\n"
-                citations_payload_tracker.append({
-                    "id": anchor_id,
-                    "title": resource.get('title', 'Verified Web Matrix Index Document'),
-                    "url": resource['url']
-                })
-        except Exception:
-            context_stream_accumulator += "Global internet crawling fabric link temporarily unresponsive.\n"
+        /* Document Component Token Parser Text Formatter Rules */
+        .parsed-response p { margin-bottom: 14px; }
+        .parsed-response .code-window-block { background: #000000; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 18px; margin: 16px 0; overflow-x: auto; font-family: monospace; font-size: 14px; color: #f9fafb; line-height: 1.5; white-space: pre; display: block; }
+        .parsed-response h3 { margin: 20px 0 10px 0; color: #60a5fa; font-weight: 700; font-size: 19px; }
+        .parsed-response .inline-code-token { font-family: monospace; color: #34d399; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 14px; }
 
-    async def track_semantic_indexes():
-        nonlocal context_stream_accumulator
-        retrieved_vector_blocks = await parse_vector_database_context(latest_user_prompt)
-        if retrieved_vector_blocks:
-            context_stream_accumulator += f"\n--- Verified Corporate Repository Vectors context Data ---\n{retrieved_vector_blocks}\n"
+        /* --- HIGHLY OPTIMIZED MOBILE VIEWPORT RULES --- */
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; font-size: 20px; }
+            .logout-btn { padding: 6px 12px; font-size: 12px; }
+            #chat-canvas { padding: 20px 15px; gap: 20px; }
+            .message-row { max-width: 95%; padding: 14px 18px; font-size: 15px; }
+            #input-dock { padding: 15px 15px; }
+            .interactive-bar { padding: 4px 8px; border-radius: 10px; }
+            .interactive-bar input { padding: 8px; font-size: 15px; }
+            .interactive-bar button { padding: 10px 18px; font-size: 14px; border-radius: 8px; }
+            .auth-card { margin: 0 16px; padding: 30px 20px; width: calc(100% - 32px); }
+            .auth-card h2 { font-size: 24px; }
+            .auth-card input { padding: 12px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
 
-    await asyncio.gather(track_web_crawlers(), track_semantic_indexes())
+    <div id="auth-gate">
+        <div class="auth-card">
+            <h2 id="auth-title">⚡ Kona AI</h2>
+            <p id="auth-subtitle">Sign in to your encrypted search node</p>
+            
+            <div class="auth-field-group">
+                <label for="auth-email">Security Username Handle (Email)</label>
+                <input type="email" id="auth-email" placeholder="name@domain.com">
+                
+                <label for="auth-password">Cryptographic Node Key (Password)</label>
+                <input type="password" id="auth-password" placeholder="••••••••">
+            </div>
+            
+            <button id="auth-submit-btn" onclick="executeAuthAction()">Sign In</button>
+            
+            <div class="auth-toggle-area" id="auth-toggle-msg">
+                New node operator? <span class="auth-toggle-link" onclick="toggleAuthMode(true)">Create an Account</span>
+            </div>
+            
+            <div id="status-feedback" class="auth-msg"></div>
+        </div>
+    </div>
 
-    # Send citations array metadata block back onto client interface immediately
-    yield f"data: {json.dumps({'type': 'metadata', 'sources': citations_payload_tracker})}\n\n"
-    await asyncio.sleep(0.01)
-
-    try:
-        system_rules = (
-            "You are KonaAI, an enterprise hybrid RAG search platform. Synthesize deeply authoritative, "
-            "factual responses by blending provided web crawl telemetry with corporate internal repository documents.\n\n"
-            "CRITICAL PROTOCOLS:\n"
-            "1. Mirror the user's language script 1:1. If prompted in English, stay completely in English.\n"
-            "2. Ground your reasoning strictly inside the provided context variables. If facts collide, prioritize internal vectors.\n"
-            "3. Reference claims using brackets matching source indices [1], [2].\n"
-            "4. Track conversational chat logs to execute programmatic code updates seamlessly when requested."
-        )
-
-        messages_bundle = [{"role": "system", "content": f"{system_rules}\n\nIngested Hybrid context streams Metadata Block:\n{context_stream_accumulator}"}]
-        for network_node in history:
-            messages_bundle.append({"role": network_node.role, "content": network_node.content})
-
-        llm_stream = openai_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=messages_bundle,
-            temperature=0.15,
-            stream=True
-        )
-
-        for text_frame_chunk in llm_stream:
-            if text_frame_chunk.choices and text_frame_chunk.choices[0].delta.content:
-                yield f"data: {json.dumps({'type': 'token', 'text': text_frame_chunk.choices[0].delta.content})}\n\n"
-                await asyncio.sleep(0.002)
-
-    except Exception as stream_fault:
-        yield f"data: {json.dumps({'type': 'error', 'message': f'RAG Ingestion pipeline Exception: {str(stream_fault)}'})}\n\n"
-
-# --- 5. ENDPOINT SERVICE ROUTING TOPOLOGY ---
-
-@app.post("/api/v1/auth/register", tags=["Security Infrastructure"])
-async def onboard_system_user(payload: UserOnboardSchema):
-    if payload.email in PERSISTENT_USER_DB:
-        raise HTTPException(status_code=400, detail="Onboarding aborted: user node profile email target already has an active mapping registration.")
+    <header>
+        <span>⚡ Kona AI</span>
+        <button class="logout-btn" onclick="terminateSession()">Lock Terminal</button>
+    </header>
     
-    PERSISTENT_USER_DB[payload.email] = {
-        "hashed_password": generate_hashed_bytes(payload.password),
-        "language_preference": payload.language_preference
-    }
-    return {"message": "Onboarding operations completed successfully. Forwarding authentication handles to validation sequence paths."}
+    <div id="chat-canvas">
+        <div class="message-row kona-side">
+            Welcome to Kona AI. Your production session is secure. Submit a query in any language to execute vector and real-time hybrid searches.
+        </div>
+    </div>
 
-@app.post("/api/v1/auth/login", response_model=TokenPayload, tags=["Security Infrastructure"])
-async def authenticate_system_user(form_data: OAuth2PasswordRequestForm = Depends()):
-    matched_profile = PERSISTENT_USER_DB.get(form_data.username)
-    
-    if not matched_profile or not verify_hashed_bytes(form_data.password, matched_profile["hashed_password"]):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authorization rejected: invalid validation username key or secret cipher match configuration mismatch.",
-            headers={"WWW-Authenticate": "Bearer"}
-        )
-        
-    signed_session_token = sign_access_session_token(data={"sub": form_data.username})
-    return {
-        "access_token": signed_session_token,
-        "token_type": "bearer",
-        "email": form_data.username
-    }
+    <div id="input-dock">
+        <div class="interactive-bar">
+            <input type="text" id="user-query" placeholder="Ask anything or request modifications..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
+            <button onclick="dispatchKonaEngine()">Search</button>
+        </div>
+    </div>
 
-@app.post("/api/v1/search", tags=["RAG Analytics Core Engine"])
-async def process_rag_analytics_stream(payload: SearchPayload, user_identity: str = Depends(verify_active_session)):
-    return StreamingResponse(aggregate_hybrid_rag_stream(payload.history), media_type="text/event-stream")
+    <script>
+        const API_BASE = "https://dattu2004-konaai-backend.hf.space/api/v1"; 
+        let conversationHistory = [];
+        let isRegisterMode = false;
 
-@app.get("/", tags=["Health Diagnostics"])
-async def monitoring_heartbeat():
-    return {"status": "online", "framework": "KonaAI Cluster Core Engine", "session_encryption": "JWT AES Enforced"}
+        // Perform authorization cache token parameter checks on viewport instantiation
+        window.onload = function() {
+            if (localStorage.getItem("kona_jwt_token")) {
+                document.getElementById("auth-gate").style.display = "none";
+            }
+        };
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=7860, reload=False)
+        function toggleAuthMode(toRegister) {
+            isRegisterMode = toRegister;
+            const title = document.getElementById("auth-title");
+            const subtitle = document.getElementById("auth-subtitle");
+            const btn = document.getElementById("auth-submit-btn");
+            const toggleArea = document.getElementById("auth-toggle-msg");
+            const feedback = document.getElementById("status-feedback");
+            
+            feedback.style.display = "none";
+            
+            if (isRegisterMode) {
+                title.innerText = "Register Node";
+                subtitle.innerText = "Create an encrypted pipeline profile to start querying";
+                btn.innerText = "Initialize Account";
+                toggleArea.innerHTML = `Already registered? <span class="auth-toggle-link" onclick="toggleAuthMode(false)">Sign In</span>`;
+            } else {
+                title.innerText = "⚡ Kona AI";
+                subtitle.innerText = "Sign in to your encrypted search node";
+                btn.innerText = "Sign In";
+                toggleArea.innerHTML = `New node operator? <span class="auth-toggle-link" onclick="toggleAuthMode(true)">Create an Account</span>`;
+            }
+        }
+
+        async function executeAuthAction() {
+            const email = document.getElementById("auth-email").value.trim();
+            const password = document.getElementById("auth-password").value;
+            const feedback = document.getElementById("status-feedback");
+
+            if (!email || !password) {
+                showFeedback("Please supply values for all validation fields.", true);
+                return;
+            }
+
+            try {
+                if (isRegisterMode) {
+                    // Registration Router Node Execution Endpoint (JSON formatting payload)
+                    const res = await fetch(`${API_BASE}/auth/register`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: email, password: password })
+                    });
+                    const data = await res.json();
+                    
+                    if (!res.ok) throw new Error(data.detail || "Registration processing encountered an anomaly.");
+                    
+                    showFeedback("Onboarding step complete! Swapping interfaces to authorization gate...", false);
+                    setTimeout(() => toggleAuthMode(false), 1500);
+                } else {
+                    // Login Verification Engine Thread execution (OAuth2 rules parameter binding configuration mandates form urlencoded payloads)
+                    const formData = new URLSearchParams();
+                    formData.append("username", email);
+                    formData.append("password", password);
+
+                    const res = await fetch(`${API_BASE}/auth/login`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: formData
+                    });
+                    const data = await res.json();
+
+                    if (!res.ok) throw new Error(data.detail || "Access token synthesis rejected due to bad credentials.");
+
+                    // Bind token string mapping values securely into internal memory storage layers
+                    localStorage.setItem("kona_jwt_token", data.access_token);
+                    showFeedback("Node authenticated successfully! Unlocking active terminal monitor canvas layout...", false);
+                    setTimeout(() => {
+                        document.getElementById("auth-gate").style.display = "none";
+                        feedback.style.display = "none";
+                    }, 1000);
+                }
+            } catch (err) {
+                showFeedback(err.message, true);
+            }
+        }
+
+        function showFeedback(msg, isError) {
+            const el = document.getElementById("status-feedback");
+            el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`;
+            el.innerText = msg;
+            el.style.display = "block";
+        }
+
+        function terminateSession() {
+            localStorage.removeItem("kona_jwt_token");
+            conversationHistory = [];
+            document.getElementById("chat-canvas").innerHTML = `
+                <div class="message-row kona-side">Terminal locked out securely. Session context logs flushed completely from system memory.</div>
+            `;
+            document.getElementById("auth-email").value = "";
+            document.getElementById("auth-password").value = "";
+            document.getElementById("auth-gate").style.display = "flex";
+            toggleAuthMode(false);
+        }
+
+        function nativeRenderMarkdown(rawString) {
+            let processedHtml = "";
+            let dataSegments = rawString.split("```");
+            for (let idx = 0; idx < dataSegments.length; idx++) {
+                if (idx % 2 === 1) {
+                    let codeLines = dataSegments[idx].split("\n");
+                    let cleanLang = codeLines[0].trim().toLowerCase();
+                    if (["python", "javascript", "c", "cpp", "html"].includes(cleanLang)) {
+                        codeLines.shift();
+                    }
+                    processedHtml += `<div class="code-window-block">${codeLines.join("\n").trim()}</div>`;
+                } else {
+                    let currentTextSegment = dataSegments[idx];
+                    currentTextSegment = currentTextSegment.replace(/###\s+(.*)/g, "<h3>$1</h3>");
+                    currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+                    currentTextSegment = currentTextSegment.replace(/`(.*?)`/g, '<code class="inline-code-token">$1</code>');
+                    processedHtml += currentTextSegment.split("\n").map(sentence => {
+                        if (sentence.trim().startsWith("<h3>") || sentence.trim().startsWith("<div")) return sentence;
+                        return sentence.trim() ? `<p>${sentence}</p>` : "";
+                    }).join("");
+                }
+            }
+            return processedHtml;
+        }
+
+        async function dispatchKonaEngine() {
+            const inputField = document.getElementById("user-query");
+            const rawPrompt = inputField.value.trim();
+            if(!rawPrompt) return;
+            inputField.value = "";
+
+            const canvas = document.getElementById("chat-canvas");
+            const userBox = document.createElement("div");
+            userBox.className = "message-row user-side";
+            userBox.innerText = rawPrompt;
+            canvas.appendChild(userBox);
+
+            conversationHistory.push({ role: "user", content: rawPrompt });
+
+            const konaBox = document.createElement("div");
+            konaBox.className = "message-row kona-side";
+            const stateLoader = document.createElement("span");
+            stateLoader.className = "system-wait";
+            stateLoader.innerText = "Interrogating hybrid retrieval indexes...";
+            konaBox.appendChild(stateLoader);
+            canvas.appendChild(konaBox);
+            canvas.scrollTop = canvas.scrollHeight;
+
+            const secureToken = localStorage.getItem("kona_jwt_token");
+
+            try {
+                const response = await fetch(`${API_BASE}/search`, {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${secureToken}`
+                    },
+                    body: JSON.stringify({ history: conversationHistory })
+                });
+
+                if(response.status === 401) {
+                    throw new Error("Session access expired or unauthorized. Please re-authenticate console node credentials.");
+                }
+
+                const streamReader = response.body.getReader();
+                const stringDecoder = new TextDecoder("utf-8");
+                konaBox.innerHTML = ""; 
+                
+                const citationWrapper = document.createElement("div");
+                citationWrapper.className = "citation-container";
+                citationWrapper.style.display = "none";
+                konaBox.appendChild(citationWrapper);
+
+                const textBodyBlock = document.createElement("div");
+                textBodyBlock.className = "parsed-response";
+                konaBox.appendChild(textBodyBlock);
+                
+                let citationsAdded = false;
+                let streamingResponseTracker = "";
+
+                while(true) {
+                    const { value, done } = await streamReader.read();
+                    if(done) break;
+
+                    const rawChunk = stringDecoder.decode(value, { stream: true });
+                    const structuralLines = rawChunk.split("\n");
+
+                    for(const structuralLine of structuralLines) {
+                        if(structuralLine.startsWith("data: ")) {
+                            const dataPayload = JSON.parse(structuralLine.slice(6));
+                            
+                            if(dataPayload.type === "metadata" && !citationsAdded && dataPayload.sources.length > 0) {
+                                citationWrapper.style.display = "flex";
+                                dataPayload.sources.forEach(sourceItem => {
+                                    const sourceButton = document.createElement("a");
+                                    sourceButton.className = "citation-card";
+                                    sourceButton.href = sourceItem.url;
+                                    sourceButton.target = "_blank";
+                                    sourceButton.innerText = `[${sourceItem.id}] ${sourceItem.title.substring(0,18)}...`;
+                                    citationWrapper.appendChild(sourceButton);
+                                });
+                                citationsAdded = true;
+                            } else if(dataPayload.type === "token") {
+                                streamingResponseTracker += dataPayload.text;
+                                textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
+                            } else if(dataPayload.type === "error") {
+                                textBodyBlock.innerHTML += `<span style='color:#ef4444;'>\n[Engine Error: ${dataPayload.message}]</span>`;
+                            }
+                        }
+                    }
+                    canvas.scrollTop = canvas.scrollHeight;
+                }
+
+                conversationHistory.push({ role: "assistant", content: streamingResponseTracker });
+
+            } catch (err) {
+                konaBox.innerHTML = `<span style='color:#ef4444;'>Security Block: ${err.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
