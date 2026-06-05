@@ -110,13 +110,11 @@
 
     <!-- Onboarding Gate Terminal Frame -->
     <div id="auth-gate">
-        <!-- Main Form Card (Login / Registration Router States) -->
         <div class="auth-card" id="auth-main-panel">
             <h2 id="auth-title">⚡ Kona AI</h2>
             <p id="auth-subtitle">Sign in to your encrypted search node</p>
             
             <div class="auth-field-group">
-                <!-- DYNAMIC REGISTER ONLY PARAMETERS -->
                 <div id="register-only-fields" style="display: none; flex-direction: column; gap: 11px;">
                     <label for="auth-name">Full Name</label>
                     <input type="text" id="auth-name" placeholder="John Doe">
@@ -138,7 +136,6 @@
                 <input type="password" id="auth-password" placeholder="••••••••">
             </div>
             
-            <!-- Forgot Password Link Action Element -->
             <span class="forgot-link-btn" id="login-forgot-link" onclick="switchAuthModeToForgotPassword()">Forgot Password?</span>
             
             <button id="auth-submit-btn" onclick="executeAuthAction()">Sign In</button>
@@ -156,21 +153,18 @@
             <p>Verification tracking suite for account nodes.</p>
             
             <div class="auth-field-group">
-                <!-- STEP 1: Email Submission Handle -->
                 <div id="recovery-step-1">
                     <label for="recovery-email">Enter Registered Email</label>
                     <input type="email" id="recovery-email" placeholder="name@domain.com">
                     <button style="margin-top: 12px;" onclick="requestRecoveryOtpToken()">Send Code</button>
                 </div>
 
-                <!-- STEP 2: 6-Digit Code Validation -->
                 <div id="recovery-step-2" style="display: none;">
                     <label for="recovery-otp">Enter 6-Digit Code</label>
                     <input type="text" id="recovery-otp" placeholder="123456" maxlength="6" style="text-align: center; font-size: 18px; letter-spacing: 4px;">
                     <button style="margin-top: 12px;" onclick="verifyRecoveryOtpToken()">Verify Code</button>
                 </div>
 
-                <!-- STEP 3: Password Reset Commitment Form -->
                 <div id="recovery-step-3" style="display: none;">
                     <label for="recovery-new-password">Enter New Password</label>
                     <input type="password" id="recovery-new-password" placeholder="••••••••">
@@ -206,7 +200,6 @@
                 <button class="menu-toggle-btn" onclick="toggleMobileSidebar(event)">☰</button>
                 <span id="panel-title-label" style="font-size: 20px; font-weight: 700; color: var(--font);">Search Console</span>
                 
-                <!-- USER PROFILE AVATAR ICON DROPDOWN CARD OVERLAY -->
                 <div class="profile-dropdown-wrapper" onclick="event.stopPropagation()">
                     <button class="avatar-trigger-btn" id="profile-avatar-icon" onclick="toggleProfileDropdownMenu()">U</button>
                     <div class="profile-dropdown-card" id="profile-dropdown-menu-card">
@@ -344,7 +337,6 @@ int main() {
         function closeMobileSidebar() { document.getElementById("left-sidebar").classList.remove("open"); }
         function closeMobileSidebarFromCanvas(e) { if (window.innerWidth <= 768) closeMobileSidebar(); }
 
-        // Interface Modal Panels Routing Core Controllers
         function switchAuthModeToForgotPassword() {
             document.getElementById("auth-main-panel").style.display = "none";
             document.getElementById("auth-recovery-panel").style.display = "block";
@@ -386,7 +378,7 @@ int main() {
                 document.getElementById("auth-subtitle").innerText = "Onboard your user profile meta configurations";
                 document.getElementById("auth-submit-btn").innerText = "Initialize Account";
                 fieldsZone.style.display = "flex";
-                linkForgot.style.style.display = "none";
+                linkForgot.style.display = "none";
                 document.getElementById("auth-toggle-msg").innerHTML = `Already registered? <span class="auth-toggle-link" onclick="toggleAuthMode(false)">Sign In</span>`;
             } else {
                 document.getElementById("auth-title").innerText = "⚡ Kona AI";
@@ -398,7 +390,6 @@ int main() {
             }
         }
 
-        // --- ACCOUNT ONBOARDING AND LOGIN HANDLING ROUTER FLOWS ---
         async function executeAuthAction() {
             const email = document.getElementById("auth-email").value.trim();
             const password = document.getElementById("auth-password").value;
@@ -442,7 +433,6 @@ int main() {
             } catch (err) { showFeedback(err.message, true); }
         }
 
-        // --- PASSWORD RECOVERY CLIENT INFRASTRUCTURE DRIVERS ---
         async function requestRecoveryOtpToken() {
             const email = document.getElementById("recovery-email").value.trim();
             if(!email) { showRecoveryFeedback("Please type an email address.", true); return; }
@@ -496,7 +486,6 @@ int main() {
                 
                 showRecoveryFeedback("Password updated securely in storage! Re-routing back to signature gate...", false);
                 setTimeout(() => {
-                    // Reset fields step matrices layout state flags
                     document.getElementById("recovery-step-3").style.display = "none";
                     document.getElementById("recovery-step-1").style.display = "block";
                     document.getElementById("recovery-email").value = "";
@@ -507,7 +496,6 @@ int main() {
             } catch(e) { showRecoveryFeedback(e.message, true); }
         }
 
-        // --- CORE APPLICATION USER DATA FETCH METRICS ---
         async function fetchUserProfileDataNode() {
             const token = localStorage.getItem("kona_jwt_token");
             if (!token) return;
