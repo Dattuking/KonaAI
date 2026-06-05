@@ -20,10 +20,11 @@ from pinecone import Pinecone
 # --- 1. CONFIGURATION INTERFACE & FRAMEWORK STARTUP ---
 app = FastAPI(
     title="KonaAI Enterprise Production Engine",
-    description="Unified API orchestrating SQLite persistence, extended user profiling metadata, and password recovery systems.",
-    version="2.4.1"
+    description="Unified API orchestrating SQLite bucket persistence, extended user profiling metadata, and password recovery systems.",
+    version="2.4.3"
 )
 
+# Open secure Cross-Origin Resource Sharing bindings for the client layout workspace view
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -32,13 +33,15 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization"],
 )
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  
+# Pull secure cloud cluster variables from Hugging Face Secrets Vault
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Holds Groq key 'gsk_...'
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "GLOBAL_SYSTEM_MASTER_PRODUCTION_TOKEN_KEY_FRAME")
 
+# Security Encryption Protocol Suite settings instantiation
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # Access window parameters (24 hours)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
@@ -48,9 +51,11 @@ if not OPENAI_API_KEY or not TAVILY_API_KEY:
     tavily_async_client = None
     pc_vector_index = None
 else:
+    # Direct official OpenAI SDK initialization parameters to talk directly to Groq hardware LPU layers
     openai_client = OpenAI(base_url="https://api.groq.com/openai/v1", api_key=OPENAI_API_KEY)
     tavily_async_client = AsyncTavilyClient(api_key=TAVILY_API_KEY)
     
+    # CRASH-PROOFED: Establish a safe link to Pinecone data vector framework
     if PINECONE_API_KEY:
         try:
             pc = Pinecone(api_key=PINECONE_API_KEY)
@@ -61,6 +66,7 @@ else:
         pc_vector_index = None
 
 # --- 2. STORAGE SYSTEM LAYERS (RELIABLE SQLITE ARCHITECTURE) ---
+# Maps directly into your mounted Hugging Face Storage Bucket volume partition path
 DB_DIR = "/data"
 DB_FILE = os.path.join(DB_DIR, "kona_production_vault.db")
 
@@ -69,20 +75,21 @@ def init_db_schema():
         try:
             os.makedirs(DB_DIR, exist_ok=True)
         except Exception:
+            # Local fallback path execution scope bounds
             global DB_FILE
             DB_FILE = "kona_production_fallback.db"
 
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     
-    # Check if table exists and drop it if it's missing the new production metadata layout
+    # Check if table exists and verify columns defensively to block JSON parsing crashes
     try:
         cursor.execute("SELECT name, dob, role_status FROM users LIMIT 1")
     except sqlite3.OperationalError:
-        print("Legacy or corrupt table columns detected. Rebuilding user schema tables completely...")
+        print("Legacy or corrupt table columns detected. Purging old table layout records...")
         cursor.execute("DROP TABLE IF EXISTS users")
     
-    # Re-build modern production database blueprint cleanly
+    # Re-build modern production database blueprint from scratch safely
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             email TEXT PRIMARY KEY,
@@ -107,8 +114,10 @@ def init_db_schema():
     conn.commit()
     conn.close()
 
+# Run relational initialization routine maps immediately
 init_db_schema()
 
+# In-memory transient tracker database matrix handling ephemeral 6-digit tokens
 RECOVERY_OTP_DB = {}
 
 # --- Pydantic Data Contract Validations ---
@@ -273,17 +282,22 @@ async def onboard_system_user(payload: UserOnboardSchema):
     cursor.execute("SELECT 1 FROM users WHERE email = ?", (payload.email,))
     if cursor.fetchone():
         conn.close()
+        # Returns the requested string format response configuration precisely
         raise HTTPException(status_code=400, detail="Email already registered, please sign in.")
     
     hashed_pass = generate_hashed_bytes(payload.password)
     current_time_stamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
     
-    cursor.execute("""
-        INSERT INTO users (email, hashed_password, name, dob, role_status, language_preference, created_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (payload.email, hashed_pass, payload.name, payload.dob, payload.role_status, payload.language_preference, current_time_stamp))
-    
-    conn.commit()
+    try:
+        cursor.execute("""
+            INSERT INTO users (email, hashed_password, name, dob, role_status, language_preference, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (payload.email, hashed_pass, payload.name, payload.dob, payload.role_status, payload.language_preference, current_time_stamp))
+        conn.commit()
+    except Exception as db_err:
+        conn.close()
+        raise HTTPException(status_code=500, detail=f"Database execution crash variance: {str(db_err)}")
+        
     conn.close()
     return {"message": "Onboarding operations completed successfully."}
 
@@ -397,4 +411,8 @@ async def process_rag_analytics_stream(payload: SearchPayload, user_identity: st
 
 @app.get("/", tags=["Health Diagnostics"])
 async def monitoring_heartbeat():
-    return {"status": "online", "framework": "KonaAI Engine v2.4.1 Online"}
+    return {"status": "online", "framework": "KonaAI Cluster Core Engine Active"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=7860, reload=False)
