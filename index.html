@@ -142,6 +142,7 @@
                 <button class="logout-btn" onclick="terminateSession()">Lock Terminal</button>
             </header>
 
+            <!-- 1. CORE SEARCH VIEW PANEL -->
             <div class="app-view-panel active-panel" id="panel-search">
                 <div id="chat-canvas">
                     <div class="message-row kona-side">
@@ -156,6 +157,7 @@
                 </div>
             </div>
 
+            <!-- 2. LIBRARY VIEW PANEL -->
             <div class="app-view-panel" id="panel-library">
                 <div class="panel-scroll-content">
                     <h2>Knowledge Library</h2>
@@ -174,6 +176,7 @@
                 </div>
             </div>
 
+            <!-- 3. PROJECTS DASHBOARD PANEL -->
             <div class="app-view-panel" id="panel-projects">
                 <div class="panel-scroll-content">
                     <h2>Active Workspaces & Projects</h2>
@@ -192,6 +195,7 @@
                 </div>
             </div>
 
+            <!-- 4. APPS LAUNCHER PANEL -->
             <div class="app-view-panel" id="panel-apps">
                 <div class="panel-scroll-content">
                     <h2>Integrated App Utilities</h2>
@@ -210,6 +214,7 @@
                 </div>
             </div>
 
+            <!-- 5. CODEX PROGRAMMING INTERFACE PANEL -->
             <div class="app-view-panel" id="panel-codex">
                 <div class="codex-wrapper">
                     <div class="codex-editor-zone">
@@ -251,17 +256,14 @@ int main() {
         function closeMobileSidebar() { document.getElementById("left-sidebar").classList.remove("open"); }
         function closeMobileSidebarFromCanvas(e) { if (window.innerWidth <= 768) closeMobileSidebar(); }
 
-        // Core dynamic view switcher logic engine layout
-         Masa function switchActiveViewPanel(targetPanelId) {
-            // Remove active classes from all panels and side navigation targets
+        // Core dynamic view switcher logic engine layout (FIXED TYPO)
+        function switchActiveViewPanel(targetPanelId) {
             document.querySelectorAll('.app-view-panel').forEach(p => p.classList.remove('active-panel'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             
-            // Activate target item parameters
             document.getElementById(`panel-${targetPanelId}`).classList.add('active-panel');
             document.getElementById(`nav-${targetPanelId}`).classList.add('active');
             
-            // Dynamically alter central head label title context
             const labels = { search: "Search Console", library: "Knowledge Library", projects: "Projects Workspace", apps: "Apps & Utilities", codex: "Codex Script Editor" };
             document.getElementById("panel-title-label").innerText = labels[targetPanelId] || "Console Monitor";
             
