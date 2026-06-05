@@ -18,17 +18,16 @@
         .auth-field-group { display: flex; flex-direction: column; gap: 11px; margin-bottom: 16px; text-align: left; }
         .auth-field-group label { font-size: 12px; color: var(--font-dim); font-weight: 500; margin-left: 2px; }
         .auth-card input, .auth-card select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: white; font-size: 14px; outline: none; }
-        .auth-card select option { background: var(--card); color: white; }
         .auth-card button { width: 100%; padding: 13px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 6px; }
         
         .forgot-link-btn { font-size: 12px; color: var(--primary); cursor: pointer; display: block; text-align: right; margin-top: -6px; margin-bottom: 14px; font-weight: 500; text-decoration: none; }
         .auth-toggle-area { margin-top: 16px; font-size: 13px; color: var(--font-dim); text-align: center; }
         .auth-toggle-link { color: var(--primary); cursor: pointer; font-weight: 600; text-decoration: underline; }
-        .auth-msg { font-size: 13px; margin-top: 14px; display: none; padding: 12px; border-radius: 8px; line-height: 1.4; }
+        .auth-msg { font-size: 13px; margin-top: 14px; display: none; padding: 12px; border-radius: 8px; line-height: 1.4; text-align: center; }
         .msg-error { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
         .msg-success { background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); }
 
-        /* Left Navigation Sidebar Layout Styles */
+        /* Left Sidebar Panels */
         #left-sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background-color: #0b0f19; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; padding: 20px 14px; height: 100%; transition: transform 0.3s ease; }
         .sidebar-brand { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; margin-bottom: 24px; padding-left: 8px; }
         .new-chat-btn { display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 10px; color: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; border: none; text-align: left; }
@@ -41,12 +40,12 @@
         .history-item { font-size: 13px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
         .history-item:hover, .history-item.active-chat { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
         
-        /* Main Workspace Container Layout */
+        /* Main Container Design Layout Window Shells */
         #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; background-color: var(--surface); overflow: hidden; }
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
         
-        /* User Profile Dropdown Component Visual Layout Rules */
+        /* Dropdown Profile Modules */
         .profile-dropdown-wrapper { position: relative; display: inline-block; }
         .avatar-trigger-btn { background: #1f2937; border: 1px solid rgba(255,255,255,0.1); width: 42px; height: 42px; border-radius: 50%; color: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
         .profile-dropdown-card { display: none; position: absolute; right: 0; top: 50px; background: var(--card); border: 1px solid rgba(255,255,255,0.08); min-width: 290px; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; }
@@ -65,10 +64,28 @@
         .kona-side { background-color: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid rgba(255,255,255,0.04); }
         .citation-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
         .citation-card { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #60a5fa; padding: 6px 14px; border-radius: 8px; font-size: 13px; text-decoration: none; }
-        #input-dock { padding: 30px 15%; background: var(--surface); }
-        .interactive-bar { display: flex; background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 8px 16px; align-items: center; width: 100%; }
+        
+        /* MULTI-MODAL ATTACHMENTS LAYOUT INTERACTIVE INPUT DOCK SUITE */
+        #input-dock { padding: 30px 15%; background: var(--surface); position: relative; }
+        .interactive-bar { display: flex; background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 8px 16px; align-items: center; width: 100%; position: relative; }
+        
+        /* Attachment Clip Button Panel Component */
+        .attachment-clip-trigger { background: transparent; border: none; color: var(--font-dim); font-size: 20px; cursor: pointer; padding: 0 10px; display: flex; align-items: center; transition: color 0.2s; margin-right: 4px; }
+        .attachment-clip-trigger:hover { color: var(--primary); }
+        
+        /* Dynamic Popover Menu Container View Overlay Box */
+        .attachment-popover-menu { display: none; position: absolute; bottom: 70px; left: 16px; background: #1f2937; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 8px; min-width: 210px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); z-index: 500; }
+        .attachment-popover-menu.show-popover { display: block; }
+        .popover-menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .popover-menu-item:hover { background: rgba(255,255,255,0.06); color: #60a5fa; }
+        .popover-menu-item span.icon-badge { font-size: 16px; width: 20px; text-align: center; }
+        
+        /* Ingested Attachment Notification Banner Tag */
+        .active-attachment-badge { display: none; align-items: center; gap: 8px; background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); padding: 6px 12px; border-radius: 8px; font-size: 12px; color: #60a5fa; margin-bottom: 10px; width: max-content; font-weight: 500; }
+        .active-attachment-badge button { background: transparent; border: none; color: #f87171; cursor: pointer; font-weight: 700; margin-left: 6px; }
+
         .interactive-bar input { flex: 1; background: transparent; border: none; color: white; padding: 12px; font-size: 16px; outline: none; }
-        .interactive-bar button { background: var(--primary); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+        .interactive-bar button.search-action-btn { background: var(--primary); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 600; cursor: pointer; }
         .system-wait { font-style: italic; color: var(--font-dim); }
 
         .panel-scroll-content { flex: 1; overflow-y: auto; padding: 40px 10%; display: flex; flex-direction: column; gap: 24px; }
@@ -97,9 +114,8 @@
             header { padding: 15px 20px; font-size: 20px; justify-content: flex-start; }
             .profile-dropdown-wrapper { margin-left: auto; }
             #chat-canvas { padding: 20px 15px; gap: 20px; }
-            .message-row { max-width: 95%; padding: 14px 18px; font-size: 15px; }
             #input-dock { padding: 15px 15px; }
-            .interactive-bar button { padding: 10px 18px; font-size: 14px; }
+            .interactive-bar button.search-action-btn { padding: 10px 18px; font-size: 14px; }
             .auth-card { margin: 0 16px; padding: 30px 20px; width: calc(100% - 32px); }
             .codex-wrapper { flex-direction: column; }
             .codex-terminal-zone { width: 100%; height: 200px; border-top: 1px solid rgba(255,255,255,0.05); }
@@ -108,7 +124,6 @@
 </head>
 <body>
 
-    <!-- Onboarding Gate Terminal Frame -->
     <div id="auth-gate">
         <div class="auth-card" id="auth-main-panel">
             <h2 id="auth-title">⚡ Kona AI</h2>
@@ -147,7 +162,6 @@
             <div id="status-feedback" class="auth-msg"></div>
         </div>
 
-        <!-- 6-DIGIT RECOVERY INTERACTION OVERLAY VIEW -->
         <div class="auth-card" id="auth-recovery-panel" style="display: none;">
             <h2>🔑 Reset Password</h2>
             <p>Verification tracking suite for account nodes.</p>
@@ -195,7 +209,7 @@
             <div id="history-list"></div>
         </aside>
 
-        <main id="workspace-container" onclick="closeMobileSidebarFromCanvas(event)">
+        <main id="workspace-container" onclick="closeAllContextPopovers(event)">
             <header>
                 <button class="menu-toggle-btn" onclick="toggleMobileSidebar(event)">☰</button>
                 <span id="panel-title-label" style="font-size: 20px; font-weight: 700; color: var(--font);">Search Console</span>
@@ -214,22 +228,47 @@
                 </div>
             </header>
 
-            <!-- 1. CORE SEARCH VIEW PANEL -->
             <div class="app-view-panel active-panel" id="panel-search">
                 <div id="chat-canvas">
                     <div class="message-row kona-side">
                         Welcome to Kona AI. Your production session is secure. Submit a query in any language to execute vector and real-time hybrid searches.
                     </div>
                 </div>
-                <div id="input-dock">
+                
+                <div id="input-dock" onclick="event.stopPropagation()">
+                    
+                    <div class="active-attachment-badge" id="file-attachment-banner">
+                        <span id="banner-attachment-meta">📎 Linked file context initialized</span>
+                        <button onclick="detachActiveContextFile()">✕</button>
+                    </div>
+
                     <div class="interactive-bar">
-                        <input type="text" id="user-query" placeholder="Ask anything or request modifications..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
-                        <button onclick="dispatchKonaEngine()">Search</button>
+                        <button class="attachment-clip-trigger" onclick="toggleAttachmentPopoverMenu(event)">📎</button>
+                        
+                        <div class="attachment-popover-menu" id="attachment-popover-box">
+                            <div class="popover-menu-item" onclick="simulateAttachmentAction('Upload files', 'document_package.pdf')">
+                                <span class="icon-badge">📎</span> Upload files
+                            </div>
+                            <div class="popover-menu-item" onclick="simulateAttachmentAction('Add from Drive', 'shared_analytics_sheet.xlsx')">
+                                <span class="icon-badge">▲</span> Add from Drive
+                            </div>
+                            <div class="popover-menu-item" onclick="simulateAttachmentAction('Create image', 'conceptual_vector_mesh.png')">
+                                <span class="icon-badge">🎨</span> Create image
+                            </div>
+                            <div class="popover-menu-item" onclick="simulateAttachmentAction('Create video', 'simulation_render.mp4')">
+                                <span class="icon-badge">🎬</span> Create video
+                            </div>
+                            <div class="popover-menu-item" onclick="simulateAttachmentAction('Canvas', 'collaborative-canvas-frame')">
+                                <span class="icon-badge">🖼️</span> Canvas
+                            </div>
+                        </div>
+
+                        <input type="text" id="user-query" placeholder="Ask anything, append contexts, or request updates..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
+                        <button class="search-action-btn" onclick="dispatchKonaEngine()">Search</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. LIBRARY VIEW PANEL -->
             <div class="app-view-panel" id="panel-library">
                 <div class="panel-scroll-content">
                     <h2>Knowledge Library</h2>
@@ -239,16 +278,10 @@
                             <h3>📑 Vector Ingestion Index</h3>
                             <p>Status: <span style="color:#34d399;">Active</span><br>Target Space: <code>kona-knowledge-base</code><br>Dimensions: 1536 (Cosine)</p>
                         </div>
-                        <div class="module-info-card">
-                            <h3>📥 Onboard Knowledge Files</h3>
-                            <p style="margin-bottom:12px;">Upload documentation, scripts, or system metrics to convert into vectorized index segments.</p>
-                            <button class="new-chat-btn" style="color:var(--font); border: 1px solid rgba(255,255,255,0.1); width:max-content;" onclick="alert('File ingestion wrapper activated.')">Upload Document</button>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. PROJECTS DASHBOARD PANEL -->
             <div class="app-view-panel" id="panel-projects">
                 <div class="panel-scroll-content">
                     <h2>Active Workspaces & Projects</h2>
@@ -258,16 +291,10 @@
                             <h3>🚀 Default Workspace</h3>
                             <p>Active chat thread streams are automatically categorized inside this global root playground environment.</p>
                         </div>
-                        <div class="module-info-card">
-                            <h3>➕ Create New Context</h3>
-                            <p style="margin-bottom:12px;">Isolate a completely clean session structure with custom system rules parameters.</p>
-                            <button class="new-chat-btn" style="color:var(--font); border: 1px solid rgba(255,255,255,0.1); width:max-content;" onclick="alert('Creating isolated context workspace...')">New Project</button>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. APPS LAUNCHER PANEL -->
             <div class="app-view-panel" id="panel-apps">
                 <div class="panel-scroll-content">
                     <h2>Integrated App Utilities</h2>
@@ -278,28 +305,18 @@
                             <p style="margin-bottom:12px;">Cross-checks user strings against web indices to identify copied layout snippets or matching paragraphs.</p>
                             <button class="new-chat-btn" style="color:var(--font); border: 1px solid rgba(255,255,255,0.1); width:max-content;" onclick="switchActiveViewPanel('search'); document.getElementById('user-query').value='Run Plagiarism check on: '">Launch Utility</button>
                         </div>
-                        <div class="module-info-card">
-                            <h3>🌐 Real-time Web Crawler</h3>
-                            <p>Connected natively via Tavily Search API. Injects real-time market updates straight into search tokens.</p>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 5. CODEX PROGRAMMING INTERFACE PANEL -->
             <div class="app-view-panel" id="panel-codex">
                 <div class="codex-wrapper">
                     <div class="codex-editor-zone">
                         <div class="codex-toolbar">
                             <button class="codex-btn" onclick="executeCodexCompiler()">⚡ Execute Code</button>
-                            <button class="codex-btn" style="background:#374151;" onclick="document.getElementById('codex-textarea-field').value='// Code cleared.'">Clear Editor</button>
                         </div>
                         <textarea class="codex-textarea" id="codex-textarea-field" spellcheck="false">#include &lt;stdio.h&gt;
-
-int main() {
-    printf("KonaAI Codex Engine Online.\n");
-    return 0;
-}</textarea>
+int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                     </div>
                     <div class="codex-terminal-zone">
                         <span style="color: var(--primary); font-weight:700; margin-bottom:10px; display:block;">🖥️ TERMINAL OUTPUT</span>
@@ -316,6 +333,10 @@ int main() {
         let conversationHistory = [];
         let isRegisterMode = false;
         let currentActiveChatId = null; 
+        
+        // Attachment tracking global cache variables
+        let activeAttachmentType = null;
+        let activeAttachmentName = null;
 
         window.onload = function() {
             if (localStorage.getItem("kona_jwt_token")) {
@@ -325,12 +346,41 @@ int main() {
             }
         };
 
-        window.onclick = function() {
+        // Click wrapper execution node handling contextual dismissals
+        function closeAllContextPopovers(e) {
             document.getElementById("profile-dropdown-menu-card").classList.remove("show-menu");
-        };
+            document.getElementById("attachment-popover-box").classList.remove("show-popover");
+        }
 
         function toggleProfileDropdownMenu() {
+            document.getElementById("attachment-popover-box").classList.remove("show-popover");
             document.getElementById("profile-dropdown-menu-card").classList.toggle("show-menu");
+        }
+
+        function toggleAttachmentPopoverMenu(e) {
+            e.stopPropagation();
+            document.getElementById("profile-dropdown-menu-card").classList.remove("show-menu");
+            document.getElementById("attachment-popover-box").classList.toggle("show-popover");
+        }
+
+        // Simulates multi-modal attachment mappings inside the input area layout
+        function simulateAttachmentAction(actionType, placeholderFilename) {
+            activeAttachmentType = actionType;
+            activeAttachmentName = placeholderFilename;
+            
+            const banner = document.getElementById("file-attachment-banner");
+            const metaLabel = document.getElementById("banner-attachment-meta");
+            
+            metaLabel.innerText = `📎 Attached [${actionType}]: ${placeholderFilename}`;
+            banner.style.display = "flex";
+            
+            document.getElementById("attachment-popover-box").classList.remove("show-popover");
+        }
+
+        function detachActiveContextFile() {
+            activeAttachmentType = null;
+            activeAttachmentName = null;
+            document.getElementById("file-attachment-banner").style.display = "none";
         }
 
         function toggleMobileSidebar(e) { e.stopPropagation(); document.getElementById("left-sidebar").classList.toggle("open"); }
@@ -393,8 +443,7 @@ int main() {
         async function executeAuthAction() {
             const email = document.getElementById("auth-email").value.trim();
             const password = document.getElementById("auth-password").value;
-            
-            if (!email || !password) { showFeedback("Please supply inputs for basic validation elements.", true); return; }
+            if (!email || !password) { showFeedback("Please supply inputs.", true); return; }
 
             try {
                 if (isRegisterMode) {
@@ -402,7 +451,7 @@ int main() {
                     const dob = document.getElementById("auth-dob").value;
                     const statusRole = document.getElementById("auth-status").value;
 
-                    if(!name || !dob || !statusRole) { showFeedback("Please populate name, date of birth, and profile status fields.", true); return; }
+                    if(!name || !dob || !statusRole) { showFeedback("Please populate all fields.", true); return; }
 
                     const res = await fetch(`${API_BASE}/auth/register`, {
                         method: "POST",
@@ -444,7 +493,6 @@ int main() {
                 });
                 const data = await res.json();
                 if(!res.ok) throw new Error(data.detail || "Recovery lookup aborted.");
-                
                 showRecoveryFeedback(`Code generated! Debug Monitor Token: ${data.mock_debug_otp}`, false);
                 document.getElementById("recovery-step-1").style.display = "none";
                 document.getElementById("recovery-step-2").style.display = "block";
@@ -454,7 +502,7 @@ int main() {
         async function verifyRecoveryOtpToken() {
             const email = document.getElementById("recovery-email").value.trim();
             const otp = document.getElementById("recovery-otp").value.trim();
-            if(!otp) { showRecoveryFeedback("Please supply verification code digits.", true); return; }
+            if(!otp) { showRecoveryFeedback("Please supply code.", true); return; }
             try {
                 const res = await fetch(`${API_BASE}/auth/verify-otp`, {
                     method: "POST",
@@ -463,8 +511,7 @@ int main() {
                 });
                 const data = await res.json();
                 if(!res.ok) throw new Error(data.detail || "Token verification mismatch.");
-                
-                showRecoveryFeedback("Code verified! Set your new password key parameters below.", false);
+                showRecoveryFeedback("Code verified! Set new password.", false);
                 document.getElementById("recovery-step-2").style.display = "none";
                 document.getElementById("recovery-step-3").style.display = "block";
             } catch(e) { showRecoveryFeedback(e.message, true); }
@@ -474,23 +521,18 @@ int main() {
             const email = document.getElementById("recovery-email").value.trim();
             const otp = document.getElementById("recovery-otp").value.trim();
             const newPass = document.getElementById("recovery-new-password").value;
-            if(!newPass) { showRecoveryFeedback("Password cipher string cannot be empty.", true); return; }
+            if(!newPass) { showRecoveryFeedback("Password cipher cannot be empty.", true); return; }
             try {
                 const res = await fetch(`${API_BASE}/auth/reset-password`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email: email, otp_code: otp, new_password: newPass })
                 });
-                const data = await res.json();
-                if(!res.ok) throw new Error(data.detail || "Password update transaction failed.");
-                
-                showRecoveryFeedback("Password updated securely in storage! Re-routing back to signature gate...", false);
+                if(!res.ok) throw new Error("Password update transaction failed.");
+                showRecoveryFeedback("Password updated securely!", false);
                 setTimeout(() => {
                     document.getElementById("recovery-step-3").style.display = "none";
                     document.getElementById("recovery-step-1").style.display = "block";
-                    document.getElementById("recovery-email").value = "";
-                    document.getElementById("recovery-otp").value = "";
-                    document.getElementById("recovery-new-password").value = "";
                     returnToMainLoginGate();
                 }, 2000);
             } catch(e) { showRecoveryFeedback(e.message, true); }
@@ -503,7 +545,6 @@ int main() {
                 const res = await fetch(`${API_BASE}/auth/profile`, { headers: { "Authorization": `Bearer ${token}` } });
                 if (!res.ok) return;
                 const userProfile = await res.json();
-                
                 document.getElementById("profile-name-label").innerText = userProfile.name;
                 document.getElementById("profile-email-label").innerText = userProfile.email;
                 document.getElementById("profile-dob-label").innerText = userProfile.dob;
@@ -568,11 +609,7 @@ int main() {
                 const chatRooms = await res.json();
                 const listContainer = document.getElementById("history-list");
                 listContainer.innerHTML = "";
-                
-                if(chatRooms.length === 0) {
-                    listContainer.innerHTML = `<div class="history-item">No recent searches</div>`;
-                    return;
-                }
+                if(chatRooms.length === 0) { listContainer.innerHTML = `<div class="history-item">No recent searches</div>`; return; }
 
                 chatRooms.slice().reverse().forEach(room => {
                     const node = document.createElement("div");
@@ -590,8 +627,7 @@ int main() {
                 const res = await fetch(`${API_BASE}/chats/${chatId}`, { headers: { "Authorization": `Bearer ${token}` } });
                 if(!res.ok) return;
                 const data = await res.json();
-                currentActiveChatId = chatId;
-                conversationHistory = data.history;
+                currentActiveChatId = chatId; conversationHistory = data.history;
 
                 const canvas = document.getElementById("chat-canvas");
                 canvas.innerHTML = "";
@@ -599,33 +635,50 @@ int main() {
                 conversationHistory.forEach(msg => {
                     const row = document.createElement("div");
                     row.className = `message-row ${msg.role === 'user' ? 'user-side' : 'kona-side'}`;
-                    if(msg.role === 'user') { row.innerText = msg.content; } 
-                    else {
+                    if(msg.role === 'user') {
+                        let renderContent = msg.content;
+                        if(msg.attachment_type && msg.attachment_name) {
+                            renderContent += `\n\n[Attached ${msg.attachment_type}: ${msg.attachment_name}]`;
+                        }
+                        row.innerText = renderContent;
+                    } else {
                         const block = document.createElement("div");
-                        block.className = "parsed-response";
-                        block.innerHTML = nativeRenderMarkdown(msg.content);
+                        block.className = "parsed-response"; block.innerHTML = nativeRenderMarkdown(msg.content);
                         row.appendChild(block);
                     }
                     canvas.appendChild(row);
                 });
-                fetchUserChatDatabaseList();
-                canvas.scrollTop = canvas.scrollHeight;
+                fetchUserChatDatabaseList(); canvas.scrollTop = canvas.scrollHeight;
             } catch(e) { console.log(e); }
         }
 
         async function dispatchKonaEngine() {
             const inputField = document.getElementById("user-query");
             const rawPrompt = inputField.value.trim();
-            if(!rawPrompt) return;
+            if(!rawPrompt && !activeAttachmentName) return;
             inputField.value = "";
 
             const canvas = document.getElementById("chat-canvas");
             const userBox = document.createElement("div");
             userBox.className = "message-row user-side";
-            userBox.innerText = rawPrompt;
+            
+            let displayPrompt = rawPrompt;
+            if(activeAttachmentType && activeAttachmentName) {
+                displayPrompt += `\n\n[Attached ${activeAttachmentType}: ${activeAttachmentName}]`;
+            }
+            userBox.innerText = displayPrompt;
             canvas.appendChild(userBox);
 
-            conversationHistory.push({ role: "user", content: rawPrompt });
+            // Construct payload configuration mapping object matching backend expected contract
+            const messageObject = { 
+                role: "user", 
+                content: rawPrompt,
+                attachment_type: activeAttachmentType,
+                attachment_name: activeAttachmentName
+            };
+            
+            conversationHistory.push(messageObject);
+            detachActiveContextFile(); // Reset UI state parameters cleanly
 
             const konaBox = document.createElement("div");
             konaBox.className = "message-row kona-side";
@@ -652,13 +705,11 @@ int main() {
                 konaBox.innerHTML = ""; 
                 
                 const citationWrapper = document.createElement("div");
-                citationWrapper.className = "citation-container";
-                citationWrapper.style.display = "none";
+                citationWrapper.className = "citation-container"; style.display = "none";
                 konaBox.appendChild(citationWrapper);
 
                 const textBodyBlock = document.createElement("div");
-                textBodyBlock.className = "parsed-response";
-                konaBox.appendChild(textBodyBlock);
+                textBodyBlock.className = "parsed-response"; konaBox.appendChild(textBodyBlock);
                 
                 let citationsAdded = false;
                 let streamingResponseTracker = "";
