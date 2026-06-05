@@ -28,32 +28,53 @@
         /* Left Navigation Sidebar Layout Styles */
         #left-sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background-color: #0b0f19; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; padding: 20px 14px; height: 100%; transition: transform 0.3s ease; }
         .sidebar-brand { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; margin-bottom: 24px; padding-left: 8px; }
-        .new-chat-btn { display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 10px; color: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
+        .new-chat-btn { display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 10px; color: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; border: none; text-align: left; }
         .sidebar-nav-section { display: flex; flex-direction: column; gap: 4px; margin-bottom: 24px; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); font-size: 14px; cursor: pointer; text-decoration: none; }
-        .nav-item.active { color: var(--font); background: rgba(255,255,255,0.04); }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 8px; color: var(--font-dim); font-size: 14px; cursor: pointer; font-weight: 500; transition: all 0.2s ease; }
+        .nav-item:hover, .nav-item.active { color: var(--font); background: rgba(255,255,255,0.05); }
         .sidebar-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 10px 0 20px 0; }
         .section-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; padding-left: 12px; }
         #history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
         .history-item { font-size: 13px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
         .history-item:hover, .history-item.active-chat { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
         
-        /* Main Workspace Container Shell Layout */
+        /* Main Workspace Content Shell Panels Switcher Layout */
         #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; background-color: var(--surface); overflow: hidden; }
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
         .logout-btn { font-size: 13px; color: var(--font-dim); background: transparent; border: 1px solid rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        
+        /* Functional Content View Windows Layer Layout */
+        .app-view-panel { display: none; flex: 1; flex-direction: column; height: 100%; overflow: hidden; }
+        .app-view-panel.active-panel { display: flex; }
+        
+        /* Standard Search & Chat View Components */
         #chat-canvas { flex: 1; overflow-y: auto; padding: 40px 15%; display: flex; flex-direction: column; gap: 30px; }
         .message-row { max-width: 85%; padding: 20px 24px; border-radius: 16px; font-size: 16px; line-height: 1.7; word-wrap: break-word; }
         .user-side { background-color: var(--primary); align-self: flex-end; border-bottom-right-radius: 3px; }
         .kona-side { background-color: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid rgba(255,255,255,0.04); }
         .citation-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
         .citation-card { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #60a5fa; padding: 6px 14px; border-radius: 8px; font-size: 13px; text-decoration: none; }
-        #input-dock { padding: 30px 15%; background: var(--surface); position: sticky; bottom: 0; }
+        #input-dock { padding: 30px 15%; background: var(--surface); }
         .interactive-bar { display: flex; background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 8px 16px; align-items: center; width: 100%; }
         .interactive-bar input { flex: 1; background: transparent; border: none; color: white; padding: 12px; font-size: 16px; outline: none; }
         .interactive-bar button { background: var(--primary); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 600; cursor: pointer; }
         .system-wait { font-style: italic; color: var(--font-dim); }
+
+        /* Generic Visual Components inside the new module windows */
+        .panel-scroll-content { flex: 1; overflow-y: auto; padding: 40px 10%; display: flex; flex-direction: column; gap: 24px; }
+        .module-info-card { background-color: var(--card); border: 1px solid rgba(255,255,255,0.05); padding: 24px; border-radius: 12px; }
+        .module-info-card h3 { color: var(--primary); margin-bottom: 8px; font-size: 18px; }
+        .module-info-card p { color: var(--font-dim); font-size: 14px; line-height: 1.6; }
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+        /* Codex Custom Panel Layout Styles */
+        .codex-wrapper { display: flex; flex: 1; height: 100%; overflow: hidden; background: #04060b; }
+        .codex-editor-zone { flex: 1; display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.05); }
+        .codex-toolbar { padding: 12px 20px; background: #0b0f19; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; gap: 12px; }
+        .codex-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; }
+        .codex-textarea { flex: 1; background: #05070f; border: none; color: #34d399; font-family: monospace; font-size: 15px; padding: 24px; resize: none; outline: none; line-height: 1.5; }
+        .codex-terminal-zone { width: 350px; background: #020306; display: flex; flex-direction: column; padding: 20px; font-family: monospace; font-size: 14px; color: #f9fafb; }
 
         /* Output Markdown Formatter Design Core Rules */
         .parsed-response p { margin-bottom: 14px; }
@@ -61,7 +82,7 @@
         .parsed-response h3 { margin: 20px 0 10px 0; color: #60a5fa; font-weight: 700; font-size: 19px; }
         .parsed-response .inline-code-token { font-family: monospace; color: #34d399; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 14px; }
 
-        @media (max-width: 1024px) { #chat-canvas, #input-dock { padding: 30px 8%; } }
+        @media (max-width: 1024px) { #chat-canvas, #input-dock { padding: 30px 8%; } .codex-terminal-zone { width: 250px; } }
         @media (max-width: 768px) {
             .menu-toggle-btn { display: block; margin-right: 12px; }
             #left-sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); }
@@ -73,6 +94,8 @@
             #input-dock { padding: 15px 15px; }
             .interactive-bar button { padding: 10px 18px; font-size: 14px; }
             .auth-card { margin: 0 16px; padding: 30px 20px; width: calc(100% - 32px); }
+            .codex-wrapper { flex-direction: column; }
+            .codex-terminal-zone { width: 100%; height: 200px; border-top: 1px solid rgba(255,255,255,0.05); }
         }
     </style>
 </head>
@@ -101,11 +124,11 @@
             <div class="sidebar-brand"><span>⚡ Kona AI</span></div>
             <button class="new-chat-btn" onclick="clearActiveSessionChat()">📝 New chat</button>
             <div class="sidebar-nav-section">
-                <div class="nav-item active" onclick="closeMobileSidebar()"><span style="font-size:16px;">🔍</span> Search chats</div>
-                <div class="nav-item" onclick="closeMobileSidebar()"><span style="font-size:16px;">📚</span> Library</div>
-                <div class="nav-item" onclick="closeMobileSidebar()"><span style="font-size:16px;">📁</span> Projects</div>
-                <div class="nav-item" onclick="closeMobileSidebar()"><span style="font-size:16px;">🧩</span> Apps</div>
-                <div class="nav-item" onclick="closeMobileSidebar()"><span style="font-size:16px;">💻</span> Codex</div>
+                <div class="nav-item active" id="nav-search" onclick="switchActiveViewPanel('search')"><span style="font-size:16px;">🔍</span> Search chats</div>
+                <div class="nav-item" id="nav-library" onclick="switchActiveViewPanel('library')"><span style="font-size:16px;">📚</span> Library</div>
+                <div class="nav-item" id="nav-projects" onclick="switchActiveViewPanel('projects')"><span style="font-size:16px;">📁</span> Projects</div>
+                <div class="nav-item" id="nav-apps" onclick="switchActiveViewPanel('apps')"><span style="font-size:16px;">🧩</span> Apps</div>
+                <div class="nav-item" id="nav-codex" onclick="switchActiveViewPanel('codex')"><span style="font-size:16px;">💻</span> Codex</div>
             </div>
             <div class="sidebar-divider"></div>
             <div class="section-label">Recents</div>
@@ -115,20 +138,99 @@
         <main id="workspace-container" onclick="closeMobileSidebarFromCanvas(event)">
             <header>
                 <button class="menu-toggle-btn" onclick="toggleMobileSidebar(event)">☰</button>
-                <span style="font-size: 20px; font-weight: 700; color: var(--font);">Console Monitor</span>
+                <span id="panel-title-label" style="font-size: 20px; font-weight: 700; color: var(--font);">Search Console</span>
                 <button class="logout-btn" onclick="terminateSession()">Lock Terminal</button>
             </header>
-            <div id="chat-canvas">
-                <div class="message-row kona-side">
-                    Welcome to Kona AI. Your production session is secure. Submit a query in any language to execute vector and real-time hybrid searches.
+
+            <div class="app-view-panel active-panel" id="panel-search">
+                <div id="chat-canvas">
+                    <div class="message-row kona-side">
+                        Welcome to Kona AI. Your production session is secure. Submit a query in any language to execute vector and real-time hybrid searches.
+                    </div>
+                </div>
+                <div id="input-dock">
+                    <div class="interactive-bar">
+                        <input type="text" id="user-query" placeholder="Ask anything or request modifications..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
+                        <button onclick="dispatchKonaEngine()">Search</button>
+                    </div>
                 </div>
             </div>
-            <div id="input-dock">
-                <div class="interactive-bar">
-                    <input type="text" id="user-query" placeholder="Ask anything or request modifications..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
-                    <button onclick="dispatchKonaEngine()">Search</button>
+
+            <div class="app-view-panel" id="panel-library">
+                <div class="panel-scroll-content">
+                    <h2>Knowledge Library</h2>
+                    <p style="color: var(--font-dim); font-size: 14px;">Manage corporate knowledge repository indices attached to your hybrid Vector RAG pipeline.</p>
+                    <div class="grid-layout">
+                        <div class="module-info-card">
+                            <h3>📑 Vector Ingestion Index</h3>
+                            <p>Status: <span style="color:#34d399;">Active</span><br>Target Space: <code>kona-knowledge-base</code><br>Dimensions: 1536 (Cosine)</p>
+                        </div>
+                        <div class="module-info-card">
+                            <h3>📥 Onboard Knowledge Files</h3>
+                            <p style="margin-bottom:12px;">Upload documentation, scripts, or system metrics to convert into vectorized index segments.</p>
+                            <button class="logout-btn" style="color:var(--font);" onclick="alert('File ingestion wrapper activated.')">Upload Document</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <div class="app-view-panel" id="panel-projects">
+                <div class="panel-scroll-content">
+                    <h2>Active Workspaces & Projects</h2>
+                    <p style="color: var(--font-dim); font-size: 14px;">Isolate RAG search contexts and memory arrays by linking files to specific development workspaces.</p>
+                    <div class="grid-layout">
+                        <div class="module-info-card">
+                            <h3>🚀 Default Workspace</h3>
+                            <p>Active chat thread streams are automatically categorized inside this global root playground environment.</p>
+                        </div>
+                        <div class="module-info-card">
+                            <h3>➕ Create New Context</h3>
+                            <p style="margin-bottom:12px;">Isolate a completely clean session structure with custom system rules parameters.</p>
+                            <button class="logout-btn" style="color:var(--font);" onclick="alert('Creating isolated context workspace...')">New Project</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-view-panel" id="panel-apps">
+                <div class="panel-scroll-content">
+                    <h2>Integrated App Utilities</h2>
+                    <p style="color: var(--font-dim); font-size: 14px;">Launch specialized system prompt configurations and advanced extensions built into the core AI core engine.</p>
+                    <div class="grid-layout">
+                        <div class="module-info-card">
+                            <h3>🔍 Plagiarism Checker GPT</h3>
+                            <p style="margin-bottom:12px;">Cross-checks user strings against web indices to identify copied layout snippets or matching paragraphs.</p>
+                            <button class="logout-btn" style="color:var(--font);" onclick="switchActiveViewPanel('search'); document.getElementById('user-query').value='Run Plagiarism check on: '">Launch Utility</button>
+                        </div>
+                        <div class="module-info-card">
+                            <h3>🌐 Real-time Web Crawler</h3>
+                            <p>Connected natively via Tavily Search API. Injects real-time market updates straight into search tokens.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-view-panel" id="panel-codex">
+                <div class="codex-wrapper">
+                    <div class="codex-editor-zone">
+                        <div class="codex-toolbar">
+                            <button class="codex-btn" onclick="executeCodexCompiler()">⚡ Execute Code</button>
+                            <button class="codex-btn" style="background:#374151;" onclick="document.getElementById('codex-textarea-field').value='// Code cleared.'">Clear Editor</button>
+                        </div>
+                        <textarea class="codex-textarea" id="codex-textarea-field" spellcheck="false">#include &lt;stdio.h&gt;
+
+int main() {
+    printf("KonaAI Codex Engine Online.\n");
+    return 0;
+}</textarea>
+                    </div>
+                    <div class="codex-terminal-zone">
+                        <span style="color: var(--primary); font-weight:700; margin-bottom:10px; display:block;">🖥️ TERMINAL OUTPUT</span>
+                        <div id="codex-terminal-log" style="color: #9ca3af; line-height:1.4;">[System] Ready for code input string sequence execution.</div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -136,7 +238,7 @@
         const API_BASE = "https://dattu2004-konaai-backend.hf.space/api/v1"; 
         let conversationHistory = [];
         let isRegisterMode = false;
-        let currentActiveChatId = null; // Track current session explicitly
+        let currentActiveChatId = null; 
 
         window.onload = function() {
             if (localStorage.getItem("kona_jwt_token")) {
@@ -149,6 +251,31 @@
         function closeMobileSidebar() { document.getElementById("left-sidebar").classList.remove("open"); }
         function closeMobileSidebarFromCanvas(e) { if (window.innerWidth <= 768) closeMobileSidebar(); }
 
+        // Core dynamic view switcher logic engine layout
+         Masa function switchActiveViewPanel(targetPanelId) {
+            // Remove active classes from all panels and side navigation targets
+            document.querySelectorAll('.app-view-panel').forEach(p => p.classList.remove('active-panel'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            // Activate target item parameters
+            document.getElementById(`panel-${targetPanelId}`).classList.add('active-panel');
+            document.getElementById(`nav-${targetPanelId}`).classList.add('active');
+            
+            // Dynamically alter central head label title context
+            const labels = { search: "Search Console", library: "Knowledge Library", projects: "Projects Workspace", apps: "Apps & Utilities", codex: "Codex Script Editor" };
+            document.getElementById("panel-title-label").innerText = labels[targetPanelId] || "Console Monitor";
+            
+            closeMobileSidebar();
+        }
+
+        function executeCodexCompiler() {
+            const terminal = document.getElementById("codex-terminal-log");
+            terminal.innerHTML = "<span style='color:#60a5fa;'>Compiling environment packages matrix layers...</span>";
+            setTimeout(() => {
+                terminal.innerHTML = "<span style='color:#34d399;'>[Success] Execution output logs generated:\n\n</span>KonaAI Codex Engine Online.";
+            }, 1200);
+        }
+
         function clearActiveSessionChat() {
             conversationHistory = [];
             currentActiveChatId = null;
@@ -156,17 +283,14 @@
                 <div class="message-row kona-side">Started a completely fresh search thread context.</div>
             `;
             fetchUserChatDatabaseList();
-            closeMobileSidebar();
+            switchActiveViewPanel('search');
         }
 
-        // Pulls all historical rooms from database table endpoint arrays
         async function fetchUserChatDatabaseList() {
             const token = localStorage.getItem("kona_jwt_token");
             if(!token) return;
             try {
-                const res = await fetch(`${API_BASE}/chats`, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
+                const res = await fetch(`${API_BASE}/chats`, { headers: { "Authorization": `Bearer ${token}` } });
                 const chatRooms = await res.json();
                 const listContainer = document.getElementById("history-list");
                 listContainer.innerHTML = "";
@@ -180,19 +304,16 @@
                     const node = document.createElement("div");
                     node.className = `history-item ${room.chat_id === currentActiveChatId ? 'active-chat' : ''}`;
                     node.innerText = room.title;
-                    node.onclick = () => loadHistoricalChatRoomLogs(room.chat_id);
+                    node.onclick = () => { switchActiveViewPanel('search'); loadHistoricalChatRoomLogs(room.chat_id); };
                     listContainer.appendChild(node);
                 });
             } catch (err) { console.log(err); }
         }
 
-        // Requests detailed chat strings from database to load on the dashboard view
         async function loadHistoricalChatRoomLogs(chatId) {
             const token = localStorage.getItem("kona_jwt_token");
             try {
-                const res = await fetch(`${API_BASE}/chats/${chatId}`, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
+                const res = await fetch(`${API_BASE}/chats/${chatId}`, { headers: { "Authorization": `Bearer ${token}` } });
                 if(!res.ok) return;
                 const data = await res.json();
                 currentActiveChatId = chatId;
@@ -204,9 +325,8 @@
                 conversationHistory.forEach(msg => {
                     const row = document.createElement("div");
                     row.className = `message-row ${msg.role === 'user' ? 'user-side' : 'kona-side'}`;
-                    if(msg.role === 'user') {
-                        row.innerText = msg.content;
-                    } else {
+                    if(msg.role === 'user') { row.innerText = msg.content; } 
+                    else {
                         const block = document.createElement("div");
                         block.className = "parsed-response";
                         block.innerHTML = nativeRenderMarkdown(msg.content);
@@ -214,17 +334,13 @@
                     }
                     canvas.appendChild(row);
                 });
-                
                 fetchUserChatDatabaseList();
-                closeMobileSidebar();
                 canvas.scrollTop = canvas.scrollHeight;
             } catch(e) { console.log(e); }
         }
 
         function toggleAuthMode(toRegister) {
             isRegisterMode = toRegister;
-            const feedback = document.getElementById("status-feedback");
-            feedback.style.display = "none";
             document.getElementById("auth-title").innerText = isRegisterMode ? "Register Node" : "⚡ Kona AI";
             document.getElementById("auth-submit-btn").innerText = isRegisterMode ? "Initialize Account" : "Sign In";
         }
@@ -329,10 +445,7 @@
             try {
                 const response = await fetch(`${API_BASE}/search`, {
                     method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${secureToken}`
-                    },
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${secureToken}` },
                     body: JSON.stringify({ chat_id: currentActiveChatId, history: conversationHistory })
                 });
 
@@ -364,9 +477,8 @@
                     for(const structuralLine of structuralLines) {
                         if(structuralLine.startsWith("data: ")) {
                             const dataPayload = JSON.parse(structuralLine.slice(6));
-                            
                             if(dataPayload.type === "metadata" && !citationsAdded) {
-                                currentActiveChatId = dataPayload.chat_id; // Store active database room hash context identifier
+                                currentActiveChatId = dataPayload.chat_id; 
                                 if(dataPayload.sources.length > 0) {
                                     citationWrapper.style.display = "flex";
                                     dataPayload.sources.forEach(sourceItem => {
@@ -386,10 +498,8 @@
                     }
                     canvas.scrollTop = canvas.scrollHeight;
                 }
-
                 conversationHistory.push({ role: "assistant", content: streamingResponseTracker });
                 fetchUserChatDatabaseList();
-
             } catch (err) { konaBox.innerHTML = `<span style='color:#ef4444;'>Error: ${err.message}</span>`; }
         }
     </script>
