@@ -7,55 +7,48 @@
     <style>
         :root { --surface: #070a13; --card: #111827; --primary: #2563eb; --font: #f9fafb; --font-dim: #9ca3af; --sidebar-w: 260px; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        /* Layout Framework Split Rules */
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--surface); color: var(--font); height: 100vh; overflow: hidden; }
-        
-        /* Unified Screen Layout Split Wrapper Container */
         #app-layout-wrapper { display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative; }
 
         /* Interactive Auth Gate Panel Container Window Styles */
         #auth-gate { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 10, 19, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
-        .auth-card { background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 40px; border-radius: 16px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6); transition: all 0.3s ease; }
+        .auth-card { background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 40px; border-radius: 16px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
         .auth-card h2 { margin-bottom: 8px; color: var(--font); font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
         .auth-card p { color: var(--font-dim); font-size: 14px; margin-bottom: 24px; }
         .auth-field-group { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; text-align: left; }
         .auth-field-group label { font-size: 13px; color: var(--font-dim); font-weight: 500; margin-left: 2px; }
-        .auth-card input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: white; font-size: 15px; outline: none; transition: border-color 0.2s; }
-        .auth-card input:focus { border-color: var(--primary); }
-        .auth-card button { width: 100%; padding: 14px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .auth-card input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: white; font-size: 15px; outline: none; }
+        .auth-card button { width: 100%; padding: 14px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; margin-top: 10px; }
         .auth-toggle-area { margin-top: 20px; font-size: 14px; color: var(--font-dim); }
         .auth-toggle-link { color: var(--primary); cursor: pointer; font-weight: 600; text-decoration: underline; }
-        .auth-msg { font-size: 14px; margin-top: 16px; display: none; padding: 12px; border-radius: 8px; text-align: left; line-height: 1.4; }
+        .auth-msg { font-size: 14px; margin-top: 16px; display: none; padding: 12px; border-radius: 8px; text-align: left; }
         .msg-error { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
         .msg-success { background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); }
 
         /* Left Navigation Sidebar Layout Styles */
         #left-sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background-color: #0b0f19; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; padding: 20px 14px; height: 100%; transition: transform 0.3s ease; }
-        .sidebar-brand { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; margin-bottom: 24px; padding-left: 8px; display: flex; align-items: center; gap: 8px; }
-        .new-chat-btn { display: flex; align-items: center; justify-content: flex-start; gap: 10px; width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 10px; color: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; text-align: left; margin-bottom: 20px; transition: background 0.2s; }
-        .new-chat-btn:hover { background: rgba(255,255,255,0.07); }
+        .sidebar-brand { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; margin-bottom: 24px; padding-left: 8px; }
+        .new-chat-btn { display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 10px; color: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
         .sidebar-nav-section { display: flex; flex-direction: column; gap: 4px; margin-bottom: 24px; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; transition: all 0.2s; }
-        .nav-item:hover, .nav-item.active { color: var(--font); background: rgba(255,255,255,0.04); }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); font-size: 14px; cursor: pointer; text-decoration: none; }
+        .nav-item.active { color: var(--font); background: rgba(255,255,255,0.04); }
         .sidebar-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 10px 0 20px 0; }
         .section-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; padding-left: 12px; }
         #history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
         .history-item { font-size: 13px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
-        .history-item:hover { background: rgba(255,255,255,0.03); color: var(--font); }
+        .history-item:hover, .history-item.active-chat { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
         
         /* Main Workspace Container Shell Layout */
         #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; background-color: var(--surface); overflow: hidden; }
-        header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; letter-spacing: -0.5px; }
+        header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
-        .logout-btn { font-size: 13px; color: var(--font-dim); background: transparent; border: 1px solid rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
-        .logout-btn:hover { color: #f87171; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05); }
+        .logout-btn { font-size: 13px; color: var(--font-dim); background: transparent; border: 1px solid rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
         #chat-canvas { flex: 1; overflow-y: auto; padding: 40px 15%; display: flex; flex-direction: column; gap: 30px; }
         .message-row { max-width: 85%; padding: 20px 24px; border-radius: 16px; font-size: 16px; line-height: 1.7; word-wrap: break-word; }
-        .user-side { background-color: var(--primary); align-self: flex-end; border-bottom-right-radius: 3px; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2); }
+        .user-side { background-color: var(--primary); align-self: flex-end; border-bottom-right-radius: 3px; }
         .kona-side { background-color: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid rgba(255,255,255,0.04); }
         .citation-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
-        .citation-card { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #60a5fa; padding: 6px 14px; border-radius: 8px; font-size: 13px; text-decoration: none; font-weight: 500; }
+        .citation-card { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #60a5fa; padding: 6px 14px; border-radius: 8px; font-size: 13px; text-decoration: none; }
         #input-dock { padding: 30px 15%; background: var(--surface); position: sticky; bottom: 0; }
         .interactive-bar { display: flex; background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 8px 16px; align-items: center; width: 100%; }
         .interactive-bar input { flex: 1; background: transparent; border: none; color: white; padding: 12px; font-size: 16px; outline: none; }
@@ -68,11 +61,7 @@
         .parsed-response h3 { margin: 20px 0 10px 0; color: #60a5fa; font-weight: 700; font-size: 19px; }
         .parsed-response .inline-code-token { font-family: monospace; color: #34d399; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 14px; }
 
-        /* Responsive Breakpoints Viewports Layout Control */
-        @media (max-width: 1024px) {
-            #chat-canvas { padding: 40px 8%; }
-            #input-dock { padding: 30px 8%; }
-        }
+        @media (max-width: 1024px) { #chat-canvas, #input-dock { padding: 30px 8%; } }
         @media (max-width: 768px) {
             .menu-toggle-btn { display: block; margin-right: 12px; }
             #left-sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); }
@@ -82,9 +71,7 @@
             #chat-canvas { padding: 20px 15px; gap: 20px; }
             .message-row { max-width: 95%; padding: 14px 18px; font-size: 15px; }
             #input-dock { padding: 15px 15px; }
-            .interactive-bar { padding: 4px 8px; border-radius: 10px; }
-            .interactive-bar input { padding: 8px; font-size: 15px; }
-            .interactive-bar button { padding: 10px 18px; font-size: 14px; border-radius: 8px; }
+            .interactive-bar button { padding: 10px 18px; font-size: 14px; }
             .auth-card { margin: 0 16px; padding: 30px 20px; width: calc(100% - 32px); }
         }
     </style>
@@ -95,36 +82,24 @@
         <div class="auth-card">
             <h2 id="auth-title">⚡ Kona AI</h2>
             <p id="auth-subtitle">Sign in to your encrypted search node</p>
-            
             <div class="auth-field-group">
                 <label for="auth-email">Security Username Handle (Email)</label>
                 <input type="email" id="auth-email" placeholder="name@domain.com">
-                
                 <label for="auth-password">Cryptographic Node Key (Password)</label>
                 <input type="password" id="auth-password" placeholder="••••••••">
             </div>
-            
             <button id="auth-submit-btn" onclick="executeAuthAction()">Sign In</button>
-            
             <div class="auth-toggle-area" id="auth-toggle-msg">
                 New node operator? <span class="auth-toggle-link" onclick="toggleAuthMode(true)">Create an Account</span>
             </div>
-            
             <div id="status-feedback" class="auth-msg"></div>
         </div>
     </div>
 
     <div id="app-layout-wrapper">
-
         <aside id="left-sidebar">
-            <div class="sidebar-brand">
-                <span>⚡ Kona AI</span>
-            </div>
-            
-            <button class="new-chat-btn" onclick="clearActiveSessionChat()">
-                📝 New chat
-            </button>
-            
+            <div class="sidebar-brand"><span>⚡ Kona AI</span></div>
+            <button class="new-chat-btn" onclick="clearActiveSessionChat()">📝 New chat</button>
             <div class="sidebar-nav-section">
                 <div class="nav-item active" onclick="closeMobileSidebar()"><span style="font-size:16px;">🔍</span> Search chats</div>
                 <div class="nav-item" onclick="closeMobileSidebar()"><span style="font-size:16px;">📚</span> Library</div>
@@ -132,13 +107,9 @@
                 <div class="nav-item" onclick="closeMobileSidebar()"><span style="font-size:16px;">🧩</span> Apps</div>
                 <div class="nav-item" onclick="closeMobileSidebar()"><span style="font-size:16px;">💻</span> Codex</div>
             </div>
-            
             <div class="sidebar-divider"></div>
-            
             <div class="section-label">Recents</div>
-            <div id="history-list">
-                <div class="history-item">No recent searches</div>
-            </div>
+            <div id="history-list"></div>
         </aside>
 
         <main id="workspace-container" onclick="closeMobileSidebarFromCanvas(event)">
@@ -147,13 +118,11 @@
                 <span style="font-size: 20px; font-weight: 700; color: var(--font);">Console Monitor</span>
                 <button class="logout-btn" onclick="terminateSession()">Lock Terminal</button>
             </header>
-            
             <div id="chat-canvas">
                 <div class="message-row kona-side">
                     Welcome to Kona AI. Your production session is secure. Submit a query in any language to execute vector and real-time hybrid searches.
                 </div>
             </div>
-
             <div id="input-dock">
                 <div class="interactive-bar">
                     <input type="text" id="user-query" placeholder="Ask anything or request modifications..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
@@ -161,90 +130,109 @@
                 </div>
             </div>
         </main>
-
     </div>
 
     <script>
         const API_BASE = "https://dattu2004-konaai-backend.hf.space/api/v1"; 
         let conversationHistory = [];
         let isRegisterMode = false;
+        let currentActiveChatId = null; // Track current session explicitly
 
         window.onload = function() {
             if (localStorage.getItem("kona_jwt_token")) {
                 document.getElementById("auth-gate").style.display = "none";
-                renderHistoryLogs();
+                fetchUserChatDatabaseList();
             }
         };
 
-        function toggleMobileSidebar(e) {
-            e.stopPropagation();
-            document.getElementById("left-sidebar").classList.toggle("open");
-        }
-        function closeMobileSidebar() {
-            document.getElementById("left-sidebar").classList.remove("open");
-        }
-        function closeMobileSidebarFromCanvas(e) {
-            if (window.innerWidth <= 768) {
-                closeMobileSidebar();
-            }
-        }
+        function toggleMobileSidebar(e) { e.stopPropagation(); document.getElementById("left-sidebar").classList.toggle("open"); }
+        function closeMobileSidebar() { document.getElementById("left-sidebar").classList.remove("open"); }
+        function closeMobileSidebarFromCanvas(e) { if (window.innerWidth <= 768) closeMobileSidebar(); }
 
         function clearActiveSessionChat() {
             conversationHistory = [];
+            currentActiveChatId = null;
             document.getElementById("chat-canvas").innerHTML = `
                 <div class="message-row kona-side">Started a completely fresh search thread context.</div>
             `;
+            fetchUserChatDatabaseList();
             closeMobileSidebar();
         }
 
-        function renderHistoryLogs() {
-            const listContainer = document.getElementById("history-list");
-            if (conversationHistory.length === 0) {
-                listContainer.innerHTML = `<div class="history-item">No recent searches</div>`;
-                return;
-            }
-            listContainer.innerHTML = "";
-            const userQueries = conversationHistory.filter(msg => msg.role === "user");
-            userQueries.slice().reverse().forEach(msg => {
-                const node = document.createElement("div");
-                node.className = "history-item";
-                node.innerText = msg.content;
-                listContainer.appendChild(node);
-            });
+        // Pulls all historical rooms from database table endpoint arrays
+        async function fetchUserChatDatabaseList() {
+            const token = localStorage.getItem("kona_jwt_token");
+            if(!token) return;
+            try {
+                const res = await fetch(`${API_BASE}/chats`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                const chatRooms = await res.json();
+                const listContainer = document.getElementById("history-list");
+                listContainer.innerHTML = "";
+                
+                if(chatRooms.length === 0) {
+                    listContainer.innerHTML = `<div class="history-item">No recent searches</div>`;
+                    return;
+                }
+
+                chatRooms.slice().reverse().forEach(room => {
+                    const node = document.createElement("div");
+                    node.className = `history-item ${room.chat_id === currentActiveChatId ? 'active-chat' : ''}`;
+                    node.innerText = room.title;
+                    node.onclick = () => loadHistoricalChatRoomLogs(room.chat_id);
+                    listContainer.appendChild(node);
+                });
+            } catch (err) { console.log(err); }
+        }
+
+        // Requests detailed chat strings from database to load on the dashboard view
+        async function loadHistoricalChatRoomLogs(chatId) {
+            const token = localStorage.getItem("kona_jwt_token");
+            try {
+                const res = await fetch(`${API_BASE}/chats/${chatId}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if(!res.ok) return;
+                const data = await res.json();
+                currentActiveChatId = chatId;
+                conversationHistory = data.history;
+
+                const canvas = document.getElementById("chat-canvas");
+                canvas.innerHTML = "";
+
+                conversationHistory.forEach(msg => {
+                    const row = document.createElement("div");
+                    row.className = `message-row ${msg.role === 'user' ? 'user-side' : 'kona-side'}`;
+                    if(msg.role === 'user') {
+                        row.innerText = msg.content;
+                    } else {
+                        const block = document.createElement("div");
+                        block.className = "parsed-response";
+                        block.innerHTML = nativeRenderMarkdown(msg.content);
+                        row.appendChild(block);
+                    }
+                    canvas.appendChild(row);
+                });
+                
+                fetchUserChatDatabaseList();
+                closeMobileSidebar();
+                canvas.scrollTop = canvas.scrollHeight;
+            } catch(e) { console.log(e); }
         }
 
         function toggleAuthMode(toRegister) {
             isRegisterMode = toRegister;
-            const title = document.getElementById("auth-title");
-            const subtitle = document.getElementById("auth-subtitle");
-            const btn = document.getElementById("auth-submit-btn");
-            const toggleArea = document.getElementById("auth-toggle-msg");
             const feedback = document.getElementById("status-feedback");
-            
             feedback.style.display = "none";
-            
-            if (isRegisterMode) {
-                title.innerText = "Register Node";
-                subtitle.innerText = "Create an encrypted pipeline profile to start querying";
-                btn.innerText = "Initialize Account";
-                toggleArea.innerHTML = `Already registered? <span class="auth-toggle-link" onclick="toggleAuthMode(false)">Sign In</span>`;
-            } else {
-                title.innerText = "⚡ Kona AI";
-                subtitle.innerText = "Sign in to your encrypted search node";
-                btn.innerText = "Sign In";
-                toggleArea.innerHTML = `New node operator? <span class="auth-toggle-link" onclick="toggleAuthMode(true)">Create an Account</span>`;
-            }
+            document.getElementById("auth-title").innerText = isRegisterMode ? "Register Node" : "⚡ Kona AI";
+            document.getElementById("auth-submit-btn").innerText = isRegisterMode ? "Initialize Account" : "Sign In";
         }
 
         async function executeAuthAction() {
             const email = document.getElementById("auth-email").value.trim();
             const password = document.getElementById("auth-password").value;
-            const feedback = document.getElementById("status-feedback");
-
-            if (!email || !password) {
-                showFeedback("Please supply values for all validation fields.", true);
-                return;
-            }
+            if (!email || !password) { showFeedback("Please supply values.", true); return; }
 
             try {
                 if (isRegisterMode) {
@@ -253,53 +241,40 @@
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ email: email, password: password })
                     });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.detail || "Registration processing encountered an anomaly.");
-                    showFeedback("Onboarding step complete! Swapping interfaces to authorization gate...", false);
+                    if (!res.ok) throw new Error("Registration processing encountered an anomaly.");
+                    showFeedback("Onboarding step complete! Swapping...", false);
                     setTimeout(() => toggleAuthMode(false), 1500);
                 } else {
                     const formData = new URLSearchParams();
                     formData.append("username", email);
                     formData.append("password", password);
-
-                    const res = await fetch(`${API_BASE}/auth/login`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                        body: formData
-                    });
+                    const res = await fetch(`${API_BASE}/auth/login`, { method: "POST", body: formData });
                     const data = await res.json();
-                    if (!res.ok) throw new Error(data.detail || "Access token synthesis rejected due to bad credentials.");
+                    if (!res.ok) throw new Error("Access token synthesis rejected.");
 
                     localStorage.setItem("kona_jwt_token", data.access_token);
-                    showFeedback("Node authenticated successfully! Unlocking active terminal monitor canvas layout...", false);
+                    showFeedback("Node authenticated!", false);
                     setTimeout(() => {
                         document.getElementById("auth-gate").style.display = "none";
-                        feedback.style.display = "none";
-                        renderHistoryLogs();
+                        fetchUserChatDatabaseList();
                     }, 1000);
                 }
-            } catch (err) {
-                showFeedback(err.message, true);
-            }
+            } catch (err) { showFeedback(err.message, true); }
         }
 
         function showFeedback(msg, isError) {
             const el = document.getElementById("status-feedback");
             el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`;
-            el.innerText = msg;
-            el.style.display = "block";
+            el.innerText = msg; el.style.display = "block";
         }
 
         function terminateSession() {
             localStorage.removeItem("kona_jwt_token");
             conversationHistory = [];
-            document.getElementById("chat-canvas").innerHTML = `
-                <div class="message-row kona-side">Terminal locked out securely. Session context logs flushed completely from system memory.</div>
-            `;
-            document.getElementById("auth-email").value = "";
-            document.getElementById("auth-password").value = "";
+            currentActiveChatId = null;
+            document.getElementById("chat-canvas").innerHTML = `<div class="message-row kona-side">Terminal locked out securely.</div>`;
+            document.getElementById("history-list").innerHTML = "";
             document.getElementById("auth-gate").style.display = "flex";
-            renderHistoryLogs();
             toggleAuthMode(false);
         }
 
@@ -310,9 +285,7 @@
                 if (idx % 2 === 1) {
                     let codeLines = dataSegments[idx].split("\n");
                     let cleanLang = codeLines[0].trim().toLowerCase();
-                    if (["python", "javascript", "c", "cpp", "html"].includes(cleanLang)) {
-                        codeLines.shift();
-                    }
+                    if (["python", "javascript", "c", "cpp", "html"].includes(cleanLang)) codeLines.shift();
                     processedHtml += `<div class="code-window-block">${codeLines.join("\n").trim()}</div>`;
                 } else {
                     let currentTextSegment = dataSegments[idx];
@@ -341,7 +314,6 @@
             canvas.appendChild(userBox);
 
             conversationHistory.push({ role: "user", content: rawPrompt });
-            renderHistoryLogs();
 
             const konaBox = document.createElement("div");
             konaBox.className = "message-row kona-side";
@@ -361,12 +333,10 @@
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${secureToken}`
                     },
-                    body: JSON.stringify({ history: conversationHistory })
+                    body: JSON.stringify({ chat_id: currentActiveChatId, history: conversationHistory })
                 });
 
-                if(response.status === 401) {
-                    throw new Error("Session access expired or unauthorized. Please re-authenticate console node credentials.");
-                }
+                if(response.status === 401) throw new Error("Session access expired.");
 
                 const streamReader = response.body.getReader();
                 const stringDecoder = new TextDecoder("utf-8");
@@ -395,22 +365,22 @@
                         if(structuralLine.startsWith("data: ")) {
                             const dataPayload = JSON.parse(structuralLine.slice(6));
                             
-                            if(dataPayload.type === "metadata" && !citationsAdded && dataPayload.sources.length > 0) {
-                                citationWrapper.style.display = "flex";
-                                dataPayload.sources.forEach(sourceItem => {
-                                    const sourceButton = document.createElement("a");
-                                    sourceButton.className = "citation-card";
-                                    sourceButton.href = sourceItem.url;
-                                    sourceButton.target = "_blank";
-                                    sourceButton.innerText = `[${sourceItem.id}] ${sourceItem.title.substring(0,18)}...`;
-                                    citationWrapper.appendChild(sourceButton);
-                                });
+                            if(dataPayload.type === "metadata" && !citationsAdded) {
+                                currentActiveChatId = dataPayload.chat_id; // Store active database room hash context identifier
+                                if(dataPayload.sources.length > 0) {
+                                    citationWrapper.style.display = "flex";
+                                    dataPayload.sources.forEach(sourceItem => {
+                                        const sourceButton = document.createElement("a");
+                                        sourceButton.className = "citation-card";
+                                        sourceButton.href = sourceItem.url; sourceButton.target = "_blank";
+                                        sourceButton.innerText = `[${sourceItem.id}] ${sourceItem.title.substring(0,18)}...`;
+                                        citationWrapper.appendChild(sourceButton);
+                                    });
+                                }
                                 citationsAdded = true;
                             } else if(dataPayload.type === "token") {
                                 streamingResponseTracker += dataPayload.text;
                                 textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
-                            } else if(dataPayload.type === "error") {
-                                textBodyBlock.innerHTML += `<span style='color:#ef4444;'>\n[Engine Error: ${dataPayload.message}]</span>`;
                             }
                         }
                     }
@@ -418,10 +388,9 @@
                 }
 
                 conversationHistory.push({ role: "assistant", content: streamingResponseTracker });
+                fetchUserChatDatabaseList();
 
-            } catch (err) {
-                konaBox.innerHTML = `<span style='color:#ef4444;'>Security Block: ${err.message}</span>`;
-            }
+            } catch (err) { konaBox.innerHTML = `<span style='color:#ef4444;'>Error: ${err.message}</span>`; }
         }
     </script>
 </body>
