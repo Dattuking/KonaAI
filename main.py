@@ -20,8 +20,8 @@ from pinecone import Pinecone
 # --- 1. CONFIGURATION INTERFACE & FRAMEWORK STARTUP ---
 app = FastAPI(
     title="KonaAI Enterprise Production Engine",
-    description="Unified API orchestrating SQLite bucket persistence, extended user profiling metadata, and password recovery systems.",
-    version="2.4.3"
+    description="Unified API orchestrating SQLite bucket persistence, user profiles, recovery systems, and attachment context arrays.",
+    version="2.5.2"
 )
 
 # Open secure Cross-Origin Resource Sharing bindings for the client layout workspace view
@@ -46,7 +46,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 if not OPENAI_API_KEY or not TAVILY_API_KEY:
-    print("CRITICAL WARNING: Infrastructure backend cluster variables are unassigned.")
+    print("CRITICAL WARNING: Infrastructure keys are missing from environment profile settings.")
     openai_client = None
     tavily_async_client = None
     pc_vector_index = None
@@ -149,6 +149,8 @@ class TokenPayload(BaseModel):
 class ChatMessage(BaseModel):
     role: str
     content: str
+    attachment_type: Optional[str] = None  # RECTIFIED: Shifted from string 'null' token to clear Python None object type mapping
+    attachment_name: Optional[str] = None
 
 class SearchPayload(BaseModel):
     chat_id: Optional[str] = None
@@ -194,7 +196,13 @@ async def parse_vector_database_context(prompt_string: str) -> str:
         return ""
 
 async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[ChatMessage]):
-    latest_user_prompt = history[-1].content
+    latest_turn = history[-1]
+    latest_user_prompt = latest_turn.content
+    
+    # Programmatically inject file meta characteristics straight into context streams if parsed items match
+    if latest_turn.attachment_type and latest_turn.attachment_name:
+        latest_user_prompt += f"\n\n[System Context Data Attached - Category Option: {latest_turn.attachment_type}, Filename: {latest_turn.attachment_name}]"
+
     context_stream_accumulator = ""
     citations_payload_tracker = []
 
@@ -235,7 +243,8 @@ async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[Ch
             "CRITICAL PROTOCOLS:\n"
             "1. Mirror the user's language script 1:1. If prompted in English, stay completely in English.\n"
             "2. Ground your reasoning strictly inside the provided context variables. If facts collide, prioritize internal vectors.\n"
-            "3. Reference claims using brackets matching source indices [1], [2]."
+            "3. Reference claims using brackets matching source indices [1], [2].\n"
+            "4. If user highlights a file upload or picture container context row, acknowledge its properties explicitly."
         )
 
         messages_bundle = [{"role": "system", "content": f"{system_rules}\n\nIngested Hybrid context streams:\n{context_stream_accumulator}"}]
@@ -257,7 +266,9 @@ async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[Ch
         updated_history = history.copy()
         updated_history.append(ChatMessage(role="assistant", content=streaming_response_tracker))
         history_str = json.dumps([m.model_dump() for m in updated_history])
-        room_title = latest_user_prompt[:30] + "..."
+        
+        # Calculate clean shortened session name title context mapping parameters securely
+        room_title = latest_user_prompt[:30] + "..." if len(latest_user_prompt) > 30 else latest_user_prompt
 
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
@@ -282,7 +293,6 @@ async def onboard_system_user(payload: UserOnboardSchema):
     cursor.execute("SELECT 1 FROM users WHERE email = ?", (payload.email,))
     if cursor.fetchone():
         conn.close()
-        # Returns the requested string format response configuration precisely
         raise HTTPException(status_code=400, detail="Email already registered, please sign in.")
     
     hashed_pass = generate_hashed_bytes(payload.password)
@@ -339,25 +349,21 @@ async def initiate_password_recovery(payload: ForgotPasswordPayload):
 async def verify_recovery_token(payload: VerifyOtpPayload):
     saved_otp_record = RECOVERY_OTP_DB.get(payload.email)
     if not saved_otp_record:
-        raise HTTPException(status_code=400, detail="No password reset request initialized for this user account.")
-    
+        raise HTTPException(status_code=400, detail="No reset request initialized.")
     if datetime.utcnow() > saved_otp_record["expires_at"]:
         RECOVERY_OTP_DB.pop(payload.email, None)
-        raise HTTPException(status_code=400, detail="The verification token has expired. Please request a new code.")
-    
+        raise HTTPException(status_code=400, detail="The verification token has expired.")
     if saved_otp_record["code"] != payload.otp_code:
-        raise HTTPException(status_code=401, detail="Invalid verification code token validation signature match.")
-        
-    return {"message": "Verification successful. You may proceed to assign a new password cipher."}
+        raise HTTPException(status_code=401, detail="Invalid verification code token.")
+    return {"message": "Verification successful."}
 
 @app.post("/api/v1/auth/reset-password", tags=["Password Recovery Framework"])
 async def commit_new_password_cipher(payload: ResetPasswordPayload):
     saved_otp_record = RECOVERY_OTP_DB.get(payload.email)
     if not saved_otp_record or saved_otp_record["code"] != payload.otp_code:
-        raise HTTPException(status_code=403, detail="Unauthorized action: token verification parameters failed.")
+        raise HTTPException(status_code=403, detail="Unauthorized action.")
     
     new_hashed_bytes = generate_hashed_bytes(payload.new_password)
-    
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     cursor.execute("UPDATE users SET hashed_password = ? WHERE email = ?", (new_hashed_bytes, payload.email))
@@ -365,7 +371,7 @@ async def commit_new_password_cipher(payload: ResetPasswordPayload):
     conn.close()
     
     RECOVERY_OTP_DB.pop(payload.email, None)
-    return {"message": "Password cipher updated successfully in persistent schema tables instead of the old record."}
+    return {"message": "Password cipher updated successfully."}
 
 @app.get("/api/v1/auth/profile", tags=["Security Infrastructure"])
 async def get_user_profile_node(user_identity: str = Depends(verify_active_session)):
@@ -375,14 +381,8 @@ async def get_user_profile_node(user_identity: str = Depends(verify_active_sessi
     row = cursor.fetchone()
     conn.close()
     if not row:
-        raise HTTPException(status_code=404, detail="Identity profile context missing from schema.")
-    return {
-        "email": row[0],
-        "created_at": row[1],
-        "name": row[2],
-        "dob": row[3],
-        "role_status": row[4]
-    }
+        raise HTTPException(status_code=404, detail="Identity profile missing.")
+    return {"email": row[0], "created_at": row[1], "name": row[2], "dob": row[3], "role_status": row[4]}
 
 @app.get("/api/v1/chats", tags=["Chat History Layer"])
 async def get_user_chat_list(user_identity: str = Depends(verify_active_session)):
@@ -411,8 +411,4 @@ async def process_rag_analytics_stream(payload: SearchPayload, user_identity: st
 
 @app.get("/", tags=["Health Diagnostics"])
 async def monitoring_heartbeat():
-    return {"status": "online", "framework": "KonaAI Cluster Core Engine Active"}
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=7860, reload=False)
+    return {"status": "online", "framework": "KonaAI Engine Suite Complete Production Build Active"}
