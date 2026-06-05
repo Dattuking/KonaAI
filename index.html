@@ -55,6 +55,27 @@
         .profile-meta-row strong { color: var(--font); }
         .profile-dropdown-card button { width: 100%; margin-top: 14px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
 
+        /* MULTI-MODAL GOOGLE DRIVE MODAL CONTAINER VIEW OVERLAY */
+        #drive-picker-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vw; height: 100vh; background: rgba(7, 10, 19, 0.85); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(6px); }
+        .drive-window-card { background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; width: 90%; max-width: 720px; box-shadow: 0 25px 50px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow: hidden; max-height: 85vh; }
+        .drive-header-bar { padding: 18px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; background: #161e2e; }
+        .drive-header-bar h3 { font-size: 18px; font-weight: 700; color: #f9fafb; }
+        .drive-close-x { background: transparent; border: none; color: #9ca3af; font-size: 20px; cursor: pointer; }
+        .drive-close-x:hover { color: #f87171; }
+        .drive-search-input-dock { padding: 14px 24px; background: #0f1624; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .drive-search-input-dock input { width: 100%; background: #1f2937; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 14px; color: white; outline: none; font-size: 14px; }
+        .drive-breadcrumbs-bar { padding: 10px 24px; font-size: 13px; color: #9ca3af; background: #111827; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .drive-breadcrumbs-bar span.active-crumb { color: #60a5fa; font-weight: 600; }
+        .drive-files-grid-canvas { padding: 24px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 16px; background: #0b0f19; }
+        .drive-element-box { background: #111827; border: 1px solid rgba(255,255,255,0.05); padding: 14px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; transition: all 0.2s ease; position: relative; }
+        .drive-element-box:hover { border-color: #2563eb; background: rgba(37,99,235,0.05); }
+        .drive-element-icon { font-size: 32px; margin-bottom: 8px; }
+        .drive-element-name { font-size: 12px; color: #f9fafb; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
+        
+        /* Specialized layout preview card block for registered image */
+        .drive-element-image-preview { width: 100%; height: 55px; background: linear-gradient(135deg, #1e3a8a, #3b82f6); border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid rgba(255,255,255,0.1); }
+        .drive-element-image-preview span.avatar-mock-logo { background: white; color: #1e3a8a; width: 24px; height: 24px; border-radius: 50%; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
         .app-view-panel { display: none; flex: 1; flex-direction: column; height: 100%; overflow: hidden; }
         .app-view-panel.active-panel { display: flex; }
         
@@ -72,7 +93,6 @@
         .attachment-clip-trigger { background: transparent; border: none; color: var(--font-dim); font-size: 20px; cursor: pointer; padding: 0 10px; display: flex; align-items: center; margin-right: 4px; }
         .attachment-clip-trigger:hover { color: var(--primary); }
         
-        /* Floating Dropdown Selector Box */
         .attachment-popover-menu { display: none; position: absolute; bottom: 70px; left: 16px; background: #1f2937; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 8px; min-width: 210px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); z-index: 500; }
         .attachment-popover-menu.show-popover { display: block; }
         .popover-menu-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 8px; color: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s; position: relative; }
@@ -82,13 +102,11 @@
         .popover-arrow { font-size: 11px; color: var(--font-dim); }
         .new-tag-badge { background: #374151; color: #9ca3af; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
         
-        /* Flyout Submenu Module */
         .flyout-submenu { display: none; position: absolute; left: 100%; bottom: 0; margin-left: 6px; background: #1f2937; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 6px; min-width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
         .popover-menu-item:hover .flyout-submenu { display: block; }
         .flyout-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; color: var(--font); font-size: 13px; }
         .flyout-item:hover { background: rgba(255,255,255,0.06); color: #34d399; }
 
-        /* File Upload Ingested Banner Status Badge */
         .active-attachment-badge { display: none; align-items: center; gap: 8px; background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); padding: 6px 12px; border-radius: 8px; font-size: 12px; color: #60a5fa; margin-bottom: 10px; width: max-content; font-weight: 500; }
         .active-attachment-badge button { background: transparent; border: none; color: #f87171; cursor: pointer; font-weight: 700; margin-left: 6px; }
 
@@ -201,6 +219,56 @@
         </div>
     </div>
 
+    <div id="drive-picker-modal" onclick="closeGoogleDriveModalWindow()">
+        <div class="drive-window-card" onclick="event.stopPropagation()">
+            <div class="drive-header-bar">
+                <h3>Google Drive Picker for Kona AI</h3>
+                <button class="drive-close-x" onclick="closeGoogleDriveModalWindow()">✕</button>
+            </div>
+            <div class="drive-search-input-dock">
+                <input type="text" placeholder="Search files in Cloud Storage...">
+            </div>
+            <div class="drive-breadcrumbs-bar">
+                My Drive &gt; <span class="active-crumb" id="drive-crumb-label">registered_image</span>
+            </div>
+            <div class="drive-files-grid-canvas">
+                
+                <div class="drive-element-box" onclick="selectGoogleDriveFile('Add from Drive', 'registered_image.png')">
+                    <div class="drive-element-image-preview">
+                        <span class="avatar-mock-logo">D</span>
+                    </div>
+                    <div class="drive-element-name">registered_image.png</div>
+                </div>
+
+                <div class="drive-element-box" onclick="selectGoogleDriveFile('Add from Drive', 'Kona-Knowledge-Base.csv')">
+                    <div class="drive-element-icon">📁</div>
+                    <div class="drive-element-name">Kona-Knowledge-Base</div>
+                </div>
+                <div class="drive-element-box" onclick="selectGoogleDriveFile('Add from Drive', 'Project-Storage-Main')">
+                    <div class="drive-element-icon">📁</div>
+                    <div class="drive-element-name">Project-Storage</div>
+                </div>
+                <div class="drive-element-box" onclick="selectGoogleDriveFile('Add from Drive', 'Project-Storage-Backup')">
+                    <div class="drive-element-icon">📁</div>
+                    <div class="drive-element-name">Project-Storage</div>
+                </div>
+                <div class="drive-element-box" onclick="selectGoogleDriveFile('Add from Drive', 'documents.gdoc')">
+                    <div class="drive-element-icon">📄</div>
+                    <div class="drive-element-name">documents...</div>
+                </div>
+                <div class="drive-element-box" onclick="selectGoogleDriveFile('Add from Drive', 'analytics_v5.xlsx')">
+                    <div class="drive-element-icon">📊</div>
+                    <div class="drive-element-name">analytics_v5.xlsx</div>
+                </div>
+                <div class="drive-element-box" onclick="selectGoogleDriveFile('Add from Drive', 'internal_policy.pdf')">
+                    <div class="drive-element-icon">📕</div>
+                    <div class="drive-element-name">internal_policy.pdf</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <input type="file" id="native-system-file-picker" style="display: none;" onchange="handleSystemFileSelected(event)">
     <input type="file" id="native-system-photo-picker" style="display: none;" accept="image/*" onchange="handleSystemPhotoSelected(event)">
 
@@ -264,7 +332,7 @@
                                 </div>
                             </div>
                             
-                            <div class="popover-menu-item" onclick="simulateAttachmentAction('Add from Drive', 'shared_analytics_sheet.xlsx')">
+                            <div class="popover-menu-item" onclick="openGoogleDriveModalWindow()">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">▲</span> Add from Drive
                                 </div>
@@ -404,6 +472,21 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             e.stopPropagation();
             document.getElementById("profile-dropdown-menu-card").classList.remove("show-menu");
             document.getElementById("attachment-popover-box").classList.toggle("show-popover");
+        }
+
+        /* --- CLOUD GOOGLE DRIVE CONTROLLERS SUITE --- */
+        function openGoogleDriveModalWindow() {
+            document.getElementById("attachment-popover-box").classList.remove("show-popover");
+            document.getElementById("drive-picker-modal").style.display = "flex";
+        }
+
+        function closeGoogleDriveModalWindow() {
+            document.getElementById("drive-picker-modal").style.display = "none";
+        }
+
+        function selectGoogleDriveFile(type, filename) {
+            simulateAttachmentAction(type, filename);
+            closeGoogleDriveModalWindow();
         }
 
         /* --- HARDWARE FILE-SYSTEM INTEGRATION DRIVERS --- */
@@ -618,6 +701,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                 document.getElementById("profile-status-label").innerText = userProfile.role_status;
                 document.getElementById("profile-date-label").innerText = userProfile.created_at;
                 
+                // Programmatically alter first letter avatar token matching user registration profiles
                 const firstLetter = userProfile.name.charAt(0).toUpperCase();
                 document.getElementById("profile-avatar-icon").innerText = firstLetter;
             } catch (err) { console.log(err); }
