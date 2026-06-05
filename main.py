@@ -3,6 +3,7 @@ import json
 import asyncio
 import uuid
 import sqlite3
+import random
 from datetime import datetime, timedelta
 from typing import List, Optional
 from fastapi import FastAPI, Depends, HTTPException, status
@@ -19,8 +20,8 @@ from pinecone import Pinecone
 # --- 1. CONFIGURATION INTERFACE & FRAMEWORK STARTUP ---
 app = FastAPI(
     title="KonaAI Enterprise Production Engine",
-    description="Unified API structural cluster node orchestrating JWT data flows, SQLite persistence, and hybrid RAG streams.",
-    version="2.3.0"
+    description="Unified API orchestrating SQLite persistence, extended user profiling metadata, and password recovery systems.",
+    version="2.4.0"
 )
 
 app.add_middleware(
@@ -42,7 +43,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 if not OPENAI_API_KEY or not TAVILY_API_KEY:
-    print("CRITICAL WARNING: Essential infrastructure environment secrets are unassigned.")
+    print("CRITICAL WARNING: Infrastructure backend cluster variables are unassigned.")
     openai_client = None
     tavily_async_client = None
     pc_vector_index = None
@@ -54,14 +55,12 @@ else:
         try:
             pc = Pinecone(api_key=PINECONE_API_KEY)
             pc_vector_index = pc.Index("kona-knowledge-base")
-            print("Pinecone vector index mapped successfully.")
-        except Exception as e:
-            print(f"Pinecone initialization bypassed gracefully. Error: {str(e)}")
+        except Exception:
             pc_vector_index = None
     else:
         pc_vector_index = None
 
-# --- 2. PERSISTENT SQLITE STORAGE SETUP ---
+# --- 2. STORAGE SYSTEM LAYERS (SQLITE MODEL ARCHITECTURE) ---
 DB_DIR = "/data"
 DB_FILE = os.path.join(DB_DIR, "kona_production_vault.db")
 
@@ -76,21 +75,26 @@ def init_db_schema():
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     
-    # Structural migration checking framework for registration date tracking timestamps
+    # Structural creation query for Extended Profile schemas
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             email TEXT PRIMARY KEY,
             hashed_password TEXT NOT NULL,
+            name TEXT NOT NULL,
+            dob TEXT NOT NULL,
+            role_status TEXT NOT NULL,
             language_preference TEXT DEFAULT 'English',
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     """)
     
-    # Dynamic column addition fallback protocol check for legacy testing instances
+    # Safe dynamic column migrations fallback setup
     try:
-        cursor.execute("ALTER TABLE users ADD COLUMN created_at TEXT DEFAULT CURRENT_TIMESTAMP")
+        cursor.execute("ALTER TABLE users ADD COLUMN name TEXT DEFAULT 'dattu'")
+        cursor.execute("ALTER TABLE users ADD COLUMN dob TEXT DEFAULT '2004-01-01'")
+        cursor.execute("ALTER TABLE users ADD COLUMN role_status TEXT DEFAULT 'Student'")
     except sqlite3.OperationalError:
-        pass # Column structural field already configured properly
+        pass  # Structural parameters already appended perfectly
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS chats (
@@ -106,10 +110,29 @@ def init_db_schema():
 
 init_db_schema()
 
+# In-memory transient database tracker window handling ephemeral 6-digit tokens
+RECOVERY_OTP_DB = {}
+
+# --- Pydantic Data Contract Validations ---
 class UserOnboardSchema(BaseModel):
     email: EmailStr
     password: str
+    name: str
+    dob: str
+    role_status: str
     language_preference: Optional[str] = "English"
+
+class ForgotPasswordPayload(BaseModel):
+    email: EmailStr
+
+class VerifyOtpPayload(BaseModel):
+    email: EmailStr
+    otp_code: str
+
+class ResetPasswordPayload(BaseModel):
+    email: EmailStr
+    otp_code: str
+    new_password: str
 
 class TokenPayload(BaseModel):
     access_token: str
@@ -124,7 +147,7 @@ class SearchPayload(BaseModel):
     chat_id: Optional[str] = None
     history: List[ChatMessage]
 
-# --- 3. CRYPTOGRAPHIC PROTECTION HELPER UTILITIES ---
+# --- 3. CRYPTOGRAPHIC SUITE UTILITIES ---
 def generate_hashed_bytes(password: str) -> str:
     return pwd_context.hash(password)
 
@@ -142,12 +165,12 @@ def verify_active_session(token: str = Depends(oauth2_scheme)) -> str:
         decoded_bundle = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
         user_identity: str = decoded_bundle.get("sub")
         if user_identity is None:
-            raise HTTPException(status_code=401, detail="Session verification defaulted due to absent identity parameters.")
+            raise HTTPException(status_code=401, detail="Session validation missing identity identifier descriptors.")
         return user_identity
     except JWTError:
-        raise HTTPException(status_code=401, detail="Session expired or token validation checksum signature mismatch.")
+        raise HTTPException(status_code=401, detail="Session token validation mismatch.")
 
-# --- 4. HYBRID SEMANTIC DATA EXTRACTION PIPELINE ENGINE (RAG) ---
+# --- 4. HYBRID SEMANTIC CORE ENGINE (RAG) ---
 async def parse_vector_database_context(prompt_string: str) -> str:
     if not pc_vector_index or not openai_client:
         return ""
@@ -233,7 +256,7 @@ async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[Ch
         cursor = conn.cursor()
         cursor.execute("SELECT 1 FROM chats WHERE chat_id = ?", (chat_id,))
         if cursor.fetchone():
-            cursor.execute("UPDATE chats SET history_json = ? WHERE chat_id = ?", (history_json, chat_id))
+            cursor.execute("UPDATE chats SET history_json = ? WHERE chat_id = ?", (history_str, chat_id))
         else:
             cursor.execute("INSERT INTO chats (chat_id, email, title, history_json) VALUES (?, ?, ?, ?)",
                            (chat_id, email, room_title, history_str))
@@ -241,7 +264,7 @@ async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[Ch
         conn.close()
 
     except Exception as stream_fault:
-        yield f"data: {json.dumps({'type': 'error', 'message': f'RAG Ingestion pipeline Exception: {str(stream_fault)}'})}\n\n"
+        yield f"data: {json.dumps({'type': 'error', 'message': f'RAG Exception: {str(stream_fault)}'})}\n\n"
 
 # --- 5. ENDPOINT SERVICE ROUTING TOPOLOGY ---
 
@@ -252,12 +275,17 @@ async def onboard_system_user(payload: UserOnboardSchema):
     cursor.execute("SELECT 1 FROM users WHERE email = ?", (payload.email,))
     if cursor.fetchone():
         conn.close()
-        raise HTTPException(status_code=400, detail="Onboarding aborted: email layout match registry exists.")
+        # Enforce exact descriptive string requirement for matching targets
+        raise HTTPException(status_code=400, detail="Email already registered, please sign in.")
     
     hashed_pass = generate_hashed_bytes(payload.password)
     current_time_stamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
-    cursor.execute("INSERT INTO users (email, hashed_password, language_preference, created_at) VALUES (?, ?, ?, ?)",
-                   (payload.email, hashed_pass, payload.language_preference, current_time_stamp))
+    
+    cursor.execute("""
+        INSERT INTO users (email, hashed_password, name, dob, role_status, language_preference, created_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (payload.email, hashed_pass, payload.name, payload.dob, payload.role_status, payload.language_preference, current_time_stamp))
+    
     conn.commit()
     conn.close()
     return {"message": "Onboarding operations completed successfully."}
@@ -276,19 +304,77 @@ async def authenticate_system_user(form_data: OAuth2PasswordRequestForm = Depend
     signed_session_token = sign_access_session_token(data={"sub": form_data.username})
     return {"access_token": signed_session_token, "token_type": "bearer", "email": form_data.username}
 
-# SECURE PROFILE ENDPOINT EXPOSING REGISTRATION DATA METRICS
+# --- UNIFIED 6-DIGIT PASSWORD RECOVERY ROUTING LOGIC ---
+
+@app.post("/api/v1/auth/forgot-password", tags=["Password Recovery Framework"])
+async def initiate_password_recovery(payload: ForgotPasswordPayload):
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute("SELECT 1 FROM users WHERE email = ?", (payload.email,))
+    user_exists = cursor.fetchone()
+    conn.close()
+    
+    if not user_exists:
+        raise HTTPException(status_code=404, detail="No registered account found with this email handle.")
+    
+    # Generate unique 6-digit numeric combination token string
+    otp_token_code = f"{random.randint(100000, 999999)}"
+    RECOVERY_OTP_DB[payload.email] = {
+        "code": otp_token_code,
+        "expires_at": datetime.utcnow() + timedelta(minutes=15)
+    }
+    
+    # Standard production mock log delivery console feedback string rule
+    print(f"\n[SECURE RECOVERY SYSTEM] OTP Code for {payload.email} target handle node is: {otp_token_code}\n")
+    return {"message": "A 6-digit recovery unique code has been generated.", "mock_debug_otp": otp_token_code}
+
+@app.post("/api/v1/auth/verify-otp", tags=["Password Recovery Framework"])
+async def verify_recovery_token(payload: VerifyOtpPayload):
+    saved_otp_record = RECOVERY_OTP_DB.get(payload.email)
+    if not saved_otp_record:
+        raise HTTPException(status_code=400, detail="No password reset request initialized for this user account.")
+    
+    if datetime.utcnow() > saved_otp_record["expires_at"]:
+        RECOVERY_OTP_DB.pop(payload.email, None)
+        raise HTTPException(status_code=400, detail="The verification token has expired. Please request a new code.")
+    
+    if saved_otp_record["code"] != payload.otp_code:
+        raise HTTPException(status_code=401, detail="Invalid verification code token validation signature match.")
+        
+    return {"message": "Verification successful. You may proceed to assign a new password cipher."}
+
+@app.post("/api/v1/auth/reset-password", tags=["Password Recovery Framework"])
+async def commit_new_password_cipher(payload: ResetPasswordPayload):
+    saved_otp_record = RECOVERY_OTP_DB.get(payload.email)
+    if not saved_otp_record or saved_otp_record["code"] != payload.otp_code:
+        raise HTTPException(status_code=403, detail="Unauthorized action: token verification parameters failed.")
+    
+    new_hashed_bytes = generate_hashed_bytes(payload.new_password)
+    
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET hashed_password = ? WHERE email = ?", (new_hashed_bytes, payload.email))
+    conn.commit()
+    conn.close()
+    
+    RECOVERY_OTP_DB.pop(payload.email, None)
+    return {"message": "Password cipher updated successfully in persistent schema tables instead of the old record."}
+
 @app.get("/api/v1/auth/profile", tags=["Security Infrastructure"])
 async def get_user_profile_node(user_identity: str = Depends(verify_active_session)):
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-    cursor.execute("SELECT email, created_at FROM users WHERE email = ?", (user_identity,))
+    cursor.execute("SELECT email, created_at, name, dob, role_status FROM users WHERE email = ?", (user_identity,))
     row = cursor.fetchone()
     conn.close()
     if not row:
-        raise HTTPException(status_code=404, detail="Identity profile context missing from persistent core schema.")
+        raise HTTPException(status_code=404, detail="Identity profile context missing from schema.")
     return {
         "email": row[0],
-        "created_at": row[1]
+        "created_at": row[1],
+        "name": row[2],
+        "dob": row[3],
+        "role_status": row[4]
     }
 
 @app.get("/api/v1/chats", tags=["Chat History Layer"])
@@ -318,8 +404,4 @@ async def process_rag_analytics_stream(payload: SearchPayload, user_identity: st
 
 @app.get("/", tags=["Health Diagnostics"])
 async def monitoring_heartbeat():
-    return {"status": "online", "framework": "KonaAI SQLite persistent Engine Connected"}
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=7860, reload=False)
+    return {"status": "online", "framework": "KonaAI Engine v2.4.0 Online"}
