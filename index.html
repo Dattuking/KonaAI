@@ -42,8 +42,19 @@
         #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; background-color: var(--surface); overflow: hidden; }
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
-        .logout-btn { font-size: 13px; color: var(--font-dim); background: transparent; border: 1px solid rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
         
+        /* Interactive Dropdown Avatar Component Container Styles */
+        .profile-dropdown-wrapper { position: relative; display: inline-block; }
+        .avatar-trigger-btn { background: #1f2937; border: 1px solid rgba(255,255,255,0.1); width: 42px; height: 42px; border-radius: 50%; color: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; text-transform: uppercase; transition: border-color 0.2s; }
+        .avatar-trigger-btn:hover { border-color: var(--primary); }
+        .profile-dropdown-card { display: none; position: absolute; right: 0; top: 50px; background: var(--card); border: 1px solid rgba(255,255,255,0.08); min-width: 280px; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; text-align: left; }
+        .profile-dropdown-card.show-menu { display: block; }
+        .profile-card-h { font-size: 15px; font-weight: 700; color: var(--font); margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .profile-meta-row { font-size: 13px; color: var(--font-dim); margin-bottom: 10px; line-height: 1.5; }
+        .profile-meta-row strong { color: var(--font); }
+        .profile-dropdown-card button { width: 100%; margin-top: 14px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; text-align: center; font-size: 13px; transition: all 0.2s; }
+        .profile-dropdown-card button:hover { background: rgba(239, 68, 68, 0.2); }
+
         /* Functional Content View Windows Layer Layout */
         .app-view-panel { display: none; flex: 1; flex-direction: column; height: 100%; overflow: hidden; }
         .app-view-panel.active-panel { display: flex; }
@@ -88,7 +99,7 @@
             #left-sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); }
             #left-sidebar.open { transform: translateX(0); }
             header { padding: 15px 20px; font-size: 20px; justify-content: flex-start; }
-            .logout-btn { margin-left: auto; padding: 6px 12px; font-size: 12px; }
+            .profile-dropdown-wrapper { margin-left: auto; }
             #chat-canvas { padding: 20px 15px; gap: 20px; }
             .message-row { max-width: 95%; padding: 14px 18px; font-size: 15px; }
             #input-dock { padding: 15px 15px; }
@@ -139,7 +150,18 @@
             <header>
                 <button class="menu-toggle-btn" onclick="toggleMobileSidebar(event)">☰</button>
                 <span id="panel-title-label" style="font-size: 20px; font-weight: 700; color: var(--font);">Search Console</span>
-                <button class="logout-btn" onclick="terminateSession()">Lock Terminal</button>
+                
+                <!-- USER PROFILE INTERACTIVE DROPDOWN AREA -->
+                <div class="profile-dropdown-wrapper" onclick="event.stopPropagation()">
+                    <button class="avatar-trigger-btn" id="profile-avatar-icon" onclick="toggleProfileDropdownMenu()">U</button>
+                    <div class="profile-dropdown-card" id="profile-dropdown-menu-card">
+                        <div class="profile-card-h">👤 Operator Profile</div>
+                        <div class="profile-meta-row"><strong>Name:</strong> dattu</div>
+                        <div class="profile-meta-row"><strong>Email:</strong> <span id="profile-email-label">loading...</span></div>
+                        <div class="profile-meta-row"><strong>Registered On:</strong> <span id="profile-date-label">loading...</span></div>
+                        <button onclick="terminateSession()">🔐 Lock Terminal</button>
+                    </div>
+                </div>
             </header>
 
             <!-- 1. CORE SEARCH VIEW PANEL -->
@@ -249,8 +271,18 @@ int main() {
             if (localStorage.getItem("kona_jwt_token")) {
                 document.getElementById("auth-gate").style.display = "none";
                 fetchUserChatDatabaseList();
+                fetchUserProfileDataNode();
             }
         };
+
+        // Window event handler to auto-close profile menu if you click away
+        window.onclick = function() {
+            document.getElementById("profile-dropdown-menu-card").classList.remove("show-menu");
+        };
+
+        function toggleProfileDropdownMenu() {
+            document.getElementById("profile-dropdown-menu-card").classList.toggle("show-menu");
+        }
 
         function toggleMobileSidebar(e) { e.stopPropagation(); document.getElementById("left-sidebar").classList.toggle("open"); }
         function closeMobileSidebar() { document.getElementById("left-sidebar").classList.remove("open"); }
@@ -267,6 +299,26 @@ int main() {
             document.getElementById("panel-title-label").innerText = labels[targetPanelId] || "Console Monitor";
             
             closeMobileSidebar();
+        }
+
+        // Pulls secure registration analytics from the backend API profile route
+        async function fetchUserProfileDataNode() {
+            const token = localStorage.getItem("kona_jwt_token");
+            if (!token) return;
+            try {
+                const res = await fetch(`${API_BASE}/auth/profile`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (!res.ok) return;
+                const userProfile = await res.json();
+                
+                document.getElementById("profile-email-label").innerText = userProfile.email;
+                document.getElementById("profile-date-label").innerText = userProfile.created_at;
+                
+                // Dynamic first letter string character extraction for user avatar icon
+                const firstLetter = userProfile.email.charAt(0).toUpperCase();
+                document.getElementById("profile-avatar-icon").innerText = firstLetter;
+            } catch (err) { console.log(err); }
         }
 
         function executeCodexCompiler() {
@@ -374,6 +426,7 @@ int main() {
                     setTimeout(() => {
                         document.getElementById("auth-gate").style.display = "none";
                         fetchUserChatDatabaseList();
+                        fetchUserProfileDataNode();
                     }, 1000);
                 }
             } catch (err) { showFeedback(err.message, true); }
@@ -407,7 +460,7 @@ int main() {
                 } else {
                     let currentTextSegment = dataSegments[idx];
                     currentTextSegment = currentTextSegment.replace(/###\s+(.*)/g, "<h3>$1</h3>");
-                    currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+                    currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\"/g, "<strong>$1</strong>");
                     currentTextSegment = currentTextSegment.replace(/`(.*?)`/g, '<code class="inline-code-token">$1</code>');
                     processedHtml += currentTextSegment.split("\n").map(sentence => {
                         if (sentence.trim().startsWith("<h3>") || sentence.trim().startsWith("<div")) return sentence;
