@@ -21,7 +21,7 @@ from pinecone import Pinecone
 app = FastAPI(
     title="KonaAI Enterprise Production Engine",
     description="Unified API orchestrating SQLite persistence, extended user profiling metadata, and password recovery systems.",
-    version="2.4.0"
+    version="2.4.1"
 )
 
 app.add_middleware(
@@ -60,7 +60,7 @@ else:
     else:
         pc_vector_index = None
 
-# --- 2. STORAGE SYSTEM LAYERS (SQLITE MODEL ARCHITECTURE) ---
+# --- 2. STORAGE SYSTEM LAYERS (RELIABLE SQLITE ARCHITECTURE) ---
 DB_DIR = "/data"
 DB_FILE = os.path.join(DB_DIR, "kona_production_vault.db")
 
@@ -75,7 +75,14 @@ def init_db_schema():
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     
-    # Structural creation query for Extended Profile schemas
+    # Check if table exists and drop it if it's missing the new production metadata layout
+    try:
+        cursor.execute("SELECT name, dob, role_status FROM users LIMIT 1")
+    except sqlite3.OperationalError:
+        print("Legacy or corrupt table columns detected. Rebuilding user schema tables completely...")
+        cursor.execute("DROP TABLE IF EXISTS users")
+    
+    # Re-build modern production database blueprint cleanly
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             email TEXT PRIMARY KEY,
@@ -88,14 +95,6 @@ def init_db_schema():
         )
     """)
     
-    # Safe dynamic column migrations fallback setup
-    try:
-        cursor.execute("ALTER TABLE users ADD COLUMN name TEXT DEFAULT 'dattu'")
-        cursor.execute("ALTER TABLE users ADD COLUMN dob TEXT DEFAULT '2004-01-01'")
-        cursor.execute("ALTER TABLE users ADD COLUMN role_status TEXT DEFAULT 'Student'")
-    except sqlite3.OperationalError:
-        pass  # Structural parameters already appended perfectly
-
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS chats (
             chat_id TEXT PRIMARY KEY,
@@ -110,7 +109,6 @@ def init_db_schema():
 
 init_db_schema()
 
-# In-memory transient database tracker window handling ephemeral 6-digit tokens
 RECOVERY_OTP_DB = {}
 
 # --- Pydantic Data Contract Validations ---
@@ -264,7 +262,7 @@ async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[Ch
         conn.close()
 
     except Exception as stream_fault:
-        yield f"data: {json.dumps({'type': 'error', 'message': f'RAG Exception: {str(stream_fault)}'})}\n\n"
+        yield f"data: {json.dumps({'type': 'error', 'message': f'RAG Ingestion pipeline Exception: {str(stream_fault)}'})}\n\n"
 
 # --- 5. ENDPOINT SERVICE ROUTING TOPOLOGY ---
 
@@ -275,7 +273,6 @@ async def onboard_system_user(payload: UserOnboardSchema):
     cursor.execute("SELECT 1 FROM users WHERE email = ?", (payload.email,))
     if cursor.fetchone():
         conn.close()
-        # Enforce exact descriptive string requirement for matching targets
         raise HTTPException(status_code=400, detail="Email already registered, please sign in.")
     
     hashed_pass = generate_hashed_bytes(payload.password)
@@ -304,8 +301,6 @@ async def authenticate_system_user(form_data: OAuth2PasswordRequestForm = Depend
     signed_session_token = sign_access_session_token(data={"sub": form_data.username})
     return {"access_token": signed_session_token, "token_type": "bearer", "email": form_data.username}
 
-# --- UNIFIED 6-DIGIT PASSWORD RECOVERY ROUTING LOGIC ---
-
 @app.post("/api/v1/auth/forgot-password", tags=["Password Recovery Framework"])
 async def initiate_password_recovery(payload: ForgotPasswordPayload):
     conn = sqlite3.connect(DB_FILE)
@@ -317,15 +312,13 @@ async def initiate_password_recovery(payload: ForgotPasswordPayload):
     if not user_exists:
         raise HTTPException(status_code=404, detail="No registered account found with this email handle.")
     
-    # Generate unique 6-digit numeric combination token string
     otp_token_code = f"{random.randint(100000, 999999)}"
     RECOVERY_OTP_DB[payload.email] = {
         "code": otp_token_code,
         "expires_at": datetime.utcnow() + timedelta(minutes=15)
     }
     
-    # Standard production mock log delivery console feedback string rule
-    print(f"\n[SECURE RECOVERY SYSTEM] OTP Code for {payload.email} target handle node is: {otp_token_code}\n")
+    print(f"\n[SECURE RECOVERY SYSTEM] OTP Code for {payload.email} is: {otp_token_code}\n")
     return {"message": "A 6-digit recovery unique code has been generated.", "mock_debug_otp": otp_token_code}
 
 @app.post("/api/v1/auth/verify-otp", tags=["Password Recovery Framework"])
@@ -404,4 +397,4 @@ async def process_rag_analytics_stream(payload: SearchPayload, user_identity: st
 
 @app.get("/", tags=["Health Diagnostics"])
 async def monitoring_heartbeat():
-    return {"status": "online", "framework": "KonaAI Engine v2.4.0 Online"}
+    return {"status": "online", "framework": "KonaAI Engine v2.4.1 Online"}
