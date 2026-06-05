@@ -20,10 +20,9 @@ from pinecone import Pinecone
 app = FastAPI(
     title="KonaAI Enterprise Production Engine",
     description="Unified API structural cluster node orchestrating JWT data flows, SQLite persistence, and hybrid RAG streams.",
-    version="2.2.0"
+    version="2.3.0"
 )
 
-# Open secure Cross-Origin Resource Sharing bindings for the client layout workspace view
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -32,15 +31,13 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization"],
 )
 
-# Pull secure cloud cluster variables from Hugging Face Secrets Vault
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Holds Groq key 'gsk_...'
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "GLOBAL_SYSTEM_MASTER_PRODUCTION_TOKEN_KEY_FRAME")
 
-# Security Encryption Protocol Suite settings instantiation
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # Access window parameters (24 hours)
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
@@ -50,11 +47,9 @@ if not OPENAI_API_KEY or not TAVILY_API_KEY:
     tavily_async_client = None
     pc_vector_index = None
 else:
-    # Direct official OpenAI SDK initialization parameters to talk directly to Groq hardware LPU layers
     openai_client = OpenAI(base_url="https://api.groq.com/openai/v1", api_key=OPENAI_API_KEY)
     tavily_async_client = AsyncTavilyClient(api_key=TAVILY_API_KEY)
     
-    # CRASH-PROOFED: Establish a safe link to Pinecone data vector framework
     if PINECONE_API_KEY:
         try:
             pc = Pinecone(api_key=PINECONE_API_KEY)
@@ -64,36 +59,39 @@ else:
             print(f"Pinecone initialization bypassed gracefully. Error: {str(e)}")
             pc_vector_index = None
     else:
-        print("Pinecone key missing. Vector RAG module offline.")
         pc_vector_index = None
 
-# --- 2. PERSISTENT SQLITE STORAGE SETUP (MOUNTED BUCKET PATH) ---
-# Ensure your Hugging Face Space has an attached storage volume mounted exactly at /data
+# --- 2. PERSISTENT SQLITE STORAGE SETUP ---
 DB_DIR = "/data"
 DB_FILE = os.path.join(DB_DIR, "kona_production_vault.db")
 
 def init_db_schema():
-    """Initializes local relational tables for user profiles and continuous session rooms."""
-    # Ensure directory framework exists safely inside target environment wrapper
     if not os.path.exists(DB_DIR):
         try:
             os.makedirs(DB_DIR, exist_ok=True)
         except Exception:
-            # Fall back to root path execution bounds if local path lacks structural permission nodes
             global DB_FILE
             DB_FILE = "kona_production_fallback.db"
 
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-    # Create permanent User Account Credentials table
+    
+    # Structural migration checking framework for registration date tracking timestamps
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             email TEXT PRIMARY KEY,
             hashed_password TEXT NOT NULL,
-            language_preference TEXT DEFAULT 'English'
+            language_preference TEXT DEFAULT 'English',
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     """)
-    # Create permanent Chat Metadata and message log streams table
+    
+    # Dynamic column addition fallback protocol check for legacy testing instances
+    try:
+        cursor.execute("ALTER TABLE users ADD COLUMN created_at TEXT DEFAULT CURRENT_TIMESTAMP")
+    except sqlite3.OperationalError:
+        pass # Column structural field already configured properly
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS chats (
             chat_id TEXT PRIMARY KEY,
@@ -106,7 +104,6 @@ def init_db_schema():
     conn.commit()
     conn.close()
 
-# Fire initialization logic right into current workspace directory context
 init_db_schema()
 
 class UserOnboardSchema(BaseModel):
@@ -141,34 +138,23 @@ def sign_access_session_token(data: dict) -> str:
     return jwt.encode(payload_bundle, JWT_SECRET_KEY, algorithm=ALGORITHM)
 
 def verify_active_session(token: str = Depends(oauth2_scheme)) -> str:
-    """Interrogates incoming Authorization headers to parse and confirm valid user identity mappings."""
     try:
         decoded_bundle = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
         user_identity: str = decoded_bundle.get("sub")
         if user_identity is None:
-            raise HTTPException(status_code=401, detail="Session verification faulted due to absent identity parameters.")
+            raise HTTPException(status_code=401, detail="Session verification defaulted due to absent identity parameters.")
         return user_identity
     except JWTError:
         raise HTTPException(status_code=401, detail="Session expired or token validation checksum signature mismatch.")
 
 # --- 4. HYBRID SEMANTIC DATA EXTRACTION PIPELINE ENGINE (RAG) ---
 async def parse_vector_database_context(prompt_string: str) -> str:
-    """Queries semantic collection parameters to retrieve matched facts from internal repository document files."""
     if not pc_vector_index or not openai_client:
         return ""
     try:
-        embed_response = openai_client.embeddings.create(
-            input=[prompt_string],
-            model="text-embedding-3-small"
-        )
+        embed_response = openai_client.embeddings.create(input=[prompt_string], model="text-embedding-3-small")
         query_coordinates = embed_response.data[0].embedding
-        
-        matches_matrix = pc_vector_index.query(
-            vector=query_coordinates,
-            top_k=3,
-            include_metadata=True
-        )
-        
+        matches_matrix = pc_vector_index.query(vector=query_coordinates, top_k=3, include_metadata=True)
         compiled_vectors_context = ""
         for match_item in matches_matrix.get('matches', []):
             if 'text' in match_item.get('metadata', {}):
@@ -182,7 +168,6 @@ async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[Ch
     context_stream_accumulator = ""
     citations_payload_tracker = []
 
-    # Run dual context collection workflows concurrently to avoid blocking system threads
     async def track_web_crawlers():
         nonlocal context_stream_accumulator
         try:
@@ -191,9 +176,7 @@ async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[Ch
                 anchor_id = structural_idx + 1
                 context_stream_accumulator += f"[{anchor_id}] URL reference: {resource['url']}\nData Summary: {resource['content']}\n\n"
                 citations_payload_tracker.append({
-                    "id": anchor_id,
-                    "title": resource.get('title', 'Verified Web Matrix Index Document'),
-                    "url": resource['url']
+                    "id": anchor_id, "title": resource.get('title', 'Verified Web Matrix Index Document'), "url": resource['url']
                 })
         except Exception:
             context_stream_accumulator += "Global internet crawling fabric link temporarily unresponsive.\n"
@@ -206,7 +189,6 @@ async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[Ch
 
     await asyncio.gather(track_web_crawlers(), track_semantic_indexes())
 
-    # Send citations array metadata block back onto client interface immediately
     yield f"data: {json.dumps({'type': 'metadata', 'sources': citations_payload_tracker, 'chat_id': chat_id})}\n\n"
     await asyncio.sleep(0.01)
 
@@ -226,15 +208,12 @@ async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[Ch
             "3. Reference claims using brackets matching source indices [1], [2]."
         )
 
-        messages_bundle = [{"role": "system", "content": f"{system_rules}\n\nIngested Hybrid context streams Metadata Block:\n{context_stream_accumulator}"}]
+        messages_bundle = [{"role": "system", "content": f"{system_rules}\n\nIngested Hybrid context streams:\n{context_stream_accumulator}"}]
         for network_node in history:
             messages_bundle.append({"role": network_node.role, "content": network_node.content})
 
         llm_stream = openai_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=messages_bundle,
-            temperature=0.15,
-            stream=True
+            model="llama-3.3-70b-versatile", messages=messages_bundle, temperature=0.15, stream=True
         )
 
         streaming_response_tracker = ""
@@ -245,7 +224,6 @@ async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[Ch
                 yield f"data: {json.dumps({'type': 'token', 'text': token_text})}\n\n"
                 await asyncio.sleep(0.002)
 
-        # COMMIT LOGS DIRECTLY TO SECURE PERSISTENT SQL VAULT
         updated_history = history.copy()
         updated_history.append(ChatMessage(role="assistant", content=streaming_response_tracker))
         history_str = json.dumps([m.model_dump() for m in updated_history])
@@ -255,7 +233,7 @@ async def aggregate_hybrid_rag_stream(email: str, chat_id: str, history: List[Ch
         cursor = conn.cursor()
         cursor.execute("SELECT 1 FROM chats WHERE chat_id = ?", (chat_id,))
         if cursor.fetchone():
-            cursor.execute("UPDATE chats SET history_json = ? WHERE chat_id = ?", (history_str, chat_id))
+            cursor.execute("UPDATE chats SET history_json = ? WHERE chat_id = ?", (history_json, chat_id))
         else:
             cursor.execute("INSERT INTO chats (chat_id, email, title, history_json) VALUES (?, ?, ?, ?)",
                            (chat_id, email, room_title, history_str))
@@ -274,14 +252,15 @@ async def onboard_system_user(payload: UserOnboardSchema):
     cursor.execute("SELECT 1 FROM users WHERE email = ?", (payload.email,))
     if cursor.fetchone():
         conn.close()
-        raise HTTPException(status_code=400, detail="Onboarding aborted: user node profile email handle registry exists.")
+        raise HTTPException(status_code=400, detail="Onboarding aborted: email layout match registry exists.")
     
     hashed_pass = generate_hashed_bytes(payload.password)
-    cursor.execute("INSERT INTO users (email, hashed_password, language_preference) VALUES (?, ?, ?)",
-                   (payload.email, hashed_pass, payload.language_preference))
+    current_time_stamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    cursor.execute("INSERT INTO users (email, hashed_password, language_preference, created_at) VALUES (?, ?, ?, ?)",
+                   (payload.email, hashed_pass, payload.language_preference, current_time_stamp))
     conn.commit()
     conn.close()
-    return {"message": "Onboarding operations completed successfully. Forwarding handles to validation sequence paths."}
+    return {"message": "Onboarding operations completed successfully."}
 
 @app.post("/api/v1/auth/login", response_model=TokenPayload, tags=["Security Infrastructure"])
 async def authenticate_system_user(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -292,17 +271,24 @@ async def authenticate_system_user(form_data: OAuth2PasswordRequestForm = Depend
     conn.close()
     
     if not row or not verify_hashed_bytes(form_data.password, row[0]):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authorization rejected: invalid validation key configurations.",
-            headers={"WWW-Authenticate": "Bearer"}
-        )
-        
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization rejected: invalid credentials.")
+    
     signed_session_token = sign_access_session_token(data={"sub": form_data.username})
+    return {"access_token": signed_session_token, "token_type": "bearer", "email": form_data.username}
+
+# SECURE PROFILE ENDPOINT EXPOSING REGISTRATION DATA METRICS
+@app.get("/api/v1/auth/profile", tags=["Security Infrastructure"])
+async def get_user_profile_node(user_identity: str = Depends(verify_active_session)):
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute("SELECT email, created_at FROM users WHERE email = ?", (user_identity,))
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        raise HTTPException(status_code=404, detail="Identity profile context missing from persistent core schema.")
     return {
-        "access_token": signed_session_token,
-        "token_type": "bearer",
-        "email": form_data.username
+        "email": row[0],
+        "created_at": row[1]
     }
 
 @app.get("/api/v1/chats", tags=["Chat History Layer"])
