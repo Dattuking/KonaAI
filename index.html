@@ -256,7 +256,6 @@ int main() {
         function closeMobileSidebar() { document.getElementById("left-sidebar").classList.remove("open"); }
         function closeMobileSidebarFromCanvas(e) { if (window.innerWidth <= 768) closeMobileSidebar(); }
 
-        // Core dynamic view switcher logic engine layout (FIXED TYPO)
         function switchActiveViewPanel(targetPanelId) {
             document.querySelectorAll('.app-view-panel').forEach(p => p.classList.remove('active-panel'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
