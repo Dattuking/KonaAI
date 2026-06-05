@@ -73,13 +73,22 @@
         .attachment-clip-trigger { background: transparent; border: none; color: var(--font-dim); font-size: 20px; cursor: pointer; padding: 0 10px; display: flex; align-items: center; transition: color 0.2s; margin-right: 4px; }
         .attachment-clip-trigger:hover { color: var(--primary); }
         
-        /* Dynamic Popover Menu Container View Overlay Box */
+        /* Dynamic Popover Floating Overlay Selection Box */
         .attachment-popover-menu { display: none; position: absolute; bottom: 70px; left: 16px; background: #1f2937; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 8px; min-width: 210px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); z-index: 500; }
         .attachment-popover-menu.show-popover { display: block; }
-        .popover-menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .popover-menu-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 8px; color: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s; position: relative; }
         .popover-menu-item:hover { background: rgba(255,255,255,0.06); color: #60a5fa; }
+        .popover-left-side { display: flex; align-items: center; gap: 12px; }
         .popover-menu-item span.icon-badge { font-size: 16px; width: 20px; text-align: center; }
+        .popover-arrow { font-size: 11px; color: var(--font-dim); }
+        .new-tag-badge { background: #374151; color: #9ca3af; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
         
+        /* Flyout Nested Secondary Menu Configuration */
+        .flyout-submenu { display: none; position: absolute; left: 100%; bottom: 0; margin-left: 6px; background: #1f2937; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 6px; min-width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
+        .popover-menu-item:hover .flyout-submenu { display: block; }
+        .flyout-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; color: var(--font); font-size: 13px; }
+        .flyout-item:hover { background: rgba(255,255,255,0.06); color: #34d399; }
+
         /* Ingested Attachment Notification Banner Tag */
         .active-attachment-badge { display: none; align-items: center; gap: 8px; background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); padding: 6px 12px; border-radius: 8px; font-size: 12px; color: #60a5fa; margin-bottom: 10px; width: max-content; font-weight: 500; }
         .active-attachment-badge button { background: transparent; border: none; color: #f87171; cursor: pointer; font-weight: 700; margin-left: 6px; }
@@ -193,6 +202,9 @@
         </div>
     </div>
 
+    <input type="file" id="native-system-file-picker" style="display: none;" onchange="handleSystemFileSelected(event)">
+    <input type="file" id="native-system-photo-picker" style="display: none;" accept="image/*" onchange="handleSystemPhotoSelected(event)">
+
     <div id="app-layout-wrapper">
         <aside id="left-sidebar">
             <div class="sidebar-brand"><span>⚡ Kona AI</span></div>
@@ -246,24 +258,58 @@
                         <button class="attachment-clip-trigger" onclick="toggleAttachmentPopoverMenu(event)">📎</button>
                         
                         <div class="attachment-popover-menu" id="attachment-popover-box">
-                            <div class="popover-menu-item" onclick="simulateAttachmentAction('Upload files', 'document_package.pdf')">
-                                <span class="icon-badge">📎</span> Upload files
+                            
+                            <div class="popover-menu-item" onclick="triggerSystemFilePicker()">
+                                <div class="popover-left-side">
+                                    <span class="icon-badge">📎</span> Upload files
+                                </div>
                             </div>
+                            
                             <div class="popover-menu-item" onclick="simulateAttachmentAction('Add from Drive', 'shared_analytics_sheet.xlsx')">
-                                <span class="icon-badge">▲</span> Add from Drive
+                                <div class="popover-left-side">
+                                    <span class="icon-badge">▲</span> Add from Drive
+                                </div>
                             </div>
+                            
+                            <div class="popover-menu-item" onclick="event.stopPropagation()">
+                                <div class="popover-left-side">
+                                    <span class="icon-badge">•••</span> More uploads
+                                </div>
+                                <span class="popover-arrow">❯</span>
+                                
+                                <div class="flyout-submenu">
+                                    <div class="flyout-item" onclick="triggerSystemPhotoPicker()">🖼️ Photos</div>
+                                    <div class="flyout-item" onclick="simulateAttachmentAction('Avatar', 'custom_avatar_mesh.obj')">👤 Avatar <span class="new-tag-badge" style="margin-left:auto;">New</span></div>
+                                    <div class="flyout-item" onclick="simulateAttachmentAction('Import code', 'main.py')">&lt;&gt; Import code</div>
+                                    <div class="flyout-item" onclick="simulateAttachmentAction('Notebooks', 'analytics.ipynb')">📓 Notebooks</div>
+                                </div>
+                            </div>
+                            
                             <div class="popover-menu-item" onclick="simulateAttachmentAction('Create image', 'conceptual_vector_mesh.png')">
-                                <span class="icon-badge">🎨</span> Create image
+                                <div class="popover-left-side">
+                                    <span class="icon-badge">🎨</span> Create image
+                                </div>
+                                <span class="new-tag-badge">New</span>
                             </div>
                             <div class="popover-menu-item" onclick="simulateAttachmentAction('Create video', 'simulation_render.mp4')">
-                                <span class="icon-badge">🎬</span> Create video
+                                <div class="popover-left-side">
+                                    <span class="icon-badge">🎬</span> Create video
+                                </div>
                             </div>
                             <div class="popover-menu-item" onclick="simulateAttachmentAction('Canvas', 'collaborative-canvas-frame')">
-                                <span class="icon-badge">🖼️</span> Canvas
+                                <div class="popover-left-side">
+                                    <span class="icon-badge">🖼️</span> Canvas
+                                </div>
+                            </div>
+                            <div class="popover-menu-item" onclick="simulateAttachmentAction('More tools', 'utility_suite.sh')">
+                                <div class="popover-left-side">
+                                    <span class="icon-badge">⚙️</span> More tools
+                                </div>
+                                <span class="popover-arrow">❯</span>
                             </div>
                         </div>
 
-                        <input type="text" id="user-query" placeholder="Ask anything, append contexts, or request updates..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
+                        <input type="text" id="user-query" placeholder="Ask anything, upload system files, or query repository..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
                         <button class="search-action-btn" onclick="dispatchKonaEngine()">Search</button>
                     </div>
                 </div>
@@ -334,7 +380,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         let isRegisterMode = false;
         let currentActiveChatId = null; 
         
-        // Attachment tracking global cache variables
         let activeAttachmentType = null;
         let activeAttachmentName = null;
 
@@ -346,7 +391,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             }
         };
 
-        // Click wrapper execution node handling contextual dismissals
         function closeAllContextPopovers(e) {
             document.getElementById("profile-dropdown-menu-card").classList.remove("show-menu");
             document.getElementById("attachment-popover-box").classList.remove("show-popover");
@@ -363,7 +407,29 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             document.getElementById("attachment-popover-box").classList.toggle("show-popover");
         }
 
-        // Simulates multi-modal attachment mappings inside the input area layout
+        /* --- HARDWARE FILE-SYSTEM INTEGRATION DRIVERS --- */
+        function triggerSystemFilePicker() {
+            document.getElementById("native-system-file-picker").click();
+            document.getElementById("attachment-popover-box").classList.remove("show-popover");
+        }
+
+        function triggerSystemPhotoPicker() {
+            document.getElementById("native-system-photo-picker").click();
+            document.getElementById("attachment-popover-box").classList.remove("show-popover");
+        }
+
+        function handleSystemFileSelected(event) {
+            const chosenFile = event.target.files[0];
+            if (!chosenFile) return;
+            simulateAttachmentAction("Upload files", chosenFile.name);
+        }
+
+        function handleSystemPhotoSelected(event) {
+            const chosenPhoto = event.target.files[0];
+            if (!chosenPhoto) return;
+            simulateAttachmentAction("Photos", chosenPhoto.name);
+        }
+
         function simulateAttachmentAction(actionType, placeholderFilename) {
             activeAttachmentType = actionType;
             activeAttachmentName = placeholderFilename;
@@ -380,6 +446,8 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         function detachActiveContextFile() {
             activeAttachmentType = null;
             activeAttachmentName = null;
+            document.getElementById("native-system-file-picker").value = "";
+            document.getElementById("native-system-photo-picker").value = "";
             document.getElementById("file-attachment-banner").style.display = "none";
         }
 
@@ -669,7 +737,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             userBox.innerText = displayPrompt;
             canvas.appendChild(userBox);
 
-            // Construct payload configuration mapping object matching backend expected contract
             const messageObject = { 
                 role: "user", 
                 content: rawPrompt,
@@ -678,7 +745,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             };
             
             conversationHistory.push(messageObject);
-            detachActiveContextFile(); // Reset UI state parameters cleanly
+            detachActiveContextFile(); 
 
             const konaBox = document.createElement("div");
             konaBox.className = "message-row kona-side";
