@@ -40,7 +40,7 @@
         .history-item { font-size: 13px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
         .history-item:hover, .history-item.active-chat { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
         
-        /* Main Container Design Layout Window Shells */
+        /* Main Workspace Content Shell Panels Switcher Layout */
         #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; background-color: var(--surface); overflow: hidden; }
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
@@ -55,7 +55,7 @@
         .profile-meta-row strong { color: var(--font); }
         .profile-dropdown-card button { width: 100%; margin-top: 14px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
 
-        /* MULTI-MODAL GOOGLE DRIVE MODAL CONTAINER VIEW OVERLAY */
+        /* GOOGLE DRIVE MODAL PANEL COMPONENT */
         #drive-picker-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 10, 19, 0.85); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(6px); }
         .drive-window-card { background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; width: 90%; max-width: 720px; box-shadow: 0 25px 50px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow: hidden; max-height: 85vh; }
         .drive-header-bar { padding: 18px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; background: #161e2e; }
@@ -85,7 +85,7 @@
         .citation-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
         .citation-card { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #60a5fa; padding: 6px 14px; border-radius: 8px; font-size: 13px; text-decoration: none; }
         
-        /* ATTACHMENTS INPUT DOCK */
+        /* MULTI-MODAL ATTACHMENTS LAYOUT INTERACTIVE INPUT DOCK SUITE */
         #input-dock { padding: 30px 15%; background: var(--surface); position: relative; }
         .interactive-bar { display: flex; background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 8px 16px; align-items: center; width: 100%; position: relative; }
         
@@ -149,7 +149,6 @@
 </head>
 <body>
 
-    <!-- Onboarding Gate Terminal Frame -->
     <div id="auth-gate">
         <div class="auth-card" id="auth-main-panel">
             <h2 id="auth-title">⚡ Kona AI</h2>
@@ -188,7 +187,6 @@
             <div id="status-feedback" class="auth-msg"></div>
         </div>
 
-        <!-- 6-DIGIT RECOVERY INTERACTION OVERLAY VIEW -->
         <div class="auth-card" id="auth-recovery-panel" style="display: none;">
             <h2>🔑 Reset Password</h2>
             <p>Verification tracking suite for account nodes.</p>
@@ -220,7 +218,6 @@
         </div>
     </div>
 
-    <!-- DYNAMIC OVERLAY GOOGLE DRIVE FILE EXPLORER MODAL COMPONENT -->
     <div id="drive-picker-modal" onclick="closeGoogleDriveModalWindow()">
         <div class="drive-window-card" onclick="event.stopPropagation()">
             <div class="drive-header-bar">
@@ -271,7 +268,6 @@
         </div>
     </div>
 
-    <!-- HIDDEN NATIVE SYSTEM HARDWARE PICKER OVERLAYS -->
     <input type="file" id="native-system-file-picker" style="display: none;" onchange="handleSystemFileSelected(event)">
     <input type="file" id="native-system-photo-picker" style="display: none;" accept="image/*" onchange="handleSystemPhotoSelected(event)">
 
@@ -310,7 +306,6 @@
                 </div>
             </header>
 
-            <!-- 1. CORE SEARCH VIEW PANEL -->
             <div class="app-view-panel active-panel" id="panel-search">
                 <div id="chat-canvas">
                     <div class="message-row kona-side">
@@ -318,7 +313,6 @@
                     </div>
                 </div>
                 
-                <!-- ACTION INPUT DOCK -->
                 <div id="input-dock" onclick="event.stopPropagation()">
                     
                     <div class="active-attachment-badge" id="file-attachment-banner">
@@ -386,7 +380,6 @@
                 </div>
             </div>
 
-            <!-- 2. LIBRARY VIEW PANEL -->
             <div class="app-view-panel" id="panel-library">
                 <div class="panel-scroll-content">
                     <h2>Knowledge Library</h2>
@@ -400,7 +393,6 @@
                 </div>
             </div>
 
-            <!-- 3. PROJECTS DASHBOARD PANEL -->
             <div class="app-view-panel" id="panel-projects">
                 <div class="panel-scroll-content">
                     <h2>Active Workspaces & Projects</h2>
@@ -414,7 +406,6 @@
                 </div>
             </div>
 
-            <!-- 4. APPS LAUNCHER PANEL -->
             <div class="app-view-panel" id="panel-apps">
                 <div class="panel-scroll-content">
                     <h2>Integrated App Utilities</h2>
@@ -429,7 +420,6 @@
                 </div>
             </div>
 
-            <!-- 5. CODEX PROGRAMMING INTERFACE PANEL -->
             <div class="app-view-panel" id="panel-codex">
                 <div class="codex-wrapper">
                     <div class="codex-editor-zone">
@@ -463,7 +453,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             const savedToken = localStorage.getItem("kona_jwt_token");
             if (savedToken) {
                 try {
-                    // Pre-verify profile health via backend before blindly hiding the gateway layout
                     const verifyResponse = await fetch(`${API_BASE}/auth/profile`, { 
                         headers: { "Authorization": `Bearer ${savedToken}` } 
                     });
@@ -473,7 +462,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                         fetchUserChatDatabaseList();
                         fetchUserProfileDataNode();
                     } else {
-                        // Token exists but backend structural verification failed (Expired / Compromised)
                         console.warn("Cached session node context has expired. Clearing keys...");
                         terminateSession();
                     }
@@ -878,7 +866,9 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                 konaBox.innerHTML = ""; 
                 
                 const citationWrapper = document.createElement("div");
-                citationWrapper.className = "citation-container"; style.display = "none";
+                citationWrapper.className = "citation-container";
+                // FIXED OPTION: Appended correct reference node element context layout token
+                citationWrapper.style.display = "none";
                 konaBox.appendChild(citationWrapper);
 
                 const textBodyBlock = document.createElement("div");
