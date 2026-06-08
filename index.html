@@ -56,7 +56,7 @@
         .profile-dropdown-card button { width: 100%; margin-top: 14px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
 
         /* MULTI-MODAL GOOGLE DRIVE MODAL CONTAINER VIEW OVERLAY */
-        #drive-picker-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vw; height: 100vh; background: rgba(7, 10, 19, 0.85); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(6px); }
+        #drive-picker-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 10, 19, 0.85); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(6px); }
         .drive-window-card { background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; width: 90%; max-width: 720px; box-shadow: 0 25px 50px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow: hidden; max-height: 85vh; }
         .drive-header-bar { padding: 18px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; background: #161e2e; }
         .drive-header-bar h3 { font-size: 18px; font-weight: 700; color: #f9fafb; }
@@ -72,7 +72,6 @@
         .drive-element-icon { font-size: 32px; margin-bottom: 8px; }
         .drive-element-name { font-size: 12px; color: #f9fafb; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
         
-        /* Specialized layout preview card block for registered image */
         .drive-element-image-preview { width: 100%; height: 55px; background: linear-gradient(135deg, #1e3a8a, #3b82f6); border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid rgba(255,255,255,0.1); }
         .drive-element-image-preview span.avatar-mock-logo { background: white; color: #1e3a8a; width: 24px; height: 24px; border-radius: 50%; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
@@ -150,6 +149,7 @@
 </head>
 <body>
 
+    <!-- Onboarding Gate Terminal Frame -->
     <div id="auth-gate">
         <div class="auth-card" id="auth-main-panel">
             <h2 id="auth-title">⚡ Kona AI</h2>
@@ -188,6 +188,7 @@
             <div id="status-feedback" class="auth-msg"></div>
         </div>
 
+        <!-- 6-DIGIT RECOVERY INTERACTION OVERLAY VIEW -->
         <div class="auth-card" id="auth-recovery-panel" style="display: none;">
             <h2>🔑 Reset Password</h2>
             <p>Verification tracking suite for account nodes.</p>
@@ -219,6 +220,7 @@
         </div>
     </div>
 
+    <!-- DYNAMIC OVERLAY GOOGLE DRIVE FILE EXPLORER MODAL COMPONENT -->
     <div id="drive-picker-modal" onclick="closeGoogleDriveModalWindow()">
         <div class="drive-window-card" onclick="event.stopPropagation()">
             <div class="drive-header-bar">
@@ -269,6 +271,7 @@
         </div>
     </div>
 
+    <!-- HIDDEN NATIVE SYSTEM HARDWARE PICKER OVERLAYS -->
     <input type="file" id="native-system-file-picker" style="display: none;" onchange="handleSystemFileSelected(event)">
     <input type="file" id="native-system-photo-picker" style="display: none;" accept="image/*" onchange="handleSystemPhotoSelected(event)">
 
@@ -307,6 +310,7 @@
                 </div>
             </header>
 
+            <!-- 1. CORE SEARCH VIEW PANEL -->
             <div class="app-view-panel active-panel" id="panel-search">
                 <div id="chat-canvas">
                     <div class="message-row kona-side">
@@ -314,6 +318,7 @@
                     </div>
                 </div>
                 
+                <!-- ACTION INPUT DOCK -->
                 <div id="input-dock" onclick="event.stopPropagation()">
                     
                     <div class="active-attachment-badge" id="file-attachment-banner">
@@ -325,7 +330,6 @@
                         <button class="attachment-clip-trigger" onclick="toggleAttachmentPopoverMenu(event)">📎</button>
                         
                         <div class="attachment-popover-menu" id="attachment-popover-box">
-                            
                             <div class="popover-menu-item" onclick="triggerSystemFilePicker()">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">📎</span> Upload files
@@ -382,6 +386,7 @@
                 </div>
             </div>
 
+            <!-- 2. LIBRARY VIEW PANEL -->
             <div class="app-view-panel" id="panel-library">
                 <div class="panel-scroll-content">
                     <h2>Knowledge Library</h2>
@@ -395,6 +400,7 @@
                 </div>
             </div>
 
+            <!-- 3. PROJECTS DASHBOARD PANEL -->
             <div class="app-view-panel" id="panel-projects">
                 <div class="panel-scroll-content">
                     <h2>Active Workspaces & Projects</h2>
@@ -408,6 +414,7 @@
                 </div>
             </div>
 
+            <!-- 4. APPS LAUNCHER PANEL -->
             <div class="app-view-panel" id="panel-apps">
                 <div class="panel-scroll-content">
                     <h2>Integrated App Utilities</h2>
@@ -422,6 +429,7 @@
                 </div>
             </div>
 
+            <!-- 5. CODEX PROGRAMMING INTERFACE PANEL -->
             <div class="app-view-panel" id="panel-codex">
                 <div class="codex-wrapper">
                     <div class="codex-editor-zone">
@@ -450,11 +458,29 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         let activeAttachmentType = null;
         let activeAttachmentName = null;
 
-        window.onload = function() {
-            if (localStorage.getItem("kona_jwt_token")) {
-                document.getElementById("auth-gate").style.display = "none";
-                fetchUserChatDatabaseList();
-                fetchUserProfileDataNode();
+        // FIXED USER SESSION EXPIRATION VERIFICATION HANDLER ROUTINE
+        window.onload = async function() {
+            const savedToken = localStorage.getItem("kona_jwt_token");
+            if (savedToken) {
+                try {
+                    // Pre-verify profile health via backend before blindly hiding the gateway layout
+                    const verifyResponse = await fetch(`${API_BASE}/auth/profile`, { 
+                        headers: { "Authorization": `Bearer ${savedToken}` } 
+                    });
+                    
+                    if (verifyResponse.ok) {
+                        document.getElementById("auth-gate").style.display = "none";
+                        fetchUserChatDatabaseList();
+                        fetchUserProfileDataNode();
+                    } else {
+                        // Token exists but backend structural verification failed (Expired / Compromised)
+                        console.warn("Cached session node context has expired. Clearing keys...");
+                        terminateSession();
+                    }
+                } catch (networkError) {
+                    console.error("Secure handshake cluster unreachable. Retaining auth layer barrier.");
+                    terminateSession();
+                }
             }
         };
 
@@ -474,7 +500,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             document.getElementById("attachment-popover-box").classList.toggle("show-popover");
         }
 
-        /* --- CLOUD GOOGLE DRIVE CONTROLLERS SUITE --- */
         function openGoogleDriveModalWindow() {
             document.getElementById("attachment-popover-box").classList.remove("show-popover");
             document.getElementById("drive-picker-modal").style.display = "flex";
@@ -489,7 +514,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             closeGoogleDriveModalWindow();
         }
 
-        /* --- HARDWARE FILE-SYSTEM INTEGRATION DRIVERS --- */
         function triggerSystemFilePicker() {
             document.getElementById("native-system-file-picker").click();
             document.getElementById("attachment-popover-box").classList.remove("show-popover");
@@ -701,7 +725,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                 document.getElementById("profile-status-label").innerText = userProfile.role_status;
                 document.getElementById("profile-date-label").innerText = userProfile.created_at;
                 
-                // Programmatically alter first letter avatar token matching user registration profiles
                 const firstLetter = userProfile.name.charAt(0).toUpperCase();
                 document.getElementById("profile-avatar-icon").innerText = firstLetter;
             } catch (err) { console.log(err); }
