@@ -21,7 +21,7 @@ from pinecone import Pinecone
 app = FastAPI(
     title="KonaAI Multimodal Vision Engine",
     description="Unified API orchestrating SQLite bucket persistence, profile photo structures, clipboard ingestion, and Llama Vision RAG data streams.",
-    version="2.6.0"
+    version="2.6.1"
 )
 
 app.add_middleware(
@@ -134,7 +134,7 @@ class ChatMessage(BaseModel):
     content: str
     attachment_type: Optional[str] = None  
     attachment_name: Optional[str] = None
-    image_data_uri: Optional[str] = None  # Holds raw base64 data streams for real analytical modeling
+    image_data_uri: Optional[str] = None  
 
 class SearchPayload(BaseModel):
     chat_id: Optional[str] = None
@@ -161,7 +161,6 @@ async def aggregate_multimodal_vision_stream(email: str, chat_id: str, history: 
     context_stream_accumulator = ""
     citations_payload_tracker = []
 
-    # Run background web crawling metrics asynchronously
     try:
         crawl_response = await tavily_async_client.search(query=user_text_prompt, max_results=3)
         for idx, res in enumerate(crawl_response.get('results', [])):
@@ -186,7 +185,6 @@ async def aggregate_multimodal_vision_stream(email: str, chat_id: str, history: 
         for node in history:
             if node.role == "user":
                 content_structures = [{"type": "text", "text": f"{node.content}\n\n[Context Indices]:\n{context_stream_accumulator}"}]
-                # If image payload streams exist, bind them natively into the model content packet
                 if node.image_data_uri:
                     content_structures.append({
                         "type": "image_url",
@@ -196,7 +194,6 @@ async def aggregate_multimodal_vision_stream(email: str, chat_id: str, history: 
             else:
                 messages_bundle.append({"role": "assistant", "content": node.content})
 
-        # Routing streams natively to multimodal hardware optimization layer nodes
         llm_stream = openai_client.chat.completions.create(
             model="llama-3.2-11b-vision-preview",
             messages=messages_bundle,
@@ -211,11 +208,10 @@ async def aggregate_multimodal_vision_stream(email: str, chat_id: str, history: 
                 streaming_response_tracker += token
                 yield f"data: {json.dumps({'type': 'token', 'text': token})}\n\n"
 
-        # Commit final conversations history back into SQL ledger sheets
         updated_history = history.copy()
         updated_history.append(ChatMessage(role="assistant", content=streaming_response_tracker))
         history_str = json.dumps([m.model_dump() for m in updated_history])
-        room_title = user_text_prompt[:30] + "..."
+        room_title = user_text_prompt[:30] + "..." if user_text_prompt else "Vision Analysis Search Thread"
 
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
@@ -254,12 +250,11 @@ async def authenticate_system_user(form_data: OAuth2PasswordRequestForm = Depend
     row = cursor.fetchone()
     conn.close()
     if not row or not verify_hashed_bytes(form_data.password, row[0]):
-        raise HTTPException(status_code=401, detail="Authorization rejected.")
+        raise HTTPException(status_code=401, detail="Authorization rejected: Invalid Handle or Key.")
     return {"access_token": sign_access_session_token(data={"sub": form_data.username}), "token_type": "bearer", "email": form_data.username}
 
 @app.post("/api/v1/auth/upload-avatar", tags=["Profile photo Management"])
 async def upload_user_avatar_b64(payload: AvatarPayloadSchema, user_identity: str = Depends(verify_active_session)):
-    """Saves custom profile photos directly inside the persistent database layer fields."""
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     cursor.execute("UPDATE users SET avatar_b64 = ? WHERE email = ?", (payload.avatar_data, user_identity))
@@ -321,4 +316,4 @@ async def run_search(payload: SearchPayload, user_identity: str = Depends(verify
     return StreamingResponse(aggregate_multimodal_vision_stream(user_identity, target_chat_id, payload.history), media_type="text/event-stream")
 
 @app.get("/")
-async def heartbeat(): return {"status": "online", "framework": "Multimodal Vision Node Connected"}
+async def headcount(): return {"status": "online", "framework": "Multimodal Vision Node Connected"}
