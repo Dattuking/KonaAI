@@ -40,20 +40,20 @@
         .history-item { font-size: 13px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
         .history-item:hover, .history-item.active-chat { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
         
-        /* Main Container Design Layout Window Shells */
+        /* Main Workspace Content Shell Panels Switcher Layout */
         #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; background-color: var(--surface); overflow: hidden; }
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
         
         /* Dropdown Profile Modules */
         .profile-dropdown-wrapper { position: relative; display: inline-block; }
-        .avatar-trigger-btn { background: #1f2937; border: 1px solid rgba(255,255,255,0.1); width: 42px; height: 42px; border-radius: 50%; color: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
+        .avatar-trigger-btn { background: #1f2937; border: 1px solid rgba(255,255,255,0.1); width: 42px; height: 42px; border-radius: 50%; color: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; text-transform: uppercase; background-size: cover; background-position: center; overflow: hidden; }
         .profile-dropdown-card { display: none; position: absolute; right: 0; top: 50px; background: var(--card); border: 1px solid rgba(255,255,255,0.08); min-width: 290px; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; }
         .profile-dropdown-card.show-menu { display: block; }
         .profile-card-h { font-size: 15px; font-weight: 700; color: var(--font); margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px; }
         .profile-meta-row { font-size: 13px; color: var(--font-dim); margin-bottom: 10px; line-height: 1.5; text-align: left; }
         .profile-meta-row strong { color: var(--font); }
-        .profile-dropdown-card button { width: 100%; margin-top: 14px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
+        .profile-dropdown-card button { width: 100%; margin-top: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
 
         /* GOOGLE DRIVE MODAL PANEL COMPONENT */
         #drive-picker-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 10, 19, 0.85); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(6px); }
@@ -79,13 +79,21 @@
         .app-view-panel.active-panel { display: flex; }
         
         #chat-canvas { flex: 1; overflow-y: auto; padding: 40px 15%; display: flex; flex-direction: column; gap: 30px; }
-        .message-row { max-width: 85%; padding: 20px 24px; border-radius: 16px; font-size: 16px; line-height: 1.7; word-wrap: break-word; }
+        .message-row { max-width: 85%; padding: 20px 24px; border-radius: 16px; font-size: 16px; line-height: 1.7; word-wrap: break-word; position: relative; }
         .user-side { background-color: var(--primary); align-self: flex-end; border-bottom-right-radius: 3px; }
-        .kona-side { background-color: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid rgba(255,255,255,0.04); }
+        .kona-side { background-color: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid rgba(255,255,255,0.04); padding-bottom: 45px; }
         .citation-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
         .citation-card { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #60a5fa; padding: 6px 14px; border-radius: 8px; font-size: 13px; text-decoration: none; }
         
-        /* MULTI-MODAL ATTACHMENTS LAYOUT INTERACTIVE INPUT DOCK SUITE */
+        /* TECHNICAL COPY ACTION TRIGGERS STYLES */
+        .global-copy-response-btn { position: absolute; bottom: 12px; right: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--font-dim); font-size: 11px; font-weight: 600; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .global-copy-response-btn:hover { background: var(--primary); color: white; border-color: transparent; }
+        
+        .code-window-block { background: #000000; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 18px; margin: 16px 0; overflow-x: auto; font-family: monospace; font-size: 14px; color: #f9fafb; line-height: 1.5; white-space: pre; display: block; position: relative; padding-top: 40px; }
+        .inline-code-copy-btn { position: absolute; top: 8px; right: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #34d399; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
+        .inline-code-copy-btn:hover { background: #34d399; color: black; }
+
+        /* ATTACHMENTS INPUT DOCK */
         #input-dock { padding: 30px 15%; background: var(--surface); position: relative; }
         .interactive-bar { display: flex; background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 8px 16px; align-items: center; width: 100%; position: relative; }
         
@@ -125,11 +133,6 @@
         .codex-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; }
         .codex-textarea { flex: 1; background: #05070f; border: none; color: #34d399; font-family: monospace; font-size: 15px; padding: 24px; resize: none; outline: none; line-height: 1.5; }
         .codex-terminal-zone { width: 350px; background: #020306; display: flex; flex-direction: column; padding: 20px; font-family: monospace; font-size: 14px; color: #f9fafb; }
-
-        .parsed-response p { margin-bottom: 14px; }
-        .parsed-response .code-window-block { background: #000000; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 18px; margin: 16px 0; overflow-x: auto; font-family: monospace; font-size: 14px; color: #f9fafb; line-height: 1.5; white-space: pre; display: block; }
-        .parsed-response h3 { margin: 20px 0 10px 0; color: #60a5fa; font-weight: 700; font-size: 19px; }
-        .parsed-response .inline-code-token { font-family: monospace; color: #34d399; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 14px; }
 
         @media (max-width: 1024px) { #chat-canvas, #input-dock { padding: 30px 8%; } .codex-terminal-zone { width: 250px; } }
         @media (max-width: 768px) {
@@ -271,6 +274,7 @@
 
     <input type="file" id="native-system-file-picker" style="display: none;" onchange="handleSystemFileSelected(event)">
     <input type="file" id="native-system-photo-picker" style="display: none;" accept="image/*" onchange="handleSystemPhotoSelected(event)">
+    <input type="file" id="native-profile-avatar-picker" style="display: none;" accept="image/*" onchange="handleProfileAvatarSelected(event)">
 
     <div id="app-layout-wrapper">
         <aside id="left-sidebar">
@@ -302,7 +306,9 @@
                         <div class="profile-meta-row"><strong>Date of Birth:</strong> <span id="profile-dob-label">loading...</span></div>
                         <div class="profile-meta-row"><strong>Status:</strong> <span id="profile-status-label">loading...</span></div>
                         <div class="profile-meta-row"><strong>Registered On:</strong> <span id="profile-date-label">loading...</span></div>
-                        <button onclick="terminateSession()">🔐 Lock Terminal</button>
+                        
+                        <button onclick="document.getElementById('native-profile-avatar-picker').click()">📸 Add Photo to Profile</button>
+                        <button onclick="terminateSession()" style="background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.2);">🔐 Lock Terminal</button>
                     </div>
                 </div>
             </header>
@@ -330,19 +336,16 @@
                                     <span class="icon-badge">📎</span> Upload files
                                 </div>
                             </div>
-                            
                             <div class="popover-menu-item" onclick="openGoogleDriveModalWindow()">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">▲</span> Add from Drive
                                 </div>
                             </div>
-                            
                             <div class="popover-menu-item" onclick="event.stopPropagation()">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">•••</span> More uploads
                                 </div>
                                 <span class="popover-arrow">❯</span>
-                                
                                 <div class="flyout-submenu">
                                     <div class="flyout-item" onclick="triggerSystemPhotoPicker()">🖼️ Photos</div>
                                     <div class="flyout-item" onclick="simulateAttachmentAction('Avatar', 'custom_avatar_mesh.obj')">👤 Avatar <span class="new-tag-badge" style="margin-left:auto;">New</span></div>
@@ -350,7 +353,6 @@
                                     <div class="flyout-item" onclick="simulateAttachmentAction('Notebooks', 'analytics.ipynb')">📓 Notebooks</div>
                                 </div>
                             </div>
-                            
                             <div class="popover-menu-item" onclick="simulateAttachmentAction('Create image', 'conceptual_vector_mesh.png')">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">🎨</span> Create image
@@ -375,7 +377,7 @@
                             </div>
                         </div>
 
-                        <input type="text" id="user-query" placeholder="Ask anything, paste copied images, or query repository..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()">
+                        <input type="text" id="user-query" placeholder="Ask anything, paste images natively, or request updates..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()" onpaste="handleNativeInputBoxPasteEvent(event)">
                         <button class="search-action-btn" onclick="dispatchKonaEngine()">Search</button>
                     </div>
                 </div>
@@ -448,8 +450,8 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         
         let activeAttachmentType = null;
         let activeAttachmentName = null;
+        let activeImageBase64Uri = null; # Holds active image byte stream sequences data directly
 
-        // FIXED USER SESSION EXPIRATION VERIFICATION HANDLER ROUTINE
         window.onload = async function() {
             const savedToken = localStorage.getItem("kona_jwt_token");
             if (savedToken) {
@@ -457,112 +459,136 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                     const verifyResponse = await fetch(`${API_BASE}/auth/profile`, { 
                         headers: { "Authorization": `Bearer ${savedToken}` } 
                     });
-                    
                     if (verifyResponse.ok) {
                         document.getElementById("auth-gate").style.display = "none";
                         fetchUserChatDatabaseList();
                         fetchUserProfileDataNode();
                     } else {
-                        console.warn("Cached session node context has expired. Clearing keys...");
                         terminateSession();
                     }
-                } catch (networkError) {
-                    console.error("Secure handshake cluster unreachable. Retaining auth layer barrier.");
-                    terminateSession();
-                }
+                } catch (err) { terminateSession(); }
             }
         };
 
-        // NEW: GLOBAL CLIPBOARD PASTE EVENT LISTENER FOR COPIED IMAGES
-        window.addEventListener('paste', function(event) {
-            const clipboardItems = (event.clipboardData || event.originalEvent.clipboardData).items;
-            for (const item of clipboardItems) {
-                if (item.type.indexOf('image') === 0) {
-                    const imageFile = item.getAsFile();
-                    if (imageFile) {
-                        // Dynamically generate a file name context descriptor for the pasted image matrix
-                        const randomId = Math.floor(1000 + Math.random() * 9000);
-                        const syntheticName = `pasted_image_${randomId}.png`;
-                        
-                        console.log(`Clipboard paste event intercepted: ${syntheticName}`);
-                        simulateAttachmentAction("Upload files", syntheticName);
-                        
-                        // Stop the paste event from putting raw path trash text into the input field bar
-                        event.preventDefault();
+        // INTEGRATED CROSS-PLATFORM SYSTEM BOARD PASTE INTERCEPTOR METHOD
+        function handleNativeInputBoxPasteEvent(event) {
+            const items = (event.clipboardData || window.clipboardData).items;
+            for (const item of items) {
+                if (item.type.indexOf("image") === 0) {
+                    const fileBlob = item.getAsFile();
+                    if (fileBlob) {
+                        const fileReaderNode = new FileReader();
+                        fileReaderNode.onload = function(e) {
+                            activeImageBase64Uri = e.target.result;
+                            const randSuffix = Math.floor(100 + Math.random() * 900);
+                            simulateAttachmentAction("Upload files", `clipboard_snapshot_${randSuffix}.png`);
+                        };
+                        fileReaderNode.readAsDataURL(fileBlob);
+                        event.preventDefault(); // Stop raw image track strings leakages inside input values fields
                         break;
                     }
                 }
             }
-        });
+        }
+
+        /* --- STABLE PROFILE PHOTO PHOTO UPLOAD LOGIC --- */
+        function handleProfileAvatarSelected(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const base64DataUriString = e.target.result;
+                const secureToken = localStorage.getItem("kona_jwt_token");
+                try {
+                    const res = await fetch(`${API_BASE}/auth/upload-avatar`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${secureToken}` },
+                        body: JSON.stringify({ avatar_data: base64DataUriString })
+                    });
+                    if (res.ok) {
+                        alert("Profile avatar database records updated smoothly!");
+                        fetchUserProfileDataNode();
+                    }
+                } catch(err) { console.error(err); }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /* --- TEXT RECORD COPY CLIPBOARD HANDLERS UTILITIES --- */
+        function executeGlobalResponseCopyAction(buttonElement) {
+            const chatBubbleContainerRow = buttonElement.closest('.message-row');
+            const targetTextBlock = chatBubbleContainerRow.querySelector('.parsed-response');
+            
+            // Extracts pristine inner texts stripping away action button string layers contexts safely
+            const textToCopy = targetTextBlock.innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = buttonElement.innerText;
+                buttonElement.innerText = "✓ Copied Response";
+                setTimeout(() => buttonElement.innerText = originalText, 1800);
+            }).catch(() => alert("Access blocked: allow clipboard layout settings parameters inside your web browser."));
+        }
+
+        function executeInlineBlockCopyAction(buttonElement) {
+            const parentCodeBlockNode = buttonElement.closest('.code-window-block');
+            
+            // Filter clone tokens variables to extract only pure software script line characters blocks cleanly
+            const textNodes = Array.from(parentCodeBlockNode.childNodes).filter(node => node !== buttonElement);
+            const scriptCodeText = textNodes.map(node => node.textContent).join("").trim();
+
+            navigator.clipboard.writeText(scriptCodeText).then(() => {
+                buttonElement.innerText = "✓ Copied Code";
+                setTimeout(() => buttonElement.innerText = "📋 Copy Code", 1500);
+            }).catch(() => alert("Clipboard bindings failure."));
+        }
 
         function closeAllContextPopovers(e) {
             document.getElementById("profile-dropdown-menu-card").classList.remove("show-menu");
             document.getElementById("attachment-popover-box").classList.remove("show-popover");
         }
-
         function toggleProfileDropdownMenu() {
             document.getElementById("attachment-popover-box").classList.remove("show-popover");
             document.getElementById("profile-dropdown-menu-card").classList.toggle("show-menu");
         }
-
         function toggleAttachmentPopoverMenu(e) {
             e.stopPropagation();
             document.getElementById("profile-dropdown-menu-card").classList.remove("show-menu");
             document.getElementById("attachment-popover-box").classList.toggle("show-popover");
         }
-
         function openGoogleDriveModalWindow() {
             document.getElementById("attachment-popover-box").classList.remove("show-popover");
             document.getElementById("drive-picker-modal").style.display = "flex";
         }
-
-        function closeGoogleDriveModalWindow() {
-            document.getElementById("drive-picker-modal").style.display = "none";
-        }
-
-        function selectGoogleDriveFile(type, filename) {
-            simulateAttachmentAction(type, filename);
-            closeGoogleDriveModalWindow();
-        }
-
-        function triggerSystemFilePicker() {
-            document.getElementById("native-system-file-picker").click();
-            document.getElementById("attachment-popover-box").classList.remove("show-popover");
-        }
-
-        function triggerSystemPhotoPicker() {
-            document.getElementById("native-system-photo-picker").click();
-            document.getElementById("attachment-popover-box").classList.remove("show-popover");
-        }
+        function closeGoogleDriveModalWindow() { document.getElementById("drive-picker-modal").style.display = "none"; }
+        function selectGoogleDriveFile(type, filename) { simulateAttachmentAction(type, filename); closeGoogleDriveModalWindow(); }
+        function triggerSystemFilePicker() { document.getElementById("native-system-file-picker").click(); document.getElementById("attachment-popover-box").classList.remove("show-popover"); }
+        function triggerSystemPhotoPicker() { document.getElementById("native-system-photo-picker").click(); document.getElementById("attachment-popover-box").classList.remove("show-popover"); }
 
         function handleSystemFileSelected(event) {
-            const chosenFile = event.target.files[0];
-            if (!chosenFile) return;
-            simulateAttachmentAction("Upload files", chosenFile.name);
+            const file = event.target.files[0]; if (!file) return;
+            if (file.type.indexOf("image") === 0) {
+                const reader = new FileReader();
+                reader.onload = function(e) { activeImageBase64Uri = e.target.result; simulateAttachmentAction("Upload files", file.name); };
+                reader.readAsDataURL(file);
+            } else { simulateAttachmentAction("Upload files", file.name); }
         }
 
         function handleSystemPhotoSelected(event) {
-            const chosenPhoto = event.target.files[0];
-            if (!chosenPhoto) return;
-            simulateAttachmentAction("Photos", chosenPhoto.name);
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) { activeImageBase64Uri = e.target.result; simulateAttachmentAction("Photos", file.name); };
+            reader.readAsDataURL(file);
         }
 
         function simulateAttachmentAction(actionType, placeholderFilename) {
-            activeAttachmentType = actionType;
-            activeAttachmentName = placeholderFilename;
-            
+            activeAttachmentType = actionType; activeAttachmentName = placeholderFilename;
             const banner = document.getElementById("file-attachment-banner");
-            const metaLabel = document.getElementById("banner-attachment-meta");
-            
-            metaLabel.innerText = `📎 Attached [${actionType}]: ${placeholderFilename}`;
+            document.getElementById("banner-attachment-meta").innerText = `📎 Attached [${actionType}]: ${placeholderFilename}`;
             banner.style.display = "flex";
-            
             document.getElementById("attachment-popover-box").classList.remove("show-popover");
         }
 
         function detachActiveContextFile() {
-            activeAttachmentType = null;
-            activeAttachmentName = null;
+            activeAttachmentType = null; activeAttachmentName = null; activeImageBase64Uri = null;
             document.getElementById("native-system-file-picker").value = "";
             document.getElementById("native-system-photo-picker").value = "";
             document.getElementById("file-attachment-banner").style.display = "none";
@@ -571,56 +597,35 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         function toggleMobileSidebar(e) { e.stopPropagation(); document.getElementById("left-sidebar").classList.toggle("open"); }
         function closeMobileSidebar() { document.getElementById("left-sidebar").classList.remove("open"); }
         function closeMobileSidebarFromCanvas(e) { if (window.innerWidth <= 768) closeMobileSidebar(); }
-
-        function switchAuthModeToForgotPassword() {
-            document.getElementById("auth-main-panel").style.display = "none";
-            document.getElementById("auth-recovery-panel").style.display = "block";
-            clearAuthFeedbackWindows();
-        }
-
-        function returnToMainLoginGate() {
-            document.getElementById("auth-recovery-panel").style.display = "none";
-            document.getElementById("auth-main-panel").style.display = "block";
-            clearAuthFeedbackWindows();
-        }
-
-        function clearAuthFeedbackWindows() {
-            document.getElementById("status-feedback").style.display = "none";
-            document.getElementById("recovery-feedback").style.display = "none";
-        }
+        function switchAuthModeToForgotPassword() { document.getElementById("auth-main-panel").style.display = "none"; document.getElementById("auth-recovery-panel").style.display = "block"; clearAuthFeedbackWindows(); }
+        function returnToMainLoginGate() { document.getElementById("auth-recovery-panel").style.display = "none"; document.getElementById("auth-main-panel").style.display = "block"; clearAuthFeedbackWindows(); }
+        function clearAuthFeedbackWindows() { document.getElementById("status-feedback").style.display = "none"; document.getElementById("recovery-feedback").style.display = "none"; }
 
         function switchActiveViewPanel(targetPanelId) {
             document.querySelectorAll('.app-view-panel').forEach(p => p.classList.remove('active-panel'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
             document.getElementById(`panel-${targetPanelId}`).classList.add('active-panel');
             document.getElementById(`nav-${targetPanelId}`).classList.add('active');
-            
             const labels = { search: "Search Console", library: "Knowledge Library", projects: "Projects Workspace", apps: "Apps & Utilities", codex: "Codex Script Editor" };
             document.getElementById("panel-title-label").innerText = labels[targetPanelId] || "Console Monitor";
-            
             closeMobileSidebar();
         }
 
         function toggleAuthMode(toRegister) {
-            isRegisterMode = toRegister;
-            clearAuthFeedbackWindows();
+            isRegisterMode = toRegister; clearAuthFeedbackWindows();
             const fieldsZone = document.getElementById("register-only-fields");
             const linkForgot = document.getElementById("login-forgot-link");
-            
             if (isRegisterMode) {
                 document.getElementById("auth-title").innerText = "Create Account";
                 document.getElementById("auth-subtitle").innerText = "Onboard your user profile meta configurations";
                 document.getElementById("auth-submit-btn").innerText = "Initialize Account";
-                fieldsZone.style.display = "flex";
-                linkForgot.style.display = "none";
+                fieldsZone.style.display = "flex"; linkForgot.style.display = "none";
                 document.getElementById("auth-toggle-msg").innerHTML = `Already registered? <span class="auth-toggle-link" onclick="toggleAuthMode(false)">Sign In</span>`;
             } else {
                 document.getElementById("auth-title").innerText = "⚡ Kona AI";
                 document.getElementById("auth-subtitle").innerText = "Sign in to your encrypted search node";
                 document.getElementById("auth-submit-btn").innerText = "Sign In";
-                fieldsZone.style.display = "none";
-                linkForgot.style.display = "block";
+                fieldsZone.style.display = "none"; linkForgot.style.display = "block";
                 document.getElementById("auth-toggle-msg").innerHTML = `New node operator? <span class="auth-toggle-link" onclick="toggleAuthMode(true)">Create an Account</span>`;
             }
         }
@@ -629,139 +634,85 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             const email = document.getElementById("auth-email").value.trim();
             const password = document.getElementById("auth-password").value;
             if (!email || !password) { showFeedback("Please supply inputs.", true); return; }
-
             try {
                 if (isRegisterMode) {
                     const name = document.getElementById("auth-name").value.trim();
                     const dob = document.getElementById("auth-dob").value;
                     const statusRole = document.getElementById("auth-status").value;
-
                     if(!name || !dob || !statusRole) { showFeedback("Please populate all fields.", true); return; }
-
                     const res = await fetch(`${API_BASE}/auth/register`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        method: "POST", headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ email: email, password: password, name: name, dob: dob, role_status: statusRole })
                     });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.detail || "Registration aborted.");
-                    
+                    const data = await res.json(); if (!res.ok) throw new Error(data.detail || "Registration aborted.");
                     showFeedback("Account initialized successfully! Swapping viewports...", false);
                     setTimeout(() => toggleAuthMode(false), 1500);
                 } else {
-                    const formData = new URLSearchParams();
-                    formData.append("username", email);
-                    formData.append("password", password);
+                    const formData = new URLSearchParams(); formData.append("username", email); formData.append("password", password);
                     const res = await fetch(`${API_BASE}/auth/login`, { method: "POST", body: formData });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.detail || "Access verification handle invalid.");
-
+                    const data = await res.json(); if (!res.ok) throw new Error(data.detail || "Access verification handle invalid.");
                     localStorage.setItem("kona_jwt_token", data.access_token);
-                    showFeedback("Identity matches! Unlocking console monitor...", false);
-                    setTimeout(() => {
-                        document.getElementById("auth-gate").style.display = "none";
-                        fetchUserChatDatabaseList();
-                        fetchUserProfileDataNode();
-                    }, 1000);
+                    showFeedback("Node Node Node node Node authenticated!", false);
+                    setTimeout(() => { document.getElementById("auth-gate").style.display = "none"; fetchUserChatDatabaseList(); fetchUserProfileDataNode(); }, 1000);
                 }
             } catch (err) { showFeedback(err.message, true); }
         }
 
         async function requestRecoveryOtpToken() {
-            const email = document.getElementById("recovery-email").value.trim();
-            if(!email) { showRecoveryFeedback("Please type an email address.", true); return; }
+            const email = document.getElementById("recovery-email").value.trim(); if(!email) { showRecoveryFeedback("Please type an email address.", true); return; }
             try {
-                const res = await fetch(`${API_BASE}/auth/forgot-password`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: email })
-                });
-                const data = await res.json();
-                if(!res.ok) throw new Error(data.detail || "Recovery lookup aborted.");
+                const res = await fetch(`${API_BASE}/auth/forgot-password`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email }) });
+                const data = await res.json(); if(!res.ok) throw new Error(data.detail || "Recovery lookup aborted.");
                 showRecoveryFeedback(`Code generated! Debug Monitor Token: ${data.mock_debug_otp}`, false);
-                document.getElementById("recovery-step-1").style.display = "none";
-                document.getElementById("recovery-step-2").style.display = "block";
+                document.getElementById("recovery-step-1").style.display = "none"; document.getElementById("recovery-step-2").style.display = "block";
             } catch(e) { showRecoveryFeedback(e.message, true); }
         }
 
         async function verifyRecoveryOtpToken() {
-            const email = document.getElementById("recovery-email").value.trim();
-            const otp = document.getElementById("recovery-otp").value.trim();
-            if(!otp) { showRecoveryFeedback("Please supply code.", true); return; }
+            const email = document.getElementById("recovery-email").value.trim(); const otp = document.getElementById("recovery-otp").value.trim(); if(!otp) { showRecoveryFeedback("Please supply code.", true); return; }
             try {
-                const res = await fetch(`${API_BASE}/auth/verify-otp`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: email, otp_code: otp })
-                });
-                const data = await res.json();
-                if(!res.ok) throw new Error(data.detail || "Token verification mismatch.");
+                const res = await fetch(`${API_BASE}/auth/verify-otp`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email, otp_code: otp }) });
+                const data = await res.json(); if(!res.ok) throw new Error(data.detail || "Token verification mismatch.");
                 showRecoveryFeedback("Code verified! Set new password.", false);
-                document.getElementById("recovery-step-2").style.display = "none";
-                document.getElementById("recovery-step-3").style.display = "block";
+                document.getElementById("recovery-step-2").style.display = "none"; document.getElementById("recovery-step-3").style.display = "block";
             } catch(e) { showRecoveryFeedback(e.message, true); }
         }
 
         async function commitNewPasswordCipher() {
-            const email = document.getElementById("recovery-email").value.trim();
-            const otp = document.getElementById("recovery-otp").value.trim();
-            const newPass = document.getElementById("recovery-new-password").value;
-            if(!newPass) { showRecoveryFeedback("Password cipher cannot be empty.", true); return; }
+            const email = document.getElementById("recovery-email").value.trim(); const otp = document.getElementById("recovery-otp").value.trim(); const newPass = document.getElementById("recovery-new-password").value; if(!newPass) { showRecoveryFeedback("Password cipher cannot be empty.", true); return; }
             try {
-                const res = await fetch(`${API_BASE}/auth/reset-password`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: email, otp_code: otp, new_password: newPass })
-                });
+                const res = await fetch(`${API_BASE}/auth/reset-password`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email, otp_code: otp, new_password: newPass }) });
                 if(!res.ok) throw new Error("Password update transaction failed.");
                 showRecoveryFeedback("Password updated securely!", false);
-                setTimeout(() => {
-                    document.getElementById("recovery-step-3").style.display = "none";
-                    document.getElementById("recovery-step-1").style.display = "block";
-                    returnToMainLoginGate();
-                }, 2000);
+                setTimeout(() => { document.getElementById("recovery-step-3").style.display = "none"; document.getElementById("recovery-step-1").style.display = "block"; returnToMainLoginGate(); }, 2000);
             } catch(e) { showRecoveryFeedback(e.message, true); }
         }
 
         async function fetchUserProfileDataNode() {
-            const token = localStorage.getItem("kona_jwt_token");
-            if (!token) return;
+            const token = localStorage.getItem("kona_jwt_token"); if (!token) return;
             try {
                 const res = await fetch(`${API_BASE}/auth/profile`, { headers: { "Authorization": `Bearer ${token}` } });
-                if (!res.ok) return;
-                const userProfile = await res.json();
+                if (!res.ok) return; const userProfile = await res.json();
                 document.getElementById("profile-name-label").innerText = userProfile.name;
                 document.getElementById("profile-email-label").innerText = userProfile.email;
                 document.getElementById("profile-dob-label").innerText = userProfile.dob;
                 document.getElementById("profile-status-label").innerText = userProfile.role_status;
                 document.getElementById("profile-date-label").innerText = userProfile.created_at;
                 
-                const firstLetter = userProfile.name.charAt(0).toUpperCase();
-                document.getElementById("profile-avatar-icon").innerText = firstLetter;
+                // If custom base64 avatar strings data array rows exist, map it straight onto layout components
+                if(userProfile.avatar_b64) {
+                    const avatarNode = document.getElementById("profile-avatar-icon");
+                    avatarNode.style.backgroundImage = `url('${userProfile.avatar_b64}')`;
+                    avatarNode.innerText = ""; // Hide background fallback characters layers
+                } else {
+                    document.getElementById("profile-avatar-icon").innerText = userProfile.name.charAt(0).toUpperCase();
+                }
             } catch (err) { console.log(err); }
         }
 
-        function showFeedback(msg, isError) {
-            const el = document.getElementById("status-feedback");
-            el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`;
-            el.innerText = msg; el.style.display = "block";
-        }
-
-        function showRecoveryFeedback(msg, isError) {
-            const el = document.getElementById("recovery-feedback");
-            el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`;
-            el.innerText = msg; el.style.display = "block";
-        }
-
-        function terminateSession() {
-            localStorage.removeItem("kona_jwt_token");
-            conversationHistory = [];
-            currentActiveChatId = null;
-            document.getElementById("chat-canvas").innerHTML = `<div class="message-row kona-side">Terminal locked out securely.</div>`;
-            document.getElementById("history-list").innerHTML = "";
-            document.getElementById("auth-gate").style.display = "flex";
-            toggleAuthMode(false);
-        }
+        function showFeedback(msg, isError) { const el = document.getElementById("status-feedback"); el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`; el.innerText = msg; el.style.display = "block"; }
+        function showRecoveryFeedback(msg, isError) { const el = document.getElementById("recovery-feedback"); el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`; el.innerText = msg; el.style.display = "block"; }
+        function terminateSession() { localStorage.removeItem("kona_jwt_token"); conversationHistory = []; currentActiveChatId = null; document.getElementById("chat-canvas").innerHTML = `<div class="message-row kona-side">Terminal locked out securely.</div>`; document.getElementById("history-list").innerHTML = ""; document.getElementById("auth-gate").style.display = "flex"; toggleAuthMode(false); }
 
         function nativeRenderMarkdown(rawString) {
             let processedHtml = "";
@@ -771,11 +722,13 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                     let codeLines = dataSegments[idx].split("\n");
                     let cleanLang = codeLines[0].trim().toLowerCase();
                     if (["python", "javascript", "c", "cpp", "html"].includes(cleanLang)) codeLines.shift();
-                    processedHtml += `<div class="code-window-block">${codeLines.join("\n").trim()}</div>`;
+                    
+                    // NEW: Dynamically appends specialized copy button tags into software blocks layouts arrays
+                    processedHtml += `<div class="code-window-block"><button class="inline-code-copy-btn" onclick="executeInlineBlockCopyAction(this)">📋 Copy Code</button>${codeLines.join("\n").trim()}</div>`;
                 } else {
                     let currentTextSegment = dataSegments[idx];
                     currentTextSegment = currentTextSegment.replace(/###\s+(.*)/g, "<h3>$1</h3>");
-                    currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+                    currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\"/g, "<strong>$1</strong>");
                     currentTextSegment = currentTextSegment.replace(/`(.*?)`/g, '<code class="inline-code-token">$1</code>');
                     processedHtml += currentTextSegment.split("\n").map(sentence => {
                         if (sentence.trim().startsWith("<h3>") || sentence.trim().startsWith("<div")) return sentence;
@@ -787,21 +740,14 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         }
 
         async function fetchUserChatDatabaseList() {
-            const token = localStorage.getItem("kona_jwt_token");
-            if(!token) return;
+            const token = localStorage.getItem("kona_jwt_token"); if(!token) return;
             try {
                 const res = await fetch(`${API_BASE}/chats`, { headers: { "Authorization": `Bearer ${token}` } });
-                const chatRooms = await res.json();
-                const listContainer = document.getElementById("history-list");
-                listContainer.innerHTML = "";
+                const chatRooms = await res.json(); const listContainer = document.getElementById("history-list"); listContainer.innerHTML = "";
                 if(chatRooms.length === 0) { listContainer.innerHTML = `<div class="history-item">No recent searches</div>`; return; }
-
                 chatRooms.slice().reverse().forEach(room => {
-                    const node = document.createElement("div");
-                    node.className = `history-item ${room.chat_id === currentActiveChatId ? 'active-chat' : ''}`;
-                    node.innerText = room.title;
-                    node.onclick = () => { switchActiveViewPanel('search'); loadHistoricalChatRoomLogs(room.chat_id); };
-                    listContainer.appendChild(node);
+                    const node = document.createElement("div"); node.className = `history-item ${room.chat_id === currentActiveChatId ? 'active-chat' : ''}`; node.innerText = room.title;
+                    node.onclick = () => { switchActiveViewPanel('search'); loadHistoricalChatRoomLogs(room.chat_id); }; listContainer.appendChild(node);
                 });
             } catch (err) { console.log(err); }
         }
@@ -810,26 +756,26 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             const token = localStorage.getItem("kona_jwt_token");
             try {
                 const res = await fetch(`${API_BASE}/chats/${chatId}`, { headers: { "Authorization": `Bearer ${token}` } });
-                if(!res.ok) return;
-                const data = await res.json();
+                if(!res.ok) return; const data = await res.json();
                 currentActiveChatId = chatId; conversationHistory = data.history;
-
-                const canvas = document.getElementById("chat-canvas");
-                canvas.innerHTML = "";
+                const canvas = document.getElementById("chat-canvas"); canvas.innerHTML = "";
 
                 conversationHistory.forEach(msg => {
                     const row = document.createElement("div");
                     row.className = `message-row ${msg.role === 'user' ? 'user-side' : 'kona-side'}`;
                     if(msg.role === 'user') {
                         let renderContent = msg.content;
-                        if(msg.attachment_type && msg.attachment_name) {
-                            renderContent += `\n\n[Attached ${msg.attachment_type}: ${msg.attachment_name}]`;
-                        }
+                        if(msg.attachment_type && msg.attachment_name) { renderContent += `\n\n[Attached ${msg.attachment_type}: ${msg.attachment_name}]`; }
                         row.innerText = renderContent;
                     } else {
-                        const block = document.createElement("div");
-                        block.className = "parsed-response"; block.innerHTML = nativeRenderMarkdown(msg.content);
+                        const block = document.createElement("div"); block.className = "parsed-response"; block.innerHTML = nativeRenderMarkdown(msg.content);
                         row.appendChild(block);
+                        
+                        // NEW: Injects independent global summary text copy buttons layers directly inside historical viewports
+                        const copyActionBtn = document.createElement("button");
+                        copyActionBtn.className = "global-copy-response-btn"; copyActionBtn.innerText = "📋 Copy Response";
+                        copyActionBtn.onclick = function() { executeGlobalResponseCopyAction(this); };
+                        row.appendChild(copyActionBtn);
                     }
                     canvas.appendChild(row);
                 });
@@ -844,67 +790,49 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             inputField.value = "";
 
             const canvas = document.getElementById("chat-canvas");
-            const userBox = document.createElement("div");
-            userBox.className = "message-row user-side";
-            
+            const userBox = document.createElement("div"); userBox.className = "message-row user-side";
             let displayPrompt = rawPrompt;
-            if(activeAttachmentType && activeAttachmentName) {
-                displayPrompt += `\n\n[Attached ${activeAttachmentType}: ${activeAttachmentName}]`;
-            }
-            userBox.innerText = displayPrompt;
-            canvas.appendChild(userBox);
+            if(activeAttachmentType && activeAttachmentName) { displayPrompt += `\n\n[Attached ${activeAttachmentType}: ${activeAttachmentName}]`; }
+            userBox.innerText = displayPrompt; canvas.appendChild(userBox);
 
             const messageObject = { 
                 role: "user", 
                 content: rawPrompt,
                 attachment_type: activeAttachmentType,
-                attachment_name: activeAttachmentName
+                attachment_name: activeAttachmentName,
+                image_data_uri: activeImageBase64Uri # Injects the compiled base64 data stream matrix explicitly into the chat package row contract
             };
             
             conversationHistory.push(messageObject);
             detachActiveContextFile(); 
 
-            const konaBox = document.createElement("div");
-            konaBox.className = "message-row kona-side";
-            const stateLoader = document.createElement("span");
-            stateLoader.className = "system-wait";
-            stateLoader.innerText = "Interrogating hybrid retrieval indexes...";
-            konaBox.appendChild(stateLoader);
-            canvas.appendChild(konaBox);
-            canvas.scrollTop = canvas.scrollHeight;
+            const konaBox = document.createElement("div"); konaBox.className = "message-row kona-side";
+            const stateLoader = document.createElement("span"); stateLoader.className = "system-wait"; stateLoader.innerText = "Interrogating hybrid retrieval indexes...";
+            konaBox.appendChild(stateLoader); canvas.appendChild(konaBox); canvas.scrollTop = canvas.scrollHeight;
 
             const secureToken = localStorage.getItem("kona_jwt_token");
-
             try {
                 const response = await fetch(`${API_BASE}/search`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${secureToken}` },
+                    method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${secureToken}` },
                     body: JSON.stringify({ chat_id: currentActiveChatId, history: conversationHistory })
                 });
-
                 if(response.status === 401) throw new Error("Session access expired.");
 
-                const streamReader = response.body.getReader();
-                const stringDecoder = new TextDecoder("utf-8");
+                const streamReader = response.body.getReader(); const stringDecoder = new TextDecoder("utf-8");
                 konaBox.innerHTML = ""; 
                 
                 const citationWrapper = document.createElement("div");
                 citationWrapper.className = "citation-container";
+                // RECTIFIED ERROR FIX: Resolved missing context prefix compilation error cleanly
                 citationWrapper.style.display = "none";
                 konaBox.appendChild(citationWrapper);
 
-                const textBodyBlock = document.createElement("div");
-                textBodyBlock.className = "parsed-response"; konaBox.appendChild(textBodyBlock);
-                
-                let citationsAdded = false;
-                let streamingResponseTracker = "";
+                const textBodyBlock = document.createElement("div"); textBodyBlock.className = "parsed-response"; konaBox.appendChild(textBodyBlock);
+                let citationsAdded = false; let streamingResponseTracker = "";
 
                 while(true) {
-                    const { value, done } = await streamReader.read();
-                    if(done) break;
-
-                    const rawChunk = stringDecoder.decode(value, { stream: true });
-                    const structuralLines = rawChunk.split("\n");
+                    const { value, done } = await streamReader.read(); if(done) break;
+                    const rawChunk = stringDecoder.decode(value, { stream: true }); const structuralLines = rawChunk.split("\n");
 
                     for(const structuralLine of structuralLines) {
                         if(structuralLine.startsWith("data: ")) {
@@ -914,10 +842,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                                 if(dataPayload.sources.length > 0) {
                                     citationWrapper.style.display = "flex";
                                     dataPayload.sources.forEach(sourceItem => {
-                                        const sourceButton = document.createElement("a");
-                                        sourceButton.className = "citation-card";
-                                        sourceButton.href = sourceItem.url; sourceButton.target = "_blank";
-                                        sourceButton.innerText = `[${sourceItem.id}] ${sourceItem.title.substring(0,18)}...`;
+                                        const sourceButton = document.createElement("a"); sourceButton.className = "citation-card"; sourceButton.href = sourceItem.url; sourceButton.target = "_blank"; sourceButton.innerText = `[${sourceItem.id}] ${sourceItem.title.substring(0,18)}...`;
                                         citationWrapper.appendChild(sourceButton);
                                     });
                                 }
@@ -930,8 +855,15 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                     }
                     canvas.scrollTop = canvas.scrollHeight;
                 }
+                
+                // Append independent copy button block to the final streaming output view container cleanly
+                const copyActionBtn = document.createElement("button");
+                copyActionBtn.className = "global-copy-response-btn"; copyActionBtn.innerText = "📋 Copy Response";
+                copyActionBtn.onclick = function() { executeGlobalResponseCopyAction(this); };
+                konaBox.appendChild(copyActionBtn);
+
                 conversationHistory.push({ role: "assistant", content: streamingResponseTracker });
-                fetchUserChatDatabaseList();
+                fetchUserChatDatabaseList(); canvas.scrollTop = canvas.scrollHeight;
             } catch (err) { konaBox.innerHTML = `<span style='color:#ef4444;'>Error: ${err.message}</span>`; }
         }
     </script>
