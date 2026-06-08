@@ -12,12 +12,16 @@
 
         /* Interactive Auth Gate Panel Container Window Styles */
         #auth-gate { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 10, 19, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
-        .auth-card { background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 35px; border-radius: 16px; width: 100%; max-width: 440px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); max-height: 95vh; overflow-y: auto; }
+        .auth-card { background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 35px; border-radius: 16px; width: 100%; max-width: 440px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); max-height: 95vh; overflow-y: auto; transition: all 0.3s; }
         .auth-card h2 { margin-bottom: 6px; color: var(--font); font-size: 26px; font-weight: 800; text-align: center; }
         .auth-card p { color: var(--font-dim); font-size: 13px; margin-bottom: 20px; text-align: center; }
         .auth-field-group { display: flex; flex-direction: column; gap: 11px; margin-bottom: 16px; text-align: left; }
         .auth-field-group label { font-size: 12px; color: var(--font-dim); font-weight: 500; margin-left: 2px; }
-        .auth-card input, .auth-card select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: white; font-size: 14px; outline: none; }
+        .auth-card input, .auth-card select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: white; font-size: 14px; outline: none; transition: border-color 0.2s; }
+        
+        /* SECURE VISUAL HIGH-LIGHTING ERROR RULES */
+        .auth-card input.input-field-error, .auth-card select.input-field-error { border-color: #ef4444 !important; background: rgba(239, 68, 68, 0.05); }
+        
         .auth-card button { width: 100%; padding: 13px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 6px; }
         
         .forgot-link-btn { font-size: 12px; color: var(--primary); cursor: pointer; display: block; text-align: right; margin-top: -6px; margin-bottom: 14px; font-weight: 500; text-decoration: none; }
@@ -158,7 +162,7 @@
             <h2 id="auth-title">⚡ Kona AI</h2>
             <p id="auth-subtitle">Sign in to your encrypted search node</p>
             
-            <div class="auth-field-group">
+            <form id="auth-main-form" onsubmit="handleAuthFormSubmitAction(event)" class="auth-field-group">
                 <div id="register-only-fields" style="display: none; flex-direction: column; gap: 11px;">
                     <label for="auth-name">Full Name</label>
                     <input type="text" id="auth-name" placeholder="John Doe">
@@ -178,11 +182,11 @@
                 
                 <label for="auth-password">Password Key</label>
                 <input type="password" id="auth-password" placeholder="••••••••">
-            </div>
-            
-            <span class="forgot-link-btn" id="login-forgot-link" onclick="switchAuthModeToForgotPassword()">Forgot Password?</span>
-            
-            <button id="auth-submit-btn" onclick="executeAuthAction()">Sign In</button>
+                
+                <span class="forgot-link-btn" id="login-forgot-link" onclick="switchAuthModeToForgotPassword()" style="margin-top: 4px;">Forgot Password?</span>
+                
+                <button type="submit" id="auth-submit-btn">Sign In</button>
+            </form>
             
             <div class="auth-toggle-area" id="auth-toggle-msg">
                 New node operator? <span class="auth-toggle-link" onclick="toggleAuthMode(true)">Create an Account</span>
@@ -336,16 +340,19 @@
                                     <span class="icon-badge">📎</span> Upload files
                                 </div>
                             </div>
+                            
                             <div class="popover-menu-item" onclick="openGoogleDriveModalWindow()">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">▲</span> Add from Drive
                                 </div>
                             </div>
+                            
                             <div class="popover-menu-item" onclick="event.stopPropagation()">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">•••</span> More uploads
                                 </div>
                                 <span class="popover-arrow">❯</span>
+                                
                                 <div class="flyout-submenu">
                                     <div class="flyout-item" onclick="triggerSystemPhotoPicker()">🖼️ Photos</div>
                                     <div class="flyout-item" onclick="simulateAttachmentAction('Avatar', 'custom_avatar_mesh.obj')">👤 Avatar <span class="new-tag-badge" style="margin-left:auto;">New</span></div>
@@ -353,6 +360,7 @@
                                     <div class="flyout-item" onclick="simulateAttachmentAction('Notebooks', 'analytics.ipynb')">📓 Notebooks</div>
                                 </div>
                             </div>
+                            
                             <div class="popover-menu-item" onclick="simulateAttachmentAction('Create image', 'conceptual_vector_mesh.png')">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">🎨</span> Create image
@@ -377,7 +385,7 @@
                             </div>
                         </div>
 
-                        <input type="text" id="user-query" placeholder="Ask anything, paste images natively, or request updates..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()" onpaste="handleNativeInputBoxPasteEvent(event)">
+                        <input type="text" id="user-query" placeholder="Ask anything, paste images natively, or query repository..." onkeydown="if(event.key==='Enter') dispatchKonaEngine()" onpaste="handleNativeInputBoxPasteEvent(event)">
                         <button class="search-action-btn" onclick="dispatchKonaEngine()">Search</button>
                     </div>
                 </div>
@@ -450,7 +458,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         
         let activeAttachmentType = null;
         let activeAttachmentName = null;
-        let activeImageBase64Uri = null; # Holds active image byte stream sequences data directly
+        let activeImageBase64Uri = null; 
 
         window.onload = async function() {
             const savedToken = localStorage.getItem("kona_jwt_token");
@@ -470,7 +478,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             }
         };
 
-        // INTEGRATED CROSS-PLATFORM SYSTEM BOARD PASTE INTERCEPTOR METHOD
+        // INTEGRATED NATIVE PASTE HANDLER WITH DEVICE-LEVEL ERROR CAPTURE HOOKS
         function handleNativeInputBoxPasteEvent(event) {
             const items = (event.clipboardData || window.clipboardData).items;
             for (const item of items) {
@@ -484,14 +492,19 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                             simulateAttachmentAction("Upload files", `clipboard_snapshot_${randSuffix}.png`);
                         };
                         fileReaderNode.readAsDataURL(fileBlob);
-                        event.preventDefault(); // Stop raw image track strings leakages inside input values fields
+                        event.preventDefault(); 
                         break;
                     }
                 }
             }
         }
 
-        /* --- STABLE PROFILE PHOTO PHOTO UPLOAD LOGIC --- */
+        // TRIGGER METHOD: Captures form submissions via Enter button actions smoothly
+        function handleAuthFormSubmitAction(event) {
+            event.preventDefault();
+            executeAuthAction();
+        }
+
         function handleProfileAvatarSelected(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -506,7 +519,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                         body: JSON.stringify({ avatar_data: base64DataUriString })
                     });
                     if (res.ok) {
-                        alert("Profile avatar database records updated smoothly!");
+                        alert("Profile photo uploaded and stored inside persistent database successfully!");
                         fetchUserProfileDataNode();
                     }
                 } catch(err) { console.error(err); }
@@ -514,31 +527,27 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             reader.readAsDataURL(file);
         }
 
-        /* --- TEXT RECORD COPY CLIPBOARD HANDLERS UTILITIES --- */
         function executeGlobalResponseCopyAction(buttonElement) {
             const chatBubbleContainerRow = buttonElement.closest('.message-row');
             const targetTextBlock = chatBubbleContainerRow.querySelector('.parsed-response');
-            
-            // Extracts pristine inner texts stripping away action button string layers contexts safely
             const textToCopy = targetTextBlock.innerText;
+            
             navigator.clipboard.writeText(textToCopy).then(() => {
                 const originalText = buttonElement.innerText;
                 buttonElement.innerText = "✓ Copied Response";
                 setTimeout(() => buttonElement.innerText = originalText, 1800);
-            }).catch(() => alert("Access blocked: allow clipboard layout settings parameters inside your web browser."));
+            }).catch(() => alert("Access blocked: Please allow clipboard layout permissions inside browser settings."));
         }
 
         function executeInlineBlockCopyAction(buttonElement) {
             const parentCodeBlockNode = buttonElement.closest('.code-window-block');
-            
-            // Filter clone tokens variables to extract only pure software script line characters blocks cleanly
             const textNodes = Array.from(parentCodeBlockNode.childNodes).filter(node => node !== buttonElement);
             const scriptCodeText = textNodes.map(node => node.textContent).join("").trim();
 
             navigator.clipboard.writeText(scriptCodeText).then(() => {
                 buttonElement.innerText = "✓ Copied Code";
                 setTimeout(() => buttonElement.innerText = "📋 Copy Code", 1500);
-            }).catch(() => alert("Clipboard bindings failure."));
+            }).catch(() => alert("Clipboard binding error."));
         }
 
         function closeAllContextPopovers(e) {
@@ -599,7 +608,12 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         function closeMobileSidebarFromCanvas(e) { if (window.innerWidth <= 768) closeMobileSidebar(); }
         function switchAuthModeToForgotPassword() { document.getElementById("auth-main-panel").style.display = "none"; document.getElementById("auth-recovery-panel").style.display = "block"; clearAuthFeedbackWindows(); }
         function returnToMainLoginGate() { document.getElementById("auth-recovery-panel").style.display = "none"; document.getElementById("auth-main-panel").style.display = "block"; clearAuthFeedbackWindows(); }
-        function clearAuthFeedbackWindows() { document.getElementById("status-feedback").style.display = "none"; document.getElementById("recovery-feedback").style.display = "none"; }
+        function clearAuthFeedbackWindows() {
+            document.getElementById("status-feedback").style.display = "none";
+            document.getElementById("recovery-feedback").style.display = "none";
+            // Clear input borders highlight markers classes on reset parameters loops
+            document.querySelectorAll(".auth-card input, .auth-card select").forEach(el => el.classList.remove("input-field-error"));
+        }
 
         function switchActiveViewPanel(targetPanelId) {
             document.querySelectorAll('.app-view-panel').forEach(p => p.classList.remove('active-panel'));
@@ -631,28 +645,56 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         }
 
         async function executeAuthAction() {
-            const email = document.getElementById("auth-email").value.trim();
-            const password = document.getElementById("auth-password").value;
-            if (!email || !password) { showFeedback("Please supply inputs.", true); return; }
+            // Remove previous error bounds before calculating validations tracking loops
+            document.querySelectorAll(".auth-card input, .auth-card select").forEach(el => el.classList.remove("input-field-error"));
+            
+            const emailField = document.getElementById("auth-email");
+            const passwordField = document.getElementById("auth-password");
+            const email = emailField.value.trim();
+            const password = passwordField.value;
+            
+            let structuralValidationFailed = false;
+
+            if (isRegisterMode) {
+                const nameField = document.getElementById("auth-name");
+                const dobField = document.getElementById("auth-dob");
+                const statusField = document.getElementById("auth-status");
+                
+                if(!nameField.value.trim()) { nameField.classList.add("input-field-error"); structuralValidationFailed = true; }
+                if(!dobField.value) { dobField.classList.add("input-field-error"); structuralValidationFailed = true; }
+                if(!statusField.value) { statusField.classList.add("input-field-error"); structuralValidationFailed = true; }
+            }
+
+            if (!email) { emailField.classList.add("input-field-error"); structuralValidationFailed = true; }
+            if (!password) { passwordField.classList.add("input-field-error"); structuralValidationFailed = true; }
+
+            if (structuralValidationFailed) { showFeedback("Please populate all highlighted empty inputs to proceed.", true); return; }
+
             try {
                 if (isRegisterMode) {
                     const name = document.getElementById("auth-name").value.trim();
                     const dob = document.getElementById("auth-dob").value;
                     const statusRole = document.getElementById("auth-status").value;
-                    if(!name || !dob || !statusRole) { showFeedback("Please populate all fields.", true); return; }
+
                     const res = await fetch(`${API_BASE}/auth/register`, {
                         method: "POST", headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ email: email, password: password, name: name, dob: dob, role_status: statusRole })
                     });
                     const data = await res.json(); if (!res.ok) throw new Error(data.detail || "Registration aborted.");
+                    
                     showFeedback("Account initialized successfully! Swapping viewports...", false);
                     setTimeout(() => toggleAuthMode(false), 1500);
                 } else {
-                    const formData = new URLSearchParams(); formData.append("username", email); formData.append("password", password);
+                    const formData = new URLSearchParams(); 
+                    formData.append("username", email); 
+                    formData.append("password", password);
+                    
                     const res = await fetch(`${API_BASE}/auth/login`, { method: "POST", body: formData });
-                    const data = await res.json(); if (!res.ok) throw new Error(data.detail || "Access verification handle invalid.");
+                    const data = await res.json(); 
+                    if (!res.ok) throw new Error(data.detail || "Access validation parameters rejected.");
+
                     localStorage.setItem("kona_jwt_token", data.access_token);
-                    showFeedback("Node Node Node node Node authenticated!", false);
+                    showFeedback("Access verified! Launching dashboard consoles arrays...", false);
                     setTimeout(() => { document.getElementById("auth-gate").style.display = "none"; fetchUserChatDatabaseList(); fetchUserProfileDataNode(); }, 1000);
                 }
             } catch (err) { showFeedback(err.message, true); }
@@ -699,11 +741,10 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                 document.getElementById("profile-status-label").innerText = userProfile.role_status;
                 document.getElementById("profile-date-label").innerText = userProfile.created_at;
                 
-                // If custom base64 avatar strings data array rows exist, map it straight onto layout components
                 if(userProfile.avatar_b64) {
                     const avatarNode = document.getElementById("profile-avatar-icon");
                     avatarNode.style.backgroundImage = `url('${userProfile.avatar_b64}')`;
-                    avatarNode.innerText = ""; // Hide background fallback characters layers
+                    avatarNode.innerText = ""; 
                 } else {
                     document.getElementById("profile-avatar-icon").innerText = userProfile.name.charAt(0).toUpperCase();
                 }
@@ -722,13 +763,11 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                     let codeLines = dataSegments[idx].split("\n");
                     let cleanLang = codeLines[0].trim().toLowerCase();
                     if (["python", "javascript", "c", "cpp", "html"].includes(cleanLang)) codeLines.shift();
-                    
-                    // NEW: Dynamically appends specialized copy button tags into software blocks layouts arrays
                     processedHtml += `<div class="code-window-block"><button class="inline-code-copy-btn" onclick="executeInlineBlockCopyAction(this)">📋 Copy Code</button>${codeLines.join("\n").trim()}</div>`;
                 } else {
                     let currentTextSegment = dataSegments[idx];
                     currentTextSegment = currentTextSegment.replace(/###\s+(.*)/g, "<h3>$1</h3>");
-                    currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\"/g, "<strong>$1</strong>");
+                    currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
                     currentTextSegment = currentTextSegment.replace(/`(.*?)`/g, '<code class="inline-code-token">$1</code>');
                     processedHtml += currentTextSegment.split("\n").map(sentence => {
                         if (sentence.trim().startsWith("<h3>") || sentence.trim().startsWith("<div")) return sentence;
@@ -770,8 +809,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                     } else {
                         const block = document.createElement("div"); block.className = "parsed-response"; block.innerHTML = nativeRenderMarkdown(msg.content);
                         row.appendChild(block);
-                        
-                        // NEW: Injects independent global summary text copy buttons layers directly inside historical viewports
                         const copyActionBtn = document.createElement("button");
                         copyActionBtn.className = "global-copy-response-btn"; copyActionBtn.innerText = "📋 Copy Response";
                         copyActionBtn.onclick = function() { executeGlobalResponseCopyAction(this); };
@@ -800,7 +837,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                 content: rawPrompt,
                 attachment_type: activeAttachmentType,
                 attachment_name: activeAttachmentName,
-                image_data_uri: activeImageBase64Uri # Injects the compiled base64 data stream matrix explicitly into the chat package row contract
+                image_data_uri: activeImageBase64Uri 
             };
             
             conversationHistory.push(messageObject);
@@ -823,7 +860,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                 
                 const citationWrapper = document.createElement("div");
                 citationWrapper.className = "citation-container";
-                // RECTIFIED ERROR FIX: Resolved missing context prefix compilation error cleanly
                 citationWrapper.style.display = "none";
                 konaBox.appendChild(citationWrapper);
 
@@ -856,7 +892,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                     canvas.scrollTop = canvas.scrollHeight;
                 }
                 
-                // Append independent copy button block to the final streaming output view container cleanly
                 const copyActionBtn = document.createElement("button");
                 copyActionBtn.className = "global-copy-response-btn"; copyActionBtn.innerText = "📋 Copy Response";
                 copyActionBtn.onclick = function() { executeGlobalResponseCopyAction(this); };
