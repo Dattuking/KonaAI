@@ -12,16 +12,13 @@
 
         /* Interactive Auth Gate Panel Container Window Styles */
         #auth-gate { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 10, 19, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
-        .auth-card { background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 35px; border-radius: 16px; width: 100%; max-width: 440px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); max-height: 95vh; overflow-y: auto; transition: all 0.3s; }
+        .auth-card { background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 35px; border-radius: 16px; width: 100%; max-width: 440px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); max-height: 95vh; overflow-y: auto; }
         .auth-card h2 { margin-bottom: 6px; color: var(--font); font-size: 26px; font-weight: 800; text-align: center; }
         .auth-card p { color: var(--font-dim); font-size: 13px; margin-bottom: 20px; text-align: center; }
         .auth-field-group { display: flex; flex-direction: column; gap: 11px; margin-bottom: 16px; text-align: left; }
         .auth-field-group label { font-size: 12px; color: var(--font-dim); font-weight: 500; margin-left: 2px; }
         .auth-card input, .auth-card select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: white; font-size: 14px; outline: none; transition: border-color 0.2s; }
-        
-        /* SECURE VISUAL HIGH-LIGHTING ERROR RULES */
         .auth-card input.input-field-error, .auth-card select.input-field-error { border-color: #ef4444 !important; background: rgba(239, 68, 68, 0.05); }
-        
         .auth-card button { width: 100%; padding: 13px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 6px; }
         
         .forgot-link-btn { font-size: 12px; color: var(--primary); cursor: pointer; display: block; text-align: right; margin-top: -6px; margin-bottom: 14px; font-weight: 500; text-decoration: none; }
@@ -44,12 +41,12 @@
         .history-item { font-size: 13px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
         .history-item:hover, .history-item.active-chat { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
         
-        /* Main Workspace Content Shell Panels Switcher Layout */
+        /* Main Workspace Container Layout */
         #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; background-color: var(--surface); overflow: hidden; }
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
         
-        /* Dropdown Profile Modules */
+        /* User Profile Dropdown Options */
         .profile-dropdown-wrapper { position: relative; display: inline-block; }
         .avatar-trigger-btn { background: #1f2937; border: 1px solid rgba(255,255,255,0.1); width: 42px; height: 42px; border-radius: 50%; color: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; text-transform: uppercase; background-size: cover; background-position: center; overflow: hidden; }
         .profile-dropdown-card { display: none; position: absolute; right: 0; top: 50px; background: var(--card); border: 1px solid rgba(255,255,255,0.08); min-width: 290px; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; }
@@ -59,7 +56,7 @@
         .profile-meta-row strong { color: var(--font); }
         .profile-dropdown-card button { width: 100%; margin-top: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
 
-        /* GOOGLE DRIVE MODAL PANEL COMPONENT */
+        /* GOOGLE DRIVE MODAL COMPONENT */
         #drive-picker-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 10, 19, 0.85); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(6px); }
         .drive-window-card { background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; width: 90%; max-width: 720px; box-shadow: 0 25px 50px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow: hidden; max-height: 85vh; }
         .drive-header-bar { padding: 18px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; background: #161e2e; }
@@ -85,13 +82,23 @@
         #chat-canvas { flex: 1; overflow-y: auto; padding: 40px 15%; display: flex; flex-direction: column; gap: 30px; }
         .message-row { max-width: 85%; padding: 20px 24px; border-radius: 16px; font-size: 16px; line-height: 1.7; word-wrap: break-word; position: relative; }
         .user-side { background-color: var(--primary); align-self: flex-end; border-bottom-right-radius: 3px; }
-        .kona-side { background-color: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid rgba(255,255,255,0.04); padding-bottom: 45px; }
+        
+        /* ASSISTANT CHAT BUBBLE & SMART CONTEXT ACTION TOOLBARS */
+        .kona-side { background-color: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid rgba(255,255,255,0.04); padding-bottom: 50px; }
         .citation-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
         .citation-card { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #60a5fa; padding: 6px 14px; border-radius: 8px; font-size: 13px; text-decoration: none; }
         
-        /* TECHNICAL COPY ACTION TRIGGERS STYLES */
-        .global-copy-response-btn { position: absolute; bottom: 12px; right: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--font-dim); font-size: 11px; font-weight: 600; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
-        .global-copy-response-btn:hover { background: var(--primary); color: white; border-color: transparent; }
+        /* Visual Row Icon Toolbar Matrix Layout */
+        .smart-response-toolbar { position: absolute; bottom: 12px; left: 24px; display: flex; align-items: center; gap: 16px; }
+        .toolbar-icon-btn { background: transparent; border: none; color: var(--font-dim); font-size: 15px; cursor: pointer; transition: color 0.15s, transform 0.1s; display: flex; align-items: center; justify-content: center; position: relative; }
+        .toolbar-icon-btn:hover { color: var(--font); transform: scale(1.1); }
+        
+        /* Contextual More Dropdown Options Card Overlay Layout */
+        .toolbar-more-popover { display: none; position: absolute; bottom: 30px; left: 100px; background: #1f2937; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 6px; min-width: 200px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 600; text-align: left; }
+        .toolbar-more-popover.open-popover { display: block; }
+        .popover-action-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; }
+        .popover-action-row:hover { background: rgba(255,255,255,0.06); color: #60a5fa; }
+        .popover-action-row span.action-emoji { font-size: 15px; width: 20px; display: inline-block; text-align: center; }
         
         .code-window-block { background: #000000; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 18px; margin: 16px 0; overflow-x: auto; font-family: monospace; font-size: 14px; color: #f9fafb; line-height: 1.5; white-space: pre; display: block; position: relative; padding-top: 40px; }
         .inline-code-copy-btn { position: absolute; top: 8px; right: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #34d399; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
@@ -157,6 +164,7 @@
 </head>
 <body>
 
+    <!-- Onboarding Gate Terminal Frame -->
     <div id="auth-gate">
         <div class="auth-card" id="auth-main-panel">
             <h2 id="auth-title">⚡ Kona AI</h2>
@@ -195,6 +203,7 @@
             <div id="status-feedback" class="auth-msg"></div>
         </div>
 
+        <!-- 6-DIGIT RECOVERY INTERACTION OVERLAY VIEW -->
         <div class="auth-card" id="auth-recovery-panel" style="display: none;">
             <h2>🔑 Reset Password</h2>
             <p>Verification tracking suite for account nodes.</p>
@@ -226,6 +235,7 @@
         </div>
     </div>
 
+    <!-- GOOGLE DRIVE FILE EXPLORER MODAL COMPONENT -->
     <div id="drive-picker-modal" onclick="closeGoogleDriveModalWindow()">
         <div class="drive-window-card" onclick="event.stopPropagation()">
             <div class="drive-header-bar">
@@ -276,6 +286,7 @@
         </div>
     </div>
 
+    <!-- HIDDEN NATIVE SYSTEM CONTROLS INPUT OVERLAYS -->
     <input type="file" id="native-system-file-picker" style="display: none;" onchange="handleSystemFileSelected(event)">
     <input type="file" id="native-system-photo-picker" style="display: none;" accept="image/*" onchange="handleSystemPhotoSelected(event)">
     <input type="file" id="native-profile-avatar-picker" style="display: none;" accept="image/*" onchange="handleProfileAvatarSelected(event)">
@@ -317,6 +328,7 @@
                 </div>
             </header>
 
+            <!-- 1. CORE SEARCH VIEW PANEL -->
             <div class="app-view-panel active-panel" id="panel-search">
                 <div id="chat-canvas">
                     <div class="message-row kona-side">
@@ -324,6 +336,7 @@
                     </div>
                 </div>
                 
+                <!-- ACTION INPUT DOCK -->
                 <div id="input-dock" onclick="event.stopPropagation()">
                     
                     <div class="active-attachment-badge" id="file-attachment-banner">
@@ -391,6 +404,7 @@
                 </div>
             </div>
 
+            <!-- 2. LIBRARY VIEW PANEL -->
             <div class="app-view-panel" id="panel-library">
                 <div class="panel-scroll-content">
                     <h2>Knowledge Library</h2>
@@ -404,6 +418,7 @@
                 </div>
             </div>
 
+            <!-- 3. PROJECTS DASHBOARD PANEL -->
             <div class="app-view-panel" id="panel-projects">
                 <div class="panel-scroll-content">
                     <h2>Active Workspaces & Projects</h2>
@@ -417,6 +432,7 @@
                 </div>
             </div>
 
+            <!-- 4. APPS LAUNCHER PANEL -->
             <div class="app-view-panel" id="panel-apps">
                 <div class="panel-scroll-content">
                     <h2>Integrated App Utilities</h2>
@@ -431,6 +447,7 @@
                 </div>
             </div>
 
+            <!-- 5. CODEX PROGRAMMING INTERFACE PANEL -->
             <div class="app-view-panel" id="panel-codex">
                 <div class="codex-wrapper">
                     <div class="codex-editor-zone">
@@ -478,7 +495,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             }
         };
 
-        // INTEGRATED NATIVE PASTE HANDLER WITH DEVICE-LEVEL ERROR CAPTURE HOOKS
         function handleNativeInputBoxPasteEvent(event) {
             const items = (event.clipboardData || window.clipboardData).items;
             for (const item of items) {
@@ -499,7 +515,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             }
         }
 
-        // TRIGGER METHOD: Captures form submissions via Enter button actions smoothly
         function handleAuthFormSubmitAction(event) {
             event.preventDefault();
             executeAuthAction();
@@ -519,7 +534,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                         body: JSON.stringify({ avatar_data: base64DataUriString })
                     });
                     if (res.ok) {
-                        alert("Profile photo uploaded and stored inside persistent database successfully!");
+                        alert("Profile photo updated successfully!");
                         fetchUserProfileDataNode();
                     }
                 } catch(err) { console.error(err); }
@@ -527,16 +542,17 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             reader.readAsDataURL(file);
         }
 
+        /* --- EXTRACTOR ACTIONS SUITE --- */
         function executeGlobalResponseCopyAction(buttonElement) {
             const chatBubbleContainerRow = buttonElement.closest('.message-row');
             const targetTextBlock = chatBubbleContainerRow.querySelector('.parsed-response');
             const textToCopy = targetTextBlock.innerText;
             
             navigator.clipboard.writeText(textToCopy).then(() => {
-                const originalText = buttonElement.innerText;
+                const originalText = buttonElement.innerHTML;
                 buttonElement.innerText = "✓ Copied Response";
-                setTimeout(() => buttonElement.innerText = originalText, 1800);
-            }).catch(() => alert("Access blocked: Please allow clipboard layout permissions inside browser settings."));
+                setTimeout(() => buttonElement.innerText = "📋", 1800);
+            }).catch(() => alert("Please allow clipboard access parameters."));
         }
 
         function executeInlineBlockCopyAction(buttonElement) {
@@ -550,12 +566,25 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             }).catch(() => alert("Clipboard binding error."));
         }
 
+        // TOGGLE: Opens/Closes the smart popover menu container overlay safely
+        function toggleToolbarMoreOptionsPopoverMenu(event, buttonElement) {
+            event.stopPropagation();
+            // Close any other open menus first
+            document.querySelectorAll('.toolbar-more-popover').forEach(p => p.classList.remove('open-popover'));
+            
+            const targetPopover = buttonElement.querySelector('.toolbar-more-popover');
+            if (targetPopover) {
+                targetPopover.classList.toggle('open-popover');
+            }
+        }
+
         function closeAllContextPopovers(e) {
             document.getElementById("profile-dropdown-menu-card").classList.remove("show-menu");
             document.getElementById("attachment-popover-box").classList.remove("show-popover");
+            document.querySelectorAll('.toolbar-more-popover').forEach(p => p.classList.remove('open-popover'));
         }
         function toggleProfileDropdownMenu() {
-            document.getElementById("attachment-popover-box").classList.remove("show-popover");
+            closeAllContextPopovers(event);
             document.getElementById("profile-dropdown-menu-card").classList.toggle("show-menu");
         }
         function toggleAttachmentPopoverMenu(e) {
@@ -608,10 +637,10 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         function closeMobileSidebarFromCanvas(e) { if (window.innerWidth <= 768) closeMobileSidebar(); }
         function switchAuthModeToForgotPassword() { document.getElementById("auth-main-panel").style.display = "none"; document.getElementById("auth-recovery-panel").style.display = "block"; clearAuthFeedbackWindows(); }
         function returnToMainLoginGate() { document.getElementById("auth-recovery-panel").style.display = "none"; document.getElementById("auth-main-panel").style.display = "block"; clearAuthFeedbackWindows(); }
+        
         function clearAuthFeedbackWindows() {
             document.getElementById("status-feedback").style.display = "none";
             document.getElementById("recovery-feedback").style.display = "none";
-            // Clear input borders highlight markers classes on reset parameters loops
             document.querySelectorAll(".auth-card input, .auth-card select").forEach(el => el.classList.remove("input-field-error"));
         }
 
@@ -645,7 +674,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         }
 
         async function executeAuthAction() {
-            // Remove previous error bounds before calculating validations tracking loops
             document.querySelectorAll(".auth-card input, .auth-card select").forEach(el => el.classList.remove("input-field-error"));
             
             const emailField = document.getElementById("auth-email");
@@ -668,7 +696,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             if (!email) { emailField.classList.add("input-field-error"); structuralValidationFailed = true; }
             if (!password) { passwordField.classList.add("input-field-error"); structuralValidationFailed = true; }
 
-            if (structuralValidationFailed) { showFeedback("Please populate all highlighted empty inputs to proceed.", true); return; }
+            if (structuralValidationFailed) { showFeedback("Please populate all highlighted empty fields.", true); return; }
 
             try {
                 if (isRegisterMode) {
@@ -755,6 +783,35 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
         function showRecoveryFeedback(msg, isError) { const el = document.getElementById("recovery-feedback"); el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`; el.innerText = msg; el.style.display = "block"; }
         function terminateSession() { localStorage.removeItem("kona_jwt_token"); conversationHistory = []; currentActiveChatId = null; document.getElementById("chat-canvas").innerHTML = `<div class="message-row kona-side">Terminal locked out securely.</div>`; document.getElementById("history-list").innerHTML = ""; document.getElementById("auth-gate").style.display = "flex"; toggleAuthMode(false); }
 
+        // GENERATOR: Dynamically configures row toolbars containing row icon metrics below assistant messages 
+        function appendSmartResponseActionToolbar(boxElement) {
+            const toolbar = document.createElement("div");
+            toolbar.className = "smart-response-toolbar";
+            toolbar.innerHTML = `
+                <button class="toolbar-icon-btn" title="Good response">👍</button>
+                <button class="toolbar-icon-btn" title="Bad response">👎</button>
+                <button class="toolbar-icon-btn" title="Regenerate" onclick="event.stopPropagation(); dispatchKonaEngine();">🔄</button>
+                <button class="toolbar-icon-btn" title="Copy Response" onclick="executeGlobalResponseCopyAction(this)">📋</button>
+                
+                <!-- Expanded More Options Triggers mapping image_c2cb09.png layout specification -->
+                <button class="toolbar-icon-btn" title="More options" onclick="toggleToolbarMoreOptionsPopoverMenu(event, this)">
+                    •••
+                    <div class="toolbar-more-popover" onclick="event.stopPropagation()">
+                        <div class="popover-action-row" onclick="alert('Branching operation context active...')"><span class="action-emoji">↗</span> Branch in new chat</div>
+                        <div class="popover-action-row" onclick="alert('Synthesizing speech engine modules...')"><span class="action-emoji">🔊</span> Listen</div>
+                        <div class="popover-action-row" onclick="alert('Exporting documentation cluster to cloud storage...')"><span class="action-emoji">📄</span> Export to Docs</div>
+                        <div class="popover-action-row" onclick="alert('Drafting secure mailing nodes patterns...')"><span class="action-emoji">✉️</span> Draft in Gmail</div>
+                        <div class="popover-action-row" onclick="alert('Exporting workspace variables straight to Jupyter environment...')"><span class="action-emoji">🔶</span> Export to Colab</div>
+                        <div class="popover-action-row" onclick="alert('Deploying code arrays packages to sandbox clusters...')"><span class="action-emoji">📦</span> Export to Replit</div>
+                        <div class="popover-action-row" onclick="alert('Filing system context integrity report to webmaster...')"><span class="action-emoji">🚩</span> Report legal issue</div>
+                        <div class="popover-action-row" onclick="alert('Fetching ingestion vector repository index maps...')"><span class="action-emoji">🔗</span> View sources</div>
+                        <div class="popover-action-row" onclick="alert('Analyzing token generation sequence tracking charts...')"><span class="action-emoji">📊</span> See response details</div>
+                    </div>
+                </button>
+            `;
+            boxElement.appendChild(toolbar);
+        }
+
         function nativeRenderMarkdown(rawString) {
             let processedHtml = "";
             let dataSegments = rawString.split("```");
@@ -809,10 +866,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                     } else {
                         const block = document.createElement("div"); block.className = "parsed-response"; block.innerHTML = nativeRenderMarkdown(msg.content);
                         row.appendChild(block);
-                        const copyActionBtn = document.createElement("button");
-                        copyActionBtn.className = "global-copy-response-btn"; copyActionBtn.innerText = "📋 Copy Response";
-                        copyActionBtn.onclick = function() { executeGlobalResponseCopyAction(this); };
-                        row.appendChild(copyActionBtn);
+                        appendSmartResponseActionToolbar(row);
                     }
                     canvas.appendChild(row);
                 });
@@ -892,10 +946,8 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                     canvas.scrollTop = canvas.scrollHeight;
                 }
                 
-                const copyActionBtn = document.createElement("button");
-                copyActionBtn.className = "global-copy-response-btn"; copyActionBtn.innerText = "📋 Copy Response";
-                copyActionBtn.onclick = function() { executeGlobalResponseCopyAction(this); };
-                konaBox.appendChild(copyActionBtn);
+                // Mount new row icon action toolbar components directly inside active assistant frame blocks
+                appendSmartResponseActionToolbar(konaBox);
 
                 conversationHistory.push({ role: "assistant", content: streamingResponseTracker });
                 fetchUserChatDatabaseList(); canvas.scrollTop = canvas.scrollHeight;
