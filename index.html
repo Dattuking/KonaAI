@@ -41,7 +41,7 @@
         .history-item { font-size: 13px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
         .history-item:hover, .history-item.active-chat { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
         
-        /* Workspace Main Body Shell Panels */
+        /* Workspace Core Layout Panels Configuration */
         #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; background-color: var(--surface); overflow: hidden; }
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
@@ -155,7 +155,6 @@
 </head>
 <body>
 
-    <!-- Onboarding Gate Terminal Frame -->
     <div id="auth-gate">
         <div class="auth-card" id="auth-main-panel">
             <h2 id="auth-title">⚡ Kona AI</h2>
@@ -194,7 +193,6 @@
             <div id="status-feedback" class="auth-msg"></div>
         </div>
 
-        <!-- 6-DIGIT RECOVERY INTERACTION OVERLAY VIEW -->
         <div class="auth-card" id="auth-recovery-panel" style="display: none;">
             <h2>🔑 Reset Password</h2>
             <p>Verification tracking suite for account nodes.</p>
@@ -226,7 +224,6 @@
         </div>
     </div>
 
-    <!-- GOOGLE DRIVE MODAL COMPONENT -->
     <div id="drive-picker-modal" onclick="closeGoogleDriveModalWindow()">
         <div class="drive-window-card" onclick="event.stopPropagation()">
             <div class="drive-header-bar">
@@ -274,7 +271,6 @@
         </div>
     </div>
 
-    <!-- HIDDEN NATIVE SYSTEM CONTROLS OVERLAYS -->
     <input type="file" id="native-system-file-picker" style="display: none;" onchange="handleSystemFileSelected(event)">
     <input type="file" id="native-system-photo-picker" style="display: none;" accept="image/*" onchange="handleSystemPhotoSelected(event)">
     <input type="file" id="native-profile-avatar-picker" style="display: none;" accept="image/*" onchange="handleProfileAvatarSelected(event)">
@@ -315,7 +311,6 @@
                 </div>
             </header>
 
-            <!-- 1. CORE SEARCH VIEW PANEL -->
             <div class="app-view-panel active-panel" id="panel-search">
                 <div id="chat-canvas">
                     <div class="message-row kona-side">
@@ -323,7 +318,6 @@
                     </div>
                 </div>
                 
-                <!-- ACTION INPUT DOCK -->
                 <div id="input-dock" onclick="event.stopPropagation()">
                     
                     <div class="active-attachment-badge" id="file-attachment-banner">
@@ -391,7 +385,6 @@
                 </div>
             </div>
 
-            <!-- 2. LIBRARY VIEW PANEL -->
             <div class="app-view-panel" id="panel-library">
                 <div class="panel-scroll-content">
                     <h2>Knowledge Library</h2>
@@ -405,7 +398,6 @@
                 </div>
             </div>
 
-            <!-- 3. PROJECTS DASHBOARD PANEL -->
             <div class="app-view-panel" id="panel-projects">
                 <div class="panel-scroll-content">
                     <h2>Active Workspaces & Projects</h2>
@@ -419,7 +411,6 @@
                 </div>
             </div>
 
-            <!-- 4. APPS LAUNCHER PANEL -->
             <div class="app-view-panel" id="panel-apps">
                 <div class="panel-scroll-content">
                     <h2>Integrated App Utilities</h2>
@@ -520,7 +511,7 @@
             navigator.clipboard.writeText(textToCopy).then(() => {
                 buttonElement.innerText = "✓ Copied Response";
                 setTimeout(() => buttonElement.innerText = "📋", 1800);
-            }).catch(() => alert("Clipboard block: check configurations."));
+            }).catch(() => alert("Clipboard access blocked."));
         }
 
         function executeInlineBlockCopyAction(buttonElement) {
@@ -772,6 +763,7 @@
             boxElement.appendChild(toolbar);
         }
 
+        // BUILT-IN SECURITY FALLBACK REGEX STRING BUILDER
         function nativeRenderMarkdown(rawString) {
             let processedHtml = "";
             let dataSegments = rawString.split("```");
@@ -784,8 +776,12 @@
                 } else {
                     let currentTextSegment = dataSegments[idx];
                     currentTextSegment = currentTextSegment.replace(/###\s+(.*)/g, "<h3>$1</h3>");
-                    currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\/g, "<strong>$1</strong>");
+                    
+                    // CRITICAL EXPLICIT RECTIFICATION FIX BLOCK: 
+                    // Safely handles bold text replacements without dropping or crashing tokens compilation
+                    currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
                     currentTextSegment = currentTextSegment.replace(/`(.*?)`/g, '<code class="inline-code-token">$1</code>');
+                    
                     processedHtml += currentTextSegment.split("\n").map(sentence => {
                         if (sentence.trim().startsWith("<h3>") || sentence.trim().startsWith("<div")) return sentence;
                         return sentence.trim() ? `<p>${sentence}</p>` : "";
@@ -834,7 +830,6 @@
             } catch(e) { console.log(e); }
         }
 
-        // PERMANENT STREAM READER RE-ENGINEERING
         async function dispatchKonaEngine() {
             const inputField = document.getElementById("user-query");
             const rawPrompt = inputField.value.trim();
@@ -870,8 +865,7 @@
                 });
                 if(response.status === 401) throw new Error("Session access expired.");
 
-                const streamReader = response.body.getReader(); 
-                const stringDecoder = new TextDecoder("utf-8");
+                const streamReader = response.body.getReader(); const stringDecoder = new TextDecoder("utf-8");
                 konaBox.innerHTML = ""; 
                 
                 const citationWrapper = document.createElement("div");
@@ -879,25 +873,18 @@
                 citationWrapper.style.display = "none";
                 konaBox.appendChild(citationWrapper);
 
-                const textBodyBlock = document.createElement("div"); 
-                textBodyBlock.className = "parsed-response"; 
-                konaBox.appendChild(textBodyBlock);
-                
-                let citationsAdded = false; 
-                let streamingResponseTracker = "";
-                let stringLineBufferAccumulator = ""; // Permanent row stitch accumulator
+                const textBodyBlock = document.createElement("div"); textBodyBlock.className = "parsed-response"; konaBox.appendChild(textBodyBlock);
+                let citationsAdded = false; let streamingResponseTracker = "";
+                let stringLineBufferAccumulator = ""; 
 
                 while(true) {
-                    const { value, done } = await streamReader.read(); 
-                    if(done) break;
+                    const { value, done } = await streamReader.read(); if(done) break;
                     
-                    // FIXED: Read values and bind them onto a persistent memory buffer string
                     const rawBufferChunk = stringDecoder.decode(value, { stream: !done });
                     stringLineBufferAccumulator += rawBufferChunk;
                     
-                    // Split the array ONLY when an explicit end-of-line marker is found
                     let individualLines = stringLineBufferAccumulator.split("\n");
-                    stringLineBufferAccumulator = individualLines.pop(); // Leave partial rows safe in buffer
+                    stringLineBufferAccumulator = individualLines.pop(); 
 
                     for(const lineNode of individualLines) {
                         const cleanLine = lineNode.trim();
@@ -916,13 +903,11 @@
                                 }
                                 citationsAdded = true;
                             } else if(dataPayload.type === "token") {
-                                // FIXED: Validated clean token keys display dynamically into innerHTML logs
                                 streamingResponseTracker += dataPayload.text;
                                 textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
                             }
                         } catch(jsonError) {
-                            // Suppress errors and pass gracefully to allow continuous block rendering
-                            console.log("Chunk slice alignment variance encountered. Stitched.");
+                            console.log("Chunk sync aligned.");
                         }
                     }
                     canvas.scrollTop = canvas.scrollHeight;
