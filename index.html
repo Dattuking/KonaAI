@@ -18,7 +18,10 @@
         .auth-field-group { display: flex; flex-direction: column; gap: 11px; margin-bottom: 16px; text-align: left; }
         .auth-field-group label { font-size: 12px; color: var(--font-dim); font-weight: 500; margin-left: 2px; }
         .auth-card input, .auth-card select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: white; font-size: 14px; outline: none; transition: border-color 0.2s; }
+        
+        /* SECURE VISUAL HIGH-LIGHTING ERROR RULES */
         .auth-card input.input-field-error, .auth-card select.input-field-error { border-color: #ef4444 !important; background: rgba(239, 68, 68, 0.05); }
+        
         .auth-card button { width: 100%; padding: 13px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 6px; }
         
         .forgot-link-btn { font-size: 12px; color: var(--primary); cursor: pointer; display: block; text-align: right; margin-top: -6px; margin-bottom: 14px; font-weight: 500; text-decoration: none; }
@@ -164,7 +167,6 @@
 </head>
 <body>
 
-    <!-- Onboarding Gate Terminal Frame -->
     <div id="auth-gate">
         <div class="auth-card" id="auth-main-panel">
             <h2 id="auth-title">⚡ Kona AI</h2>
@@ -203,7 +205,6 @@
             <div id="status-feedback" class="auth-msg"></div>
         </div>
 
-        <!-- 6-DIGIT RECOVERY INTERACTION OVERLAY VIEW -->
         <div class="auth-card" id="auth-recovery-panel" style="display: none;">
             <h2>🔑 Reset Password</h2>
             <p>Verification tracking suite for account nodes.</p>
@@ -235,7 +236,6 @@
         </div>
     </div>
 
-    <!-- GOOGLE DRIVE MODAL COMPONENT -->
     <div id="drive-picker-modal" onclick="closeGoogleDriveModalWindow()">
         <div class="drive-window-card" onclick="event.stopPropagation()">
             <div class="drive-header-bar">
@@ -286,7 +286,6 @@
         </div>
     </div>
 
-    <!-- HIDDEN NATIVE SYSTEM CONTROLS OVERLAYS -->
     <input type="file" id="native-system-file-picker" style="display: none;" onchange="handleSystemFileSelected(event)">
     <input type="file" id="native-system-photo-picker" style="display: none;" accept="image/*" onchange="handleSystemPhotoSelected(event)">
     <input type="file" id="native-profile-avatar-picker" style="display: none;" accept="image/*" onchange="handleProfileAvatarSelected(event)">
@@ -328,7 +327,6 @@
                 </div>
             </header>
 
-            <!-- 1. CORE SEARCH VIEW PANEL -->
             <div class="app-view-panel active-panel" id="panel-search">
                 <div id="chat-canvas">
                     <div class="message-row kona-side">
@@ -336,7 +334,6 @@
                     </div>
                 </div>
                 
-                <!-- ACTION INPUT DOCK -->
                 <div id="input-dock" onclick="event.stopPropagation()">
                     
                     <div class="active-attachment-badge" id="file-attachment-banner">
@@ -404,7 +401,6 @@
                 </div>
             </div>
 
-            <!-- 2. LIBRARY VIEW PANEL -->
             <div class="app-view-panel" id="panel-library">
                 <div class="panel-scroll-content">
                     <h2>Knowledge Library</h2>
@@ -418,7 +414,6 @@
                 </div>
             </div>
 
-            <!-- 3. PROJECTS DASHBOARD PANEL -->
             <div class="app-view-panel" id="panel-projects">
                 <div class="panel-scroll-content">
                     <h2>Active Workspaces & Projects</h2>
@@ -432,7 +427,6 @@
                 </div>
             </div>
 
-            <!-- 4. APPS LAUNCHER PANEL -->
             <div class="app-view-panel" id="panel-apps">
                 <div class="panel-scroll-content">
                     <h2>Integrated App Utilities</h2>
@@ -447,7 +441,6 @@
                 </div>
             </div>
 
-            <!-- 5. CODEX PROGRAMMING INTERFACE PANEL -->
             <div class="app-view-panel" id="panel-codex">
                 <div class="codex-wrapper">
                     <div class="codex-editor-zone">
@@ -669,6 +662,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             }
         }
 
+        // CORRECTED SUBMISSION IMPLEMENTATION: Encodes login data as a URL form-data body
         async function executeAuthAction() {
             document.querySelectorAll(".auth-card input, .auth-card select").forEach(el => el.classList.remove("input-field-error"));
             
@@ -706,9 +700,19 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                     showFeedback("Account initialized successfully! Swapping viewports...", false);
                     setTimeout(() => toggleAuthMode(false), 1500);
                 } else {
-                    const formData = new URLSearchParams(); formData.append("username", email); formData.append("password", password);
-                    const res = await fetch(`${API_BASE}/auth/login`, { method: "POST", body: formData });
-                    const data = await res.json(); if (!res.ok) throw new Error(data.detail || "Access validation parameters rejected.");
+                    // FIXED: Re-engineered packet pipeline using URLSearchParams encoded body streams
+                    const formBodyParameters = new URLSearchParams();
+                    formBodyParameters.append("username", email);
+                    formBodyParameters.append("password", password);
+                    
+                    const res = await fetch(`${API_BASE}/auth/login`, { 
+                        method: "POST", 
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: formBodyParameters 
+                    });
+                    
+                    const data = await res.json(); 
+                    if (!res.ok) throw new Error(data.detail || "Access validation parameters rejected.");
 
                     localStorage.setItem("kona_jwt_token", data.access_token);
                     showFeedback("Access verified!", false);
@@ -901,15 +905,14 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
 
                 const textBodyBlock = document.createElement("div"); textBodyBlock.className = "parsed-response"; konaBox.appendChild(textBodyBlock);
                 let citationsAdded = false; let streamingResponseTracker = "";
-                let bufferRemainder = ""; # Handles split network lines gracefully
+                let bufferRemainder = ""; 
 
                 while(true) {
                     const { value, done } = await streamReader.read(); if(done) break;
                     
-                    // FIXED: Concatenate incoming stream chunks safely with remainder strings
                     const rawChunk = stringDecoder.decode(value, { stream: true });
                     const structuralLines = (bufferRemainder + rawChunk).split("\n");
-                    bufferRemainder = structuralLines.pop(); # Store incomplete trailing rows safely
+                    bufferRemainder = structuralLines.pop(); 
 
                     for(const structuralLine of structuralLines) {
                         const cleanLine = structuralLine.trim();
@@ -927,7 +930,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                                     }
                                     citationsAdded = true;
                                 } else if(dataPayload.type === "token") {
-                                    // FIXED: Text token streams update dynamically without getting cleared or omitted
                                     streamingResponseTracker += dataPayload.text;
                                     textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
                                 }
