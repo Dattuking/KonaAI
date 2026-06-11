@@ -31,7 +31,7 @@
         /* Left Sidebar Panels */
         #left-sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background-color: #0b0f19; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; padding: 20px 14px; height: 100%; transition: transform 0.3s ease; }
         .sidebar-brand { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; margin-bottom: 24px; padding-left: 8px; }
-        .new-chat-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 10px; color: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; transition: background 0.2s; }
+        .new-chat-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 10px; color: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; transition: background 0.2s; border: none; }
         .new-chat-btn:hover { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
         .sidebar-nav-section { display: flex; flex-direction: column; gap: 4px; margin-bottom: 24px; }
         .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 8px; color: var(--font-dim); font-size: 14px; cursor: pointer; font-weight: 500; transition: all 0.2s ease; }
@@ -42,7 +42,7 @@
         .history-item { font-size: 13px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
         .history-item:hover, .history-item.active-chat { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
         
-        /* Workspace Core Layout Panels Configuration */
+        /* Workspace Main Shell */
         #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; background-color: var(--surface); overflow: hidden; }
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
@@ -156,7 +156,6 @@
 </head>
 <body>
 
-    <!-- Onboarding Gate Terminal Frame -->
     <div id="auth-gate">
         <div class="auth-card" id="auth-main-panel">
             <h2 id="auth-title">⚡ Kona AI</h2>
@@ -195,7 +194,6 @@
             <div id="status-feedback" class="auth-msg"></div>
         </div>
 
-        <!-- 6-DIGIT RECOVERY INTERACTION OVERLAY VIEW -->
         <div class="auth-card" id="auth-recovery-panel" style="display: none;">
             <h2>🔑 Reset Password</h2>
             <p>Verification tracking suite for account nodes.</p>
@@ -227,7 +225,6 @@
         </div>
     </div>
 
-    <!-- GOOGLE DRIVE MODAL COMPONENT -->
     <div id="drive-picker-modal" onclick="closeGoogleDriveModalWindow()">
         <div class="drive-window-card" onclick="event.stopPropagation()">
             <div class="drive-header-bar">
@@ -275,7 +272,6 @@
         </div>
     </div>
 
-    <!-- HIDDEN NATIVE SYSTEM CONTROLS OVERLAYS -->
     <input type="file" id="native-system-file-picker" style="display: none;" onchange="handleSystemFileSelected(event)">
     <input type="file" id="native-system-photo-picker" style="display: none;" accept="image/*" onchange="handleSystemPhotoSelected(event)">
     <input type="file" id="native-profile-avatar-picker" style="display: none;" accept="image/*" onchange="handleProfileAvatarSelected(event)">
@@ -283,7 +279,6 @@
     <div id="app-layout-wrapper">
         <aside id="left-sidebar">
             <div class="sidebar-brand"><span>⚡ Kona AI</span></div>
-            <!-- FIXED NEW CHAT OPTION CALL TRIGGER -->
             <button class="new-chat-btn" onclick="clearActiveSessionChat()">📝 New chat</button>
             <div class="sidebar-nav-section">
                 <div class="nav-item active" id="nav-search" onclick="switchActiveViewPanel('search')"><span style="font-size:16px;">🔍</span> Search chats</div>
@@ -317,7 +312,6 @@
                 </div>
             </header>
 
-            <!-- 1. CORE SEARCH VIEW PANEL -->
             <div class="app-view-panel active-panel" id="panel-search">
                 <div id="chat-canvas">
                     <div class="message-row kona-side">
@@ -325,7 +319,6 @@
                     </div>
                 </div>
                 
-                <!-- ACTION INPUT DOCK -->
                 <div id="input-dock" onclick="event.stopPropagation()">
                     
                     <div class="active-attachment-badge" id="file-attachment-banner">
@@ -393,7 +386,6 @@
                 </div>
             </div>
 
-            <!-- 2. LIBRARY VIEW PANEL -->
             <div class="app-view-panel" id="panel-library">
                 <div class="panel-scroll-content">
                     <h2>Knowledge Library</h2>
@@ -407,7 +399,6 @@
                 </div>
             </div>
 
-            <!-- 3. PROJECTS DASHBOARD PANEL -->
             <div class="app-view-panel" id="panel-projects">
                 <div class="panel-scroll-content">
                     <h2>Active Workspaces & Projects</h2>
@@ -421,7 +412,6 @@
                 </div>
             </div>
 
-            <!-- 4. APPS LAUNCHER PANEL -->
             <div class="app-view-panel" id="panel-apps">
                 <div class="panel-scroll-content">
                     <h2>Integrated App Utilities</h2>
@@ -467,23 +457,43 @@
             }
         };
 
-        // FIXED ACTION UTILITY: Completely resets chat arrays to successfully initiate a fresh chat room
-        function clearActiveSessionChat() {
+        // ENHANCED NEW CHAT PROCESSOR: Explicitly pushes state logs straight into the database prior to UI resets
+        async function clearActiveSessionChat() {
+            const secureToken = localStorage.getItem("kona_jwt_token");
+            
+            // Defensively check if an ongoing conversation context is active and has data to save
+            if (conversationHistory.length > 0 && secureToken) {
+                try {
+                    console.log("Saving ongoing conversation stream to relational database schema tables...");
+                    // Submit a fast background update to commit the history logs prior to tearing down UI state variables
+                    await fetch(`${API_BASE}/search`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${secureToken}` },
+                        body: JSON.stringify({ chat_id: currentActiveChatId, history: conversationHistory })
+                    });
+                } catch (saveError) {
+                    console.error("Transient background transaction error on thread commit wrapper:", saveError);
+                }
+            }
+
+            // Flush out memory tracking indicators cleanly
             conversationHistory = [];
             currentActiveChatId = null;
             detachActiveContextFile();
             
-            // Wipe active screen container content back to base welcome message layout
+            // Re-render greeting console baseline element panel cards view
             document.getElementById("chat-canvas").innerHTML = `
                 <div class="message-row kona-side">
                     Welcome to Kona AI. Your production session is secure. Submit a query in any language to execute vector and real-time hybrid searches.
                 </div>
             `;
             
-            // Remove highlighting active styling tags across the left recents menu list items
+            // Fetch updated recents list row metrics right away to reflect saved threads instantly
+            await fetchUserChatDatabaseList();
+            
             document.querySelectorAll(".history-item").forEach(item => item.classList.remove("active-chat"));
             switchActiveViewPanel("search");
-            console.log("Session memory array flushed. Ready for fresh session payload ingestion streams.");
+            console.log("New clean workspace setup sequence executed completely.");
         }
 
         function handleNativeInputBoxPasteEvent(event) {
@@ -603,6 +613,7 @@
             reader.readAsDataURL(file);
         }
 
+        // CONTROL: Mappings tag banners for ingested file contexts parameters cleanly
         function simulateAttachmentAction(actionType, placeholderFilename) {
             activeAttachmentType = actionType; activeAttachmentName = placeholderFilename;
             const banner = document.getElementById("file-attachment-banner");
@@ -793,7 +804,6 @@
             boxElement.appendChild(toolbar);
         }
 
-        // BUILT-IN CRASHPROOF MARKDOWN TEXT TOKEN LAYOUT PARSER
         function nativeRenderMarkdown(rawString) {
             let processedHtml = "";
             let dataSegments = rawString.split("```");
@@ -806,11 +816,8 @@
                 } else {
                     let currentTextSegment = dataSegments[idx];
                     currentTextSegment = currentTextSegment.replace(/###\s+(.*)/g, "<h3>$1</h3>");
-                    
-                    // FIXED EXPLICIT MAPPING: Correctly wraps all text-level bold blocks inside strong html tags securely
                     currentTextSegment = currentTextSegment.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
                     currentTextSegment = currentTextSegment.replace(/`(.*?)`/g, '<code class="inline-code-token">$1</code>');
-                    
                     processedHtml += currentTextSegment.split("\n").map(sentence => {
                         if (sentence.trim().startsWith("<h3>") || sentence.trim().startsWith("<div")) return sentence;
                         return sentence.trim() ? `<p>${sentence}</p>` : "";
@@ -859,7 +866,6 @@
             } catch(e) { console.log(e); }
         }
 
-        // FULLY RE-ENGINEERED UNBROKEN DATA TOKENS ACCUMULATOR DRIVER
         async function dispatchKonaEngine() {
             const inputField = document.getElementById("user-query");
             const rawPrompt = inputField.value.trim();
@@ -895,8 +901,7 @@
                 });
                 if(response.status === 401) throw new Error("Session access expired.");
 
-                const streamReader = response.body.getReader(); 
-                const stringDecoder = new TextDecoder("utf-8");
+                const streamReader = response.body.getReader(); const stringDecoder = new TextDecoder("utf-8");
                 konaBox.innerHTML = ""; 
                 
                 const citationWrapper = document.createElement("div");
@@ -904,17 +909,12 @@
                 citationWrapper.style.display = "none";
                 konaBox.appendChild(citationWrapper);
 
-                const textBodyBlock = document.createElement("div"); 
-                textBodyBlock.className = "parsed-response"; 
-                konaBox.appendChild(textBodyBlock);
-                
-                let citationsAdded = false; 
-                let streamingResponseTracker = "";
+                const textBodyBlock = document.createElement("div"); textBodyBlock.className = "parsed-response"; konaBox.appendChild(textBodyBlock);
+                let citationsAdded = false; let streamingResponseTracker = "";
                 let stringLineBufferAccumulator = ""; 
 
                 while(true) {
-                    const { value, done } = await streamReader.read(); 
-                    if(done) break;
+                    const { value, done } = await streamReader.read(); if(done) break;
                     
                     const rawBufferChunk = stringDecoder.decode(value, { stream: true });
                     stringLineBufferAccumulator += rawBufferChunk;
@@ -939,12 +939,11 @@
                                 }
                                 citationsAdded = true;
                             } else if(dataPayload.type === "token") {
-                                // FIXED UNBROKEN CHANNEL: Streaming text tokens render reliably on the layout canvas
                                 streamingResponseTracker += dataPayload.text;
                                 textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
                             }
                         } catch(jsonError) {
-                            console.log("Stitched network frame boundaries chunk align sequence.");
+                            console.log("Chunk align.");
                         }
                     }
                     canvas.scrollTop = canvas.scrollHeight;
