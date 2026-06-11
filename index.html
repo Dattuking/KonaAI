@@ -141,14 +141,7 @@
         .module-info-card p { color: var(--font-dim); font-size: 14px; line-height: 1.6; }
         .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 
-        .codex-wrapper { display: flex; flex: 1; height: 100%; overflow: hidden; background: #04060b; }
-        .codex-editor-zone { flex: 1; display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.05); }
-        .codex-toolbar { padding: 12px 20px; background: #0b0f19; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; gap: 12px; }
-        .codex-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; }
-        .codex-textarea { flex: 1; background: #05070f; border: none; color: #34d399; font-family: monospace; font-size: 15px; padding: 24px; resize: none; outline: none; line-height: 1.5; }
-        .codex-terminal-zone { width: 350px; background: #020306; display: flex; flex-direction: column; padding: 20px; font-family: monospace; font-size: 14px; color: #f9fafb; }
-
-        @media (max-width: 1024px) { #chat-canvas, #input-dock { padding: 30px 8%; } .codex-terminal-zone { width: 250px; } }
+        @media (max-width: 1024px) { #chat-canvas, #input-dock { padding: 30px 8%; } }
         @media (max-width: 768px) {
             .menu-toggle-btn { display: block; margin-right: 12px; }
             #left-sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); }
@@ -159,9 +152,7 @@
             #input-dock { padding: 15px 15px; }
             .interactive-bar button.search-action-btn { padding: 10px 18px; font-size: 14px; }
             .auth-card { margin: 0 16px; padding: 30px 20px; width: calc(100% - 32px); }
-            .codex-wrapper { flex-direction: column; }
             .drive-window-card { width: 95%; max-height: 90vh; }
-            .codex-terminal-zone { width: 100%; height: 200px; border-top: 1px solid rgba(255,255,255,0.05); }
         }
     </style>
 </head>
@@ -172,7 +163,7 @@
             <h2 id="auth-title">⚡ Kona AI</h2>
             <p id="auth-subtitle">Sign in to your encrypted search node</p>
             
-            <form id="auth-main-form" onsubmit="handleAuthFormSubmitAction(event)" class="auth-field-group">
+            <div class="auth-field-group">
                 <div id="register-only-fields" style="display: none; flex-direction: column; gap: 11px;">
                     <label for="auth-name">Full Name</label>
                     <input type="text" id="auth-name" placeholder="John Doe">
@@ -188,15 +179,15 @@
                 </div>
 
                 <label for="auth-email">Email Handle</label>
-                <input type="email" id="auth-email" placeholder="name@domain.com">
+                <input type="email" id="auth-email" placeholder="name@domain.com" onkeydown="if(event.key==='Enter') { event.preventDefault(); executeAuthAction(); }">
                 
                 <label for="auth-password">Password Key</label>
-                <input type="password" id="auth-password" placeholder="••••••••">
+                <input type="password" id="auth-password" placeholder="••••••••" onkeydown="if(event.key==='Enter') { event.preventDefault(); executeAuthAction(); }">
                 
                 <span class="forgot-link-btn" id="login-forgot-link" onclick="switchAuthModeToForgotPassword()" style="margin-top: 4px;">Forgot Password?</span>
                 
-                <button type="submit" id="auth-submit-btn">Sign In</button>
-            </form>
+                <button type="button" id="auth-submit-btn" onclick="executeAuthAction()">Sign In</button>
+            </div>
             
             <div class="auth-toggle-area" id="auth-toggle-msg">
                 New node operator? <span class="auth-toggle-link" onclick="toggleAuthMode(true)">Create an Account</span>
@@ -249,14 +240,12 @@
                 My Drive &gt; <span class="active-crumb" id="drive-crumb-label">registered_image</span>
             </div>
             <div class="drive-files-grid-canvas">
-                
                 <div class="drive-element-box" onclick="selectGoogleDriveFile('Add from Drive', 'registered_image.png')">
                     <div class="drive-element-image-preview">
                         <span class="avatar-mock-logo">D</span>
                     </div>
                     <div class="drive-element-name">registered_image.png</div>
                 </div>
-
                 <div class="drive-element-box" onclick="selectGoogleDriveFile('Add from Drive', 'Kona-Knowledge-Base.csv')">
                     <div class="drive-element-icon">📁</div>
                     <div class="drive-element-name">Kona-Knowledge-Base</div>
@@ -281,7 +270,6 @@
                     <div class="drive-element-icon">📕</div>
                     <div class="drive-element-name">internal_policy.pdf</div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -299,7 +287,6 @@
                 <div class="nav-item" id="nav-library" onclick="switchActiveViewPanel('library')"><span style="font-size:16px;">📚</span> Library</div>
                 <div class="nav-item" id="nav-projects" onclick="switchActiveViewPanel('projects')"><span style="font-size:16px;">📁</span> Projects</div>
                 <div class="nav-item" id="nav-apps" onclick="switchActiveViewPanel('apps')"><span style="font-size:16px;">🧩</span> Apps</div>
-                <div class="nav-item" id="nav-codex" onclick="switchActiveViewPanel('codex')"><span style="font-size:16px;">💻</span> Codex</div>
             </div>
             <div class="sidebar-divider"></div>
             <div class="section-label">Recents</div>
@@ -441,22 +428,6 @@
                 </div>
             </div>
 
-            <div class="app-view-panel" id="panel-codex">
-                <div class="codex-wrapper">
-                    <div class="codex-editor-zone">
-                        <div class="codex-toolbar">
-                            <button class="codex-btn" onclick="executeCodexCompiler()">⚡ Execute Code</button>
-                        </div>
-                        <textarea class="codex-textarea" id="codex-textarea-field" spellcheck="false">#include &lt;stdio.h&gt;
-int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
-                    </div>
-                    <div class="codex-terminal-zone">
-                        <span style="color: var(--primary); font-weight:700; margin-bottom:10px; display:block;">🖥️ TERMINAL OUTPUT</span>
-                        <div id="codex-terminal-log" style="color: #9ca3af; line-height:1.4;">[System] Ready for code input string sequence execution.</div>
-                    </div>
-                </div>
-            </div>
-
         </main>
     </div>
 
@@ -508,11 +479,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             }
         }
 
-        function handleAuthFormSubmitAction(event) {
-            event.preventDefault();
-            executeAuthAction();
-        }
-
         function handleProfileAvatarSelected(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -543,7 +509,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             navigator.clipboard.writeText(textToCopy).then(() => {
                 buttonElement.innerText = "✓ Copied Response";
                 setTimeout(() => buttonElement.innerText = "📋", 1800);
-            }).catch(() => alert("Clipboard block: check configurations."));
+            }).catch(() => alert("Clipboard access blocked."));
         }
 
         function executeInlineBlockCopyAction(buttonElement) {
@@ -620,7 +586,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             document.getElementById("file-attachment-banner").style.display = "none";
         }
 
-        // NAVIGATION CONTROL FOR SIDEBAR DRAWERS
         function toggleMobileSidebar(e) { e.stopPropagation(); document.getElementById("left-sidebar").classList.toggle("open"); }
         function closeMobileSidebar() { document.getElementById("left-sidebar").classList.remove("open"); }
         function closeMobileSidebarFromCanvas(e) { if (window.innerWidth <= 768) closeMobileSidebar(); }
@@ -638,7 +603,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(`panel-${targetPanelId}`).classList.add('active-panel');
             document.getElementById(`nav-${targetPanelId}`).classList.add('active');
-            const labels = { search: "Search Console", library: "Knowledge Library", projects: "Projects Workspace", apps: "Apps & Utilities", codex: "Codex Script Editor" };
+            const labels = { search: "Search Console", library: "Knowledge Library", projects: "Projects Workspace", apps: "Apps & Utilities" };
             document.getElementById("panel-title-label").innerText = labels[targetPanelId] || "Console Monitor";
             closeMobileSidebar();
         }
@@ -662,7 +627,7 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
             }
         }
 
-        // CORRECTED SUBMISSION IMPLEMENTATION: Encodes login data as a URL form-data body
+        // FIXED LOGON HANDLER: Encodes params seamlessly as URL form data body streams
         async function executeAuthAction() {
             document.querySelectorAll(".auth-card input, .auth-card select").forEach(el => el.classList.remove("input-field-error"));
             
@@ -684,7 +649,12 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
 
             if (!email) { emailField.classList.add("input-field-error"); structuralValidationFailed = true; }
             if (!password) { passwordField.classList.add("input-field-error"); structuralValidationFailed = true; }
-            if (structuralValidationFailed) { showFeedback("Please populate all highlighted empty fields.", true); return; }
+
+            // VISUAL FIELD ERROR BORDER HIGH-LIGHTING
+            if (structuralValidationFailed) { 
+                showFeedback("Please populate all highlighted empty inputs to sign in.", true); 
+                return; 
+            }
 
             try {
                 if (isRegisterMode) {
@@ -700,7 +670,6 @@ int main() { printf("KonaAI Codex Engine Online.\n"); return 0; }</textarea>
                     showFeedback("Account initialized successfully! Swapping viewports...", false);
                     setTimeout(() => toggleAuthMode(false), 1500);
                 } else {
-                    // FIXED: Re-engineered packet pipeline using URLSearchParams encoded body streams
                     const formBodyParameters = new URLSearchParams();
                     formBodyParameters.append("username", email);
                     formBodyParameters.append("password", password);
