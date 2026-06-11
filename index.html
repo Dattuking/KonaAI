@@ -18,10 +18,7 @@
         .auth-field-group { display: flex; flex-direction: column; gap: 11px; margin-bottom: 16px; text-align: left; }
         .auth-field-group label { font-size: 12px; color: var(--font-dim); font-weight: 500; margin-left: 2px; }
         .auth-card input, .auth-card select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: white; font-size: 14px; outline: none; transition: border-color 0.2s; }
-        
-        /* SECURE VISUAL HIGH-LIGHTING ERROR RULES */
         .auth-card input.input-field-error, .auth-card select.input-field-error { border-color: #ef4444 !important; background: rgba(239, 68, 68, 0.05); }
-        
         .auth-card button { width: 100%; padding: 13px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 6px; }
         
         .forgot-link-btn { font-size: 12px; color: var(--primary); cursor: pointer; display: block; text-align: right; margin-top: -6px; margin-bottom: 14px; font-weight: 500; text-decoration: none; }
@@ -44,7 +41,7 @@
         .history-item { font-size: 13px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
         .history-item:hover, .history-item.active-chat { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
         
-        /* Main Workspace Content Shell Panels Switcher Layout */
+        /* Workspace Canvas Layer Styles */
         #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; background-color: var(--surface); overflow: hidden; }
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
@@ -479,6 +476,11 @@
             }
         }
 
+        function handleAuthFormSubmitAction(event) {
+            event.preventDefault();
+            executeAuthAction();
+        }
+
         function handleProfileAvatarSelected(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -509,7 +511,7 @@
             navigator.clipboard.writeText(textToCopy).then(() => {
                 buttonElement.innerText = "✓ Copied Response";
                 setTimeout(() => buttonElement.innerText = "📋", 1800);
-            }).catch(() => alert("Clipboard access blocked."));
+            }).catch(() => alert("Clipboard block: check configurations."));
         }
 
         function executeInlineBlockCopyAction(buttonElement) {
@@ -627,7 +629,6 @@
             }
         }
 
-        // FIXED LOGON HANDLER: Encodes params seamlessly as URL form data body streams
         async function executeAuthAction() {
             document.querySelectorAll(".auth-card input, .auth-card select").forEach(el => el.classList.remove("input-field-error"));
             
@@ -649,12 +650,7 @@
 
             if (!email) { emailField.classList.add("input-field-error"); structuralValidationFailed = true; }
             if (!password) { passwordField.classList.add("input-field-error"); structuralValidationFailed = true; }
-
-            // VISUAL FIELD ERROR BORDER HIGH-LIGHTING
-            if (structuralValidationFailed) { 
-                showFeedback("Please populate all highlighted empty inputs to sign in.", true); 
-                return; 
-            }
+            if (structuralValidationFailed) { showFeedback("Please populate all highlighted empty fields.", true); return; }
 
             try {
                 if (isRegisterMode) {
@@ -899,6 +895,7 @@
                                     }
                                     citationsAdded = true;
                                 } else if(dataPayload.type === "token") {
+                                    // RE-ENGINEERED: Text tokens now append dynamically to innerHTML without being cleared out
                                     streamingResponseTracker += dataPayload.text;
                                     textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
                                 }
