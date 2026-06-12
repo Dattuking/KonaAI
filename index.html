@@ -42,12 +42,12 @@
         .history-item { font-size: 13px; padding: 10px 12px; border-radius: 8px; color: var(--font-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
         .history-item:hover, .history-item.active-chat { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
         
-        /* Workspace Main Body layout */
+        /* Workspace Core Layout Panels Configuration */
         #workspace-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; background-color: var(--surface); overflow: hidden; }
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
         
-        /* Dropdown Profile Component Cards */
+        /* Profile Navigation Dropdowns */
         .profile-dropdown-wrapper { position: relative; display: inline-block; }
         .avatar-trigger-btn { background: #1f2937; border: 1px solid rgba(255,255,255,0.1); width: 42px; height: 42px; border-radius: 50%; color: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; text-transform: uppercase; background-size: cover; background-position: center; overflow: hidden; }
         .profile-dropdown-card { display: none; position: absolute; right: 0; top: 50px; background: var(--card); border: 1px solid rgba(255,255,255,0.08); min-width: 290px; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; }
@@ -84,7 +84,7 @@
         .message-row { max-width: 85%; padding: 20px 24px; border-radius: 16px; font-size: 16px; line-height: 1.7; word-wrap: break-word; position: relative; }
         .user-side { background-color: var(--primary); align-self: flex-end; border-bottom-right-radius: 3px; }
         
-        /* SMART LAYOUT RESPONSE TOOLBAR OVERLAYS */
+        /* RESPONSE TOOLBAR STYLING LAYOUTS */
         .kona-side { background-color: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid rgba(255,255,255,0.04); padding-bottom: 60px; min-width: 280px; }
         .citation-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
         .citation-card { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #60a5fa; padding: 6px 14px; border-radius: 8px; font-size: 13px; text-decoration: none; }
@@ -106,6 +106,7 @@
         /* ATTACHMENTS INPUT DOCK */
         #input-dock { padding: 30px 15%; background: var(--surface); position: relative; }
         .interactive-bar { display: flex; background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 8px 16px; align-items: center; width: 100%; position: relative; }
+        
         .attachment-clip-trigger { background: transparent; border: none; color: var(--font-dim); font-size: 20px; cursor: pointer; padding: 0 10px; display: flex; align-items: center; margin-right: 4px; }
         .attachment-clip-trigger:hover { color: var(--primary); }
         
@@ -153,7 +154,6 @@
 </head>
 <body>
 
-    <!-- Onboarding Gate Terminal Frame -->
     <div id="auth-gate">
         <div class="auth-card" id="auth-main-panel">
             <h2 id="auth-title">⚡ Kona AI</h2>
@@ -192,7 +192,6 @@
             <div id="status-feedback" class="auth-msg"></div>
         </div>
 
-        <!-- 6-DIGIT RECOVERY INTERACTION OVERLAY VIEW -->
         <div class="auth-card" id="auth-recovery-panel" style="display: none;">
             <h2>🔑 Reset Password</h2>
             <p>Verification tracking suite for account nodes.</p>
@@ -224,7 +223,6 @@
         </div>
     </div>
 
-    <!-- GOOGLE DRIVE MODAL COMPONENT -->
     <div id="drive-picker-modal" onclick="closeGoogleDriveModalWindow()">
         <div class="drive-window-card" onclick="event.stopPropagation()">
             <div class="drive-header-bar">
@@ -272,7 +270,6 @@
         </div>
     </div>
 
-    <!-- HIDDEN NATIVE SYSTEM CONTROLS OVERLAYS -->
     <input type="file" id="native-system-file-picker" style="display: none;" onchange="handleSystemFileSelected(event)">
     <input type="file" id="native-system-photo-picker" style="display: none;" accept="image/*" onchange="handleSystemPhotoSelected(event)">
     <input type="file" id="native-profile-avatar-picker" style="display: none;" accept="image/*" onchange="handleProfileAvatarSelected(event)">
@@ -313,7 +310,6 @@
                 </div>
             </header>
 
-            <!-- 1. CORE SEARCH VIEW PANEL -->
             <div class="app-view-panel active-panel" id="panel-search">
                 <div id="chat-canvas">
                     <div class="message-row kona-side">
@@ -321,9 +317,7 @@
                     </div>
                 </div>
                 
-                <!-- ACTION INPUT DOCK -->
                 <div id="input-dock" onclick="event.stopPropagation()">
-                    
                     <div class="active-attachment-badge" id="file-attachment-banner">
                         <span id="banner-attachment-meta">📎 Linked file context initialized</span>
                         <button onclick="detachActiveContextFile()">✕</button>
@@ -338,19 +332,16 @@
                                     <span class="icon-badge">📎</span> Upload files
                                 </div>
                             </div>
-                            
                             <div class="popover-menu-item" onclick="openGoogleDriveModalWindow()">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">▲</span> Add from Drive
                                 </div>
                             </div>
-                            
                             <div class="popover-menu-item" onclick="event.stopPropagation()">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">•••</span> More uploads
                                 </div>
                                 <span class="popover-arrow">❯</span>
-                                
                                 <div class="flyout-submenu">
                                     <div class="flyout-item" onclick="triggerSystemPhotoPicker()">🖼️ Photos</div>
                                     <div class="flyout-item" onclick="simulateAttachmentAction('Avatar', 'custom_avatar_mesh.obj')">👤 Avatar <span class="new-tag-badge" style="margin-left:auto;">New</span></div>
@@ -358,7 +349,6 @@
                                     <div class="flyout-item" onclick="simulateAttachmentAction('Notebooks', 'analytics.ipynb')">📓 Notebooks</div>
                                 </div>
                             </div>
-                            
                             <div class="popover-menu-item" onclick="simulateAttachmentAction('Create image', 'conceptual_vector_mesh.png')">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">🎨</span> Create image
@@ -389,49 +379,45 @@
                 </div>
             </div>
 
-            <!-- 2. LIBRARY VIEW PANEL -->
             <div class="app-view-panel" id="panel-library">
                 <div class="panel-scroll-content">
                     <h2>Knowledge Library</h2>
-                    <p style="color: var(--font-dim); font-size: 14px;">Manage corporate knowledge repository indices attached to your hybrid Vector RAG pipeline.</p>
+                    <p style="color: var(--font-dim); font-size: 14px;">Manage repository indices attached to your Vector pipeline.</p>
                     <div class="grid-layout">
                         <div class="module-info-card">
                             <h3>📑 Vector Ingestion Index</h3>
-                            <p>Status: <span style="color:#34d399;">Active</span><br>Target Space: <code>kona-knowledge-base</code><br>Dimensions: 1536 (Cosine)</p>
+                            <p>Status: <span style="color:#34d399;">Active</span><br>Target Space: <code>kona-knowledge-base</code></p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. PROJECTS DASHBOARD PANEL -->
             <div class="app-view-panel" id="panel-projects">
                 <div class="panel-scroll-content">
                     <h2>Active Workspaces & Projects</h2>
-                    <p style="color: var(--font-dim); font-size: 14px;">Isolate RAG search contexts and memory arrays by linking files to specific development workspaces.</p>
+                    <p style="color: var(--font-dim); font-size: 14px;">Isolate RAG search contexts by linking files to development workspaces.</p>
                     <div class="grid-layout">
                         <div class="module-info-card">
                             <h3>🚀 Default Workspace</h3>
-                            <p>Active chat thread streams are automatically categorized inside this global root playground environment.</p>
+                            <p>Active chat thread streams are automatically categorized inside this playground.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. APPS LAUNCHER PANEL -->
             <div class="app-view-panel" id="panel-apps">
                 <div class="panel-scroll-content">
                     <h2>Integrated App Utilities</h2>
-                    <p style="color: var(--font-dim); font-size: 14px;">Launch specialized system prompt configurations and advanced extensions built into the core AI core engine.</p>
+                    <p style="color: var(--font-dim); font-size: 14px;">Launch advanced extensions built into the AI engine.</p>
                     <div class="grid-layout">
                         <div class="module-info-card">
                             <h3>🔍 Plagiarism Checker GPT</h3>
-                            <p style="margin-bottom:12px;">Cross-checks user strings against web indices to identify copied layout snippets or matching paragraphs.</p>
+                            <p style="margin-bottom:12px;">Cross-checks user strings against web indices to identify copied layout snippets.</p>
                             <button class="new-chat-btn" style="color:var(--font); border: 1px solid rgba(255,255,255,0.1); width:max-content;" onclick="switchActiveViewPanel('search'); document.getElementById('user-query').value='Run Plagiarism check on: '">Launch Utility</button>
                         </div>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
 
@@ -445,25 +431,7 @@
         let activeAttachmentName = null;
         let activeImageBase64Uri = null; 
 
-        window.onload = async function() {
-            const savedToken = localStorage.getItem("kona_jwt_token");
-            if (savedToken) {
-                try {
-                    const verifyResponse = await fetch(`${API_BASE}/auth/profile`, { 
-                        headers: { "Authorization": `Bearer ${savedToken}` } 
-                    });
-                    if (verifyResponse.ok) {
-                        document.getElementById("auth-gate").style.display = "none";
-                        fetchUserChatDatabaseList();
-                        fetchUserProfileDataNode();
-                    } else {
-                        terminateSession();
-                    }
-                } catch (err) { terminateSession(); }
-            }
-        };
-
-        // FIXED CHAT RESETTER: Erases workspace states instantly, bypassing the faulty background-save endpoint call
+        // CRASHPROOF SESSION CLEANER: Instantly clears localized memory without hitting intermediate background loops
         function clearActiveSessionChat() {
             conversationHistory = [];
             currentActiveChatId = null;
@@ -478,7 +446,7 @@
             fetchUserChatDatabaseList();
             document.querySelectorAll(".history-item").forEach(item => item.classList.remove("active-chat"));
             switchActiveViewPanel("search");
-            console.log("State engine flushes completed.");
+            console.log("Memory session reset completed successfully.");
         }
 
         function handleNativeInputBoxPasteEvent(event) {
@@ -532,31 +500,27 @@
             const chatBubbleContainerRow = buttonElement.closest('.message-row');
             const targetTextBlock = chatBubbleContainerRow.querySelector('.parsed-response');
             const textToCopy = targetTextBlock.innerText;
-            
             navigator.clipboard.writeText(textToCopy).then(() => {
                 buttonElement.innerText = "✓ Copied Response";
                 setTimeout(() => buttonElement.innerText = "📋", 1800);
-            }).catch(() => alert("Clipboard access blocked."));
+            }).catch(() => alert("Clipboard block encountered."));
         }
 
         function executeInlineBlockCopyAction(buttonElement) {
             const parentCodeBlockNode = buttonElement.closest('.code-window-block');
             const textNodes = Array.from(parentCodeBlockNode.childNodes).filter(node => node !== buttonElement);
             const scriptCodeText = textNodes.map(node => node.textContent).join("").trim();
-
             navigator.clipboard.writeText(scriptCodeText).then(() => {
                 buttonElement.innerText = "✓ Copied Code";
                 setTimeout(() => buttonElement.innerText = "📋 Copy Code", 1500);
-            }).catch(() => alert("Clipboard binding error."));
+            }).catch(() => alert("Clipboard error."));
         }
 
         function toggleToolbarMoreOptionsPopoverMenu(event, buttonElement) {
             event.stopPropagation();
             document.querySelectorAll('.toolbar-more-popover').forEach(p => p.classList.remove('open-popover'));
             const targetPopover = buttonElement.querySelector('.toolbar-more-popover');
-            if (targetPopover) {
-                targetPopover.classList.toggle('open-popover');
-            }
+            if (targetPopover) { targetPopover.classList.toggle('open-popover'); }
         }
 
         function closeAllContextPopovers(e) {
@@ -564,19 +528,9 @@
             document.getElementById("attachment-popover-box").classList.remove("show-popover");
             document.querySelectorAll('.smart-response-toolbar .toolbar-more-popover').forEach(p => p.classList.remove('open-popover'));
         }
-        function toggleProfileDropdownMenu() {
-            closeAllContextPopovers(event);
-            document.getElementById("profile-dropdown-menu-card").classList.toggle("show-menu");
-        }
-        function toggleAttachmentPopoverMenu(e) {
-            e.stopPropagation();
-            document.getElementById("profile-dropdown-menu-card").classList.remove("show-menu");
-            document.getElementById("attachment-popover-box").classList.toggle("show-popover");
-        }
-        function openGoogleDriveModalWindow() {
-            document.getElementById("attachment-popover-box").classList.remove("show-popover");
-            document.getElementById("drive-picker-modal").style.display = "flex";
-        }
+        function toggleProfileDropdownMenu() { closeAllContextPopovers(event); document.getElementById("profile-dropdown-menu-card").classList.toggle("show-menu"); }
+        function toggleAttachmentPopoverMenu(e) { e.stopPropagation(); document.getElementById("profile-dropdown-menu-card").classList.remove("show-menu"); document.getElementById("attachment-popover-box").classList.toggle("show-popover"); }
+        function openGoogleDriveModalWindow() { document.getElementById("attachment-popover-box").classList.remove("show-popover"); document.getElementById("drive-picker-modal").style.display = "flex"; }
         function closeGoogleDriveModalWindow() { document.getElementById("drive-picker-modal").style.display = "none"; }
         function selectGoogleDriveFile(type, filename) { simulateAttachmentAction(type, filename); closeGoogleDriveModalWindow(); }
         function triggerSystemFilePicker() { document.getElementById("native-system-file-picker").click(); document.getElementById("attachment-popover-box").classList.remove("show-popover"); }
@@ -613,18 +567,6 @@
             document.getElementById("file-attachment-banner").style.display = "none";
         }
 
-        function toggleMobileSidebar(e) { e.stopPropagation(); document.getElementById("left-sidebar").classList.toggle("open"); }
-        function closeMobileSidebar() { document.getElementById("left-sidebar").classList.remove("open"); }
-        function closeMobileSidebarFromCanvas(e) { if (window.innerWidth <= 768) closeMobileSidebar(); }
-        function switchAuthModeToForgotPassword() { document.getElementById("auth-main-panel").style.display = "none"; document.getElementById("auth-recovery-panel").style.display = "block"; clearAuthFeedbackWindows(); }
-        function returnToMainLoginGate() { document.getElementById("auth-recovery-panel").style.display = "none"; document.getElementById("auth-main-panel").style.display = "block"; clearAuthFeedbackWindows(); }
-        
-        function clearAuthFeedbackWindows() {
-            document.getElementById("status-feedback").style.display = "none";
-            document.getElementById("recovery-feedback").style.display = "none";
-            document.querySelectorAll(".auth-card input, .auth-card select").forEach(el => el.classList.remove("input-field-error"));
-        }
-
         function switchActiveViewPanel(targetPanelId) {
             document.querySelectorAll('.app-view-panel').forEach(p => p.classList.remove('active-panel'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -632,7 +574,7 @@
             document.getElementById(`nav-${targetPanelId}`).classList.add('active');
             const labels = { search: "Search Console", library: "Knowledge Library", projects: "Projects Workspace", apps: "Apps & Utilities" };
             document.getElementById("panel-title-label").innerText = labels[targetPanelId] || "Console Monitor";
-            closeMobileSidebar();
+            closeAllContextPopovers(event);
         }
 
         function toggleAuthMode(toRegister) {
@@ -641,13 +583,11 @@
             const linkForgot = document.getElementById("login-forgot-link");
             if (isRegisterMode) {
                 document.getElementById("auth-title").innerText = "Create Account";
-                document.getElementById("auth-subtitle").innerText = "Onboard your user profile meta configurations";
                 document.getElementById("auth-submit-btn").innerText = "Initialize Account";
                 fieldsZone.style.display = "flex"; linkForgot.style.display = "none";
                 document.getElementById("auth-toggle-msg").innerHTML = `Already registered? <span class="auth-toggle-link" onclick="toggleAuthMode(false)">Sign In</span>`;
             } else {
                 document.getElementById("auth-title").innerText = "⚡ Kona AI";
-                document.getElementById("auth-subtitle").innerText = "Sign in to your encrypted search node";
                 document.getElementById("auth-submit-btn").innerText = "Sign In";
                 fieldsZone.style.display = "none"; linkForgot.style.display = "block";
                 document.getElementById("auth-toggle-msg").innerHTML = `New node operator? <span class="auth-toggle-link" onclick="toggleAuthMode(true)">Create an Account</span>`;
@@ -656,7 +596,6 @@
 
         async function executeAuthAction() {
             document.querySelectorAll(".auth-card input, .auth-card select").forEach(el => el.classList.remove("input-field-error"));
-            
             const emailField = document.getElementById("auth-email");
             const passwordField = document.getElementById("auth-password");
             const email = emailField.value.trim();
@@ -667,7 +606,6 @@
                 const nameField = document.getElementById("auth-name");
                 const dobField = document.getElementById("auth-dob");
                 const statusField = document.getElementById("auth-status");
-                
                 if(!nameField.value.trim()) { nameField.classList.add("input-field-error"); structuralValidationFailed = true; }
                 if(!dobField.value) { dobField.classList.add("input-field-error"); structuralValidationFailed = true; }
                 if(!statusField.value) { statusField.classList.add("input-field-error"); structuralValidationFailed = true; }
@@ -675,14 +613,13 @@
 
             if (!email) { emailField.classList.add("input-field-error"); structuralValidationFailed = true; }
             if (!password) { passwordField.classList.add("input-field-error"); structuralValidationFailed = true; }
-            if (structuralValidationFailed) { showFeedback("Please populate all highlighted fields.", true); return; }
+            if (structuralValidationFailed) { showFeedback("Please populate all fields.", true); return; }
 
             try {
                 if (isRegisterMode) {
                     const name = document.getElementById("auth-name").value.trim();
                     const dob = document.getElementById("auth-dob").value;
                     const statusRole = document.getElementById("auth-status").value;
-
                     const res = await fetch(`${API_BASE}/auth/register`, {
                         method: "POST", headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ email: email, password: password, name: name, dob: dob, role_status: statusRole })
@@ -694,16 +631,10 @@
                     const formBodyParameters = new URLSearchParams();
                     formBodyParameters.append("username", email);
                     formBodyParameters.append("password", password);
-                    
                     const res = await fetch(`${API_BASE}/auth/login`, { 
-                        method: "POST", 
-                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                        body: formBodyParameters 
+                        method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: formBodyParameters 
                     });
-                    
-                    const data = await res.json(); 
-                    if (!res.ok) throw new Error(data.detail || "Access validation parameters rejected.");
-
+                    const data = await res.json(); if (!res.ok) throw new Error(data.detail || "Access parameters rejected.");
                     localStorage.setItem("kona_jwt_token", data.access_token);
                     showFeedback("Access verified!", false);
                     setTimeout(() => { document.getElementById("auth-gate").style.display = "none"; fetchUserChatDatabaseList(); fetchUserProfileDataNode(); }, 1000);
@@ -716,7 +647,7 @@
             try {
                 const res = await fetch(`${API_BASE}/auth/forgot-password`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email }) });
                 const data = await res.json(); if(!res.ok) throw new Error(data.detail || "Recovery lookup aborted.");
-                showRecoveryFeedback(`Code generated! Monitor Code: ${data.mock_debug_otp}`, false);
+                showRecoveryFeedback(`Code generated! Code: ${data.mock_debug_otp}`, false);
                 document.getElementById("recovery-step-1").style.display = "none"; document.getElementById("recovery-step-2").style.display = "block";
             } catch(e) { showRecoveryFeedback(e.message, true); }
         }
@@ -751,16 +682,18 @@
                 document.getElementById("profile-dob-label").innerText = userProfile.dob;
                 document.getElementById("profile-status-label").innerText = userProfile.role_status;
                 document.getElementById("profile-date-label").innerText = userProfile.created_at;
-                
                 if(userProfile.avatar_b64) {
                     const avatarNode = document.getElementById("profile-avatar-icon");
-                    avatarNode.style.backgroundImage = `url('${userProfile.avatar_b64}')`;
-                    avatarNode.innerText = ""; 
+                    avatarNode.style.backgroundImage = `url('${userProfile.avatar_b64}')`; avatarNode.innerText = ""; 
                 } else {
                     document.getElementById("profile-avatar-icon").innerText = userProfile.name.charAt(0).toUpperCase();
                 }
             } catch (err) { console.log(err); }
         }
+
+        function showFeedback(msg, isError) { const el = document.getElementById("status-feedback"); el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`; el.innerText = msg; el.style.display = "block"; }
+        function showRecoveryFeedback(msg, isError) { const el = document.getElementById("recovery-feedback"); el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`; el.innerText = msg; el.style.display = "block"; }
+        function terminateSession() { localStorage.removeItem("kona_jwt_token"); conversationHistory = []; currentActiveChatId = null; document.getElementById("chat-canvas").innerHTML = `<div class="message-row kona-side">Terminal locked out securely.</div>`; document.getElementById("history-list").innerHTML = ""; document.getElementById("auth-gate").style.display = "flex"; toggleAuthMode(false); }
 
         function appendSmartResponseActionToolbar(boxElement) {
             const toolbar = document.createElement("div");
@@ -773,22 +706,17 @@
                 <button class="toolbar-icon-btn" title="More options" onclick="toggleToolbarMoreOptionsPopoverMenu(event, this)">
                     •••
                     <div class="toolbar-more-popover" onclick="event.stopPropagation()">
-                        <div class="popover-action-row" onclick="alert('Branching operation...')"><span class="action-emoji">↗</span> Branch in new chat</div>
-                        <div class="popover-action-row" onclick="alert('Listening active speech...')"><span class="action-emoji">🔊</span> Listen</div>
+                        <div class="popover-action-row" onclick="alert('Branching...')"><span class="action-emoji">↗</span> Branch in new chat</div>
+                        <div class="popover-action-row" onclick="alert('Listening speech...')"><span class="action-emoji">🔊</span> Listen</div>
                         <div class="popover-action-row" onclick="alert('Exporting to Docs...')"><span class="action-emoji">📄</span> Export to Docs</div>
                         <div class="popover-action-row" onclick="alert('Drafting in Gmail...')"><span class="action-emoji">✉️</span> Draft in Gmail</div>
-                        <div class="popover-action-row" onclick="alert('Exporting to Colab...')"><span class="action-emoji">🔶</span> Export to Colab</div>
-                        <div class="popover-action-row" onclick="alert('Exporting to Replit...')"><span class="action-emoji">📦</span> Export to Replit</div>
-                        <div class="popover-action-row" onclick="alert('Filing legal context report...')"><span class="action-emoji">🚩</span> Report legal issue</div>
-                        <div class="popover-action-row" onclick="alert('Fetching ingestion map sources...')"><span class="action-emoji">🔗</span> View sources</div>
-                        <div class="popover-action-row" onclick="alert('Analyzing token layout sequence details...')"><span class="action-emoji">📊</span> See response details</div>
                     </div>
                 </button>
             `;
             boxElement.appendChild(toolbar);
         }
 
-        // RE-ENGINEERED DEFENSIVE MARKDOWN TEXT ENGINE PARSER
+        // CRASHPROOF MARKDOWN TEXT TOKEN LAYOUT PARSER
         function nativeRenderMarkdown(rawString) {
             if (!rawString) return "";
             try {
@@ -804,7 +732,7 @@
                         let currentTextSegment = dataSegments[idx];
                         currentTextSegment = currentTextSegment.replace(/###\s+(.*)/g, "<h3>$1</h3>");
                         
-                        // FIXED: Replaced standard string match tags safely avoiding regular expressions open-ended corruption loops
+                        // BULLETPROOF SEGMENT STITCHING FOR BOLDING SNIPPETS
                         let splitAsterisks = currentTextSegment.split("**");
                         let parsedBoldSegment = "";
                         for(let i=0; i<splitAsterisks.length; i++) {
@@ -822,7 +750,6 @@
                 }
                 return processedHtml;
             } catch(renderCrash) {
-                // Fallback rendering layout loop if markdown breaks up
                 return `<p>${rawString}</p>`; 
             }
         }
@@ -866,6 +793,7 @@
             } catch(e) { console.log(e); }
         }
 
+        // FULLY RE-ENGINEERED UNBROKEN DATA TOKENS CHUNK ACCUMULATOR
         async function dispatchKonaEngine() {
             const inputField = document.getElementById("user-query");
             const rawPrompt = inputField.value.trim();
@@ -906,21 +834,18 @@
                 konaBox.innerHTML = ""; 
                 
                 const citationWrapper = document.createElement("div");
-                citationWrapper.className = "citation-container";
-                citationWrapper.style.display = "none";
+                citationWrapper.className = "citation-container"; citationWrapper.style.display = "none";
                 konaBox.appendChild(citationWrapper);
 
                 const textBodyBlock = document.createElement("div"); 
-                textBodyBlock.className = "parsed-response"; 
-                konaBox.appendChild(textBodyBlock);
+                textBodyBlock.className = "parsed-response"; konaBox.appendChild(textBodyBlock);
                 
                 let citationsAdded = false; 
                 let streamingResponseTracker = "";
                 let stringLineBufferAccumulator = ""; 
 
                 while(true) {
-                    const { value, done } = await streamReader.read(); 
-                    if(done) break;
+                    const { value, done } = await streamReader.read(); if(done) break;
                     
                     const rawBufferChunk = stringDecoder.decode(value, { stream: true });
                     stringLineBufferAccumulator += rawBufferChunk;
@@ -930,7 +855,14 @@
 
                     for(const lineNode of individualLines) {
                         const cleanLine = lineNode.trim();
-                        if (!cleanLine.startsWith("data: ")) continue;
+                        
+                        // FALLBACK LAYER: If a raw chunk is received without standard data headers, pass it straight to rendering blocks
+                        if (!cleanLine) continue;
+                        if (!cleanLine.startsWith("data: ")) {
+                            streamingResponseTracker += cleanLine;
+                            textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
+                            continue;
+                        }
                         
                         try {
                             const dataPayload = JSON.parse(cleanLine.substring(6));
@@ -945,12 +877,16 @@
                                 }
                                 citationsAdded = true;
                             } else if(dataPayload.type === "token") {
-                                // FIXED: Text tokens append to the dashboard canvas cleanly in real time
+                                // FIXED UNBROKEN CHANNEL: Real-time text strings update reliably on screen
                                 streamingResponseTracker += dataPayload.text;
                                 textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
                             }
                         } catch(jsonError) {
-                            console.log("Stitched network chunks.");
+                            // Stitches clipped markdown lines dynamically into active text
+                            if(cleanLine.substring(6)) {
+                                streamingResponseTracker += cleanLine.substring(6);
+                                textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
+                            }
                         }
                     }
                     canvas.scrollTop = canvas.scrollHeight;
@@ -958,8 +894,7 @@
                 
                 appendSmartResponseActionToolbar(konaBox);
                 conversationHistory.push({ role: "assistant", content: streamingResponseTracker });
-                fetchUserChatDatabaseList(); 
-                canvas.scrollTop = canvas.scrollHeight;
+                fetchUserChatDatabaseList(); canvas.scrollTop = canvas.scrollHeight;
             } catch (err) { konaBox.innerHTML = `<span style='color:#ef4444;'>Error: ${err.message}</span>`; }
         }
     </script>
