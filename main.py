@@ -158,7 +158,6 @@ async def aggregate_multimodal_vision_stream(email: str, chat_id: str, history: 
                 citations_payload_tracker.append({"id": anchor_id, "title": res.get('title', 'Web Document'), "url": res['url']})
     except Exception: pass
 
-    # Clean multi-line syntax flushing
     yield f"data: {json.dumps({'type': 'metadata', 'sources': citations_payload_tracker, 'chat_id': chat_id})}\n\n"
     await asyncio.sleep(0.01)
 
@@ -197,7 +196,6 @@ async def aggregate_multimodal_vision_stream(email: str, chat_id: str, history: 
             if chunk.choices and chunk.choices[0].delta.content:
                 token = chunk.choices[0].delta.content
                 streaming_response_tracker += token
-                # Formulate explicitly clean string packet terminations
                 yield f"data: {json.dumps({'type': 'token', 'text': token})}\n\n"
 
         updated_history = history.copy()
@@ -311,4 +309,4 @@ async def run_search(payload: SearchPayload, user_identity: str = Depends(verify
     return StreamingResponse(aggregate_multimodal_vision_stream(user_identity, target_chat_id, payload.history), media_type="text/event-stream")
 
 @app.get("/")
-async def health_check(): return {"status": "online", "framework": "Multimodal Vision Node Connected"}
+async def health_check(): return {"status": "online", "framework": "Multimodal Vision Engine Online"}
