@@ -47,7 +47,7 @@
         header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 800; font-size: 24px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .menu-toggle-btn { display: none; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
         
-        /* Profile Navigation Dropdowns */
+        /* Dropdown Profile Modules */
         .profile-dropdown-wrapper { position: relative; display: inline-block; }
         .avatar-trigger-btn { background: #1f2937; border: 1px solid rgba(255,255,255,0.1); width: 42px; height: 42px; border-radius: 50%; color: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; text-transform: uppercase; background-size: cover; background-position: center; overflow: hidden; }
         .profile-dropdown-card { display: none; position: absolute; right: 0; top: 50px; background: var(--card); border: 1px solid rgba(255,255,255,0.08); min-width: 290px; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; }
@@ -106,7 +106,6 @@
         /* ATTACHMENTS INPUT DOCK */
         #input-dock { padding: 30px 15%; background: var(--surface); position: relative; }
         .interactive-bar { display: flex; background: var(--card); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 8px 16px; align-items: center; width: 100%; position: relative; }
-        
         .attachment-clip-trigger { background: transparent; border: none; color: var(--font-dim); font-size: 20px; cursor: pointer; padding: 0 10px; display: flex; align-items: center; margin-right: 4px; }
         .attachment-clip-trigger:hover { color: var(--primary); }
         
@@ -318,6 +317,7 @@
                 </div>
                 
                 <div id="input-dock" onclick="event.stopPropagation()">
+                    
                     <div class="active-attachment-badge" id="file-attachment-banner">
                         <span id="banner-attachment-meta">📎 Linked file context initialized</span>
                         <button onclick="detachActiveContextFile()">✕</button>
@@ -332,16 +332,19 @@
                                     <span class="icon-badge">📎</span> Upload files
                                 </div>
                             </div>
+                            
                             <div class="popover-menu-item" onclick="openGoogleDriveModalWindow()">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">▲</span> Add from Drive
                                 </div>
                             </div>
+                            
                             <div class="popover-menu-item" onclick="event.stopPropagation()">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">•••</span> More uploads
                                 </div>
                                 <span class="popover-arrow">❯</span>
+                                
                                 <div class="flyout-submenu">
                                     <div class="flyout-item" onclick="triggerSystemPhotoPicker()">🖼️ Photos</div>
                                     <div class="flyout-item" onclick="simulateAttachmentAction('Avatar', 'custom_avatar_mesh.obj')">👤 Avatar <span class="new-tag-badge" style="margin-left:auto;">New</span></div>
@@ -349,6 +352,7 @@
                                     <div class="flyout-item" onclick="simulateAttachmentAction('Notebooks', 'analytics.ipynb')">📓 Notebooks</div>
                                 </div>
                             </div>
+                            
                             <div class="popover-menu-item" onclick="simulateAttachmentAction('Create image', 'conceptual_vector_mesh.png')">
                                 <div class="popover-left-side">
                                     <span class="icon-badge">🎨</span> Create image
@@ -382,7 +386,7 @@
             <div class="app-view-panel" id="panel-library">
                 <div class="panel-scroll-content">
                     <h2>Knowledge Library</h2>
-                    <p style="color: var(--font-dim); font-size: 14px;">Manage repository indices attached to your Vector pipeline.</p>
+                    <p style="color: var(--font-dim); font-size: 14px;">Manage corporate knowledge repository indices attached to your hybrid Vector pipeline.</p>
                     <div class="grid-layout">
                         <div class="module-info-card">
                             <h3>📑 Vector Ingestion Index</h3>
@@ -395,11 +399,11 @@
             <div class="app-view-panel" id="panel-projects">
                 <div class="panel-scroll-content">
                     <h2>Active Workspaces & Projects</h2>
-                    <p style="color: var(--font-dim); font-size: 14px;">Isolate RAG search contexts by linking files to development workspaces.</p>
+                    <p style="color: var(--font-dim); font-size: 14px;">Isolate contexts by linking files to development workspaces.</p>
                     <div class="grid-layout">
                         <div class="module-info-card">
                             <h3>🚀 Default Workspace</h3>
-                            <p>Active chat thread streams are automatically categorized inside this playground.</p>
+                            <p>Active chat thread streams are automatically categorized inside this environment.</p>
                         </div>
                     </div>
                 </div>
@@ -408,16 +412,17 @@
             <div class="app-view-panel" id="panel-apps">
                 <div class="panel-scroll-content">
                     <h2>Integrated App Utilities</h2>
-                    <p style="color: var(--font-dim); font-size: 14px;">Launch advanced extensions built into the AI engine.</p>
+                    <p style="color: var(--font-dim); font-size: 14px;">Launch specialized extensions built into the core AI engine.</p>
                     <div class="grid-layout">
                         <div class="module-info-card">
                             <h3>🔍 Plagiarism Checker GPT</h3>
-                            <p style="margin-bottom:12px;">Cross-checks user strings against web indices to identify copied layout snippets.</p>
+                            <p style="margin-bottom:12px;">Cross-checks user strings against web indices to identify copied snippets.</p>
                             <button class="new-chat-btn" style="color:var(--font); border: 1px solid rgba(255,255,255,0.1); width:max-content;" onclick="switchActiveViewPanel('search'); document.getElementById('user-query').value='Run Plagiarism check on: '">Launch Utility</button>
                         </div>
                     </div>
                 </div>
             </div>
+
         </main>
     </div>
 
@@ -431,7 +436,25 @@
         let activeAttachmentName = null;
         let activeImageBase64Uri = null; 
 
-        // CRASHPROOF SESSION CLEANER: Instantly clears localized memory without hitting intermediate background loops
+        window.onload = async function() {
+            const savedToken = localStorage.getItem("kona_jwt_token");
+            if (savedToken) {
+                try {
+                    const verifyResponse = await fetch(`${API_BASE}/auth/profile`, { 
+                        headers: { "Authorization": `Bearer ${savedToken}` } 
+                    });
+                    if (verifyResponse.ok) {
+                        document.getElementById("auth-gate").style.display = "none";
+                        fetchUserChatDatabaseList();
+                        fetchUserProfileDataNode();
+                    } else {
+                        terminateSession();
+                    }
+                } catch (err) { terminateSession(); }
+            }
+        };
+
+        // FIXED ACTION: Resets text view states instantly without locking up on backend save errors
         function clearActiveSessionChat() {
             conversationHistory = [];
             currentActiveChatId = null;
@@ -446,7 +469,7 @@
             fetchUserChatDatabaseList();
             document.querySelectorAll(".history-item").forEach(item => item.classList.remove("active-chat"));
             switchActiveViewPanel("search");
-            console.log("Memory session reset completed successfully.");
+            console.log("Memory session reset completed cleanly.");
         }
 
         function handleNativeInputBoxPasteEvent(event) {
@@ -503,7 +526,7 @@
             navigator.clipboard.writeText(textToCopy).then(() => {
                 buttonElement.innerText = "✓ Copied Response";
                 setTimeout(() => buttonElement.innerText = "📋", 1800);
-            }).catch(() => alert("Clipboard block encountered."));
+            }).catch(() => alert("Clipboard access blocked."));
         }
 
         function executeInlineBlockCopyAction(buttonElement) {
@@ -513,7 +536,7 @@
             navigator.clipboard.writeText(scriptCodeText).then(() => {
                 buttonElement.innerText = "✓ Copied Code";
                 setTimeout(() => buttonElement.innerText = "📋 Copy Code", 1500);
-            }).catch(() => alert("Clipboard error."));
+            }).catch(() => alert("Clipboard binding error."));
         }
 
         function toggleToolbarMoreOptionsPopoverMenu(event, buttonElement) {
@@ -530,7 +553,7 @@
         }
         function toggleProfileDropdownMenu() { closeAllContextPopovers(event); document.getElementById("profile-dropdown-menu-card").classList.toggle("show-menu"); }
         function toggleAttachmentPopoverMenu(e) { e.stopPropagation(); document.getElementById("profile-dropdown-menu-card").classList.remove("show-menu"); document.getElementById("attachment-popover-box").classList.toggle("show-popover"); }
-        function openGoogleDriveModalWindow() { document.getElementById("attachment-popover-box").classList.remove("show-popover"); document.getElementById("drive-picker-modal").style.display = "flex"; }
+        openGoogleDriveModalWindow = function() { document.getElementById("attachment-popover-box").classList.remove("show-popover"); document.getElementById("drive-picker-modal").style.display = "flex"; }
         function closeGoogleDriveModalWindow() { document.getElementById("drive-picker-modal").style.display = "none"; }
         function selectGoogleDriveFile(type, filename) { simulateAttachmentAction(type, filename); closeGoogleDriveModalWindow(); }
         function triggerSystemFilePicker() { document.getElementById("native-system-file-picker").click(); document.getElementById("attachment-popover-box").classList.remove("show-popover"); }
@@ -691,10 +714,6 @@
             } catch (err) { console.log(err); }
         }
 
-        function showFeedback(msg, isError) { const el = document.getElementById("status-feedback"); el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`; el.innerText = msg; el.style.display = "block"; }
-        function showRecoveryFeedback(msg, isError) { const el = document.getElementById("recovery-feedback"); el.className = `auth-msg ${isError ? 'msg-error' : 'msg-success'}`; el.innerText = msg; el.style.display = "block"; }
-        function terminateSession() { localStorage.removeItem("kona_jwt_token"); conversationHistory = []; currentActiveChatId = null; document.getElementById("chat-canvas").innerHTML = `<div class="message-row kona-side">Terminal locked out securely.</div>`; document.getElementById("history-list").innerHTML = ""; document.getElementById("auth-gate").style.display = "flex"; toggleAuthMode(false); }
-
         function appendSmartResponseActionToolbar(boxElement) {
             const toolbar = document.createElement("div");
             toolbar.className = "smart-response-toolbar";
@@ -706,8 +725,8 @@
                 <button class="toolbar-icon-btn" title="More options" onclick="toggleToolbarMoreOptionsPopoverMenu(event, this)">
                     •••
                     <div class="toolbar-more-popover" onclick="event.stopPropagation()">
-                        <div class="popover-action-row" onclick="alert('Branching...')"><span class="action-emoji">↗</span> Branch in new chat</div>
-                        <div class="popover-action-row" onclick="alert('Listening speech...')"><span class="action-emoji">🔊</span> Listen</div>
+                        <div class="popover-action-row" onclick="alert('Branching operation...')"><span class="action-emoji">↗</span> Branch in new chat</div>
+                        <div class="popover-action-row" onclick="alert('Listening active speech...')"><span class="action-emoji">🔊</span> Listen</div>
                         <div class="popover-action-row" onclick="alert('Exporting to Docs...')"><span class="action-emoji">📄</span> Export to Docs</div>
                         <div class="popover-action-row" onclick="alert('Drafting in Gmail...')"><span class="action-emoji">✉️</span> Draft in Gmail</div>
                     </div>
@@ -716,7 +735,7 @@
             boxElement.appendChild(toolbar);
         }
 
-        // CRASHPROOF MARKDOWN TEXT TOKEN LAYOUT PARSER
+        // CORRECTED DEFENSIVE STRING-STITCH MARKDOWN RENDERING LAYOUT PARSER
         function nativeRenderMarkdown(rawString) {
             if (!rawString) return "";
             try {
@@ -732,7 +751,6 @@
                         let currentTextSegment = dataSegments[idx];
                         currentTextSegment = currentTextSegment.replace(/###\s+(.*)/g, "<h3>$1</h3>");
                         
-                        // BULLETPROOF SEGMENT STITCHING FOR BOLDING SNIPPETS
                         let splitAsterisks = currentTextSegment.split("**");
                         let parsedBoldSegment = "";
                         for(let i=0; i<splitAsterisks.length; i++) {
@@ -793,7 +811,7 @@
             } catch(e) { console.log(e); }
         }
 
-        // FULLY RE-ENGINEERED UNBROKEN DATA TOKENS CHUNK ACCUMULATOR
+        // FULLY RE-ENGINEERED UNBROKEN DATA TOKENS ACCUMULATOR INTERFACE DRIVER
         async function dispatchKonaEngine() {
             const inputField = document.getElementById("user-query");
             const rawPrompt = inputField.value.trim();
@@ -818,7 +836,7 @@
             detachActiveContextFile(); 
 
             const konaBox = document.createElement("div"); konaBox.className = "message-row kona-side";
-            const stateLoader = document.createElement("span"); stateLoader.className = "system-wait"; stateLoader.innerText = "Interrogating hybrid retrieval indexes...";
+            const stateLoader = document.createElement("span"); stateLoader.className = "system-wait"; stateLoader.innerText = "Interrogating hybrid retrieval indexes... Please wait";
             konaBox.appendChild(stateLoader); canvas.appendChild(konaBox); canvas.scrollTop = canvas.scrollHeight;
 
             const secureToken = localStorage.getItem("kona_jwt_token");
@@ -855,9 +873,9 @@
 
                     for(const lineNode of individualLines) {
                         const cleanLine = lineNode.trim();
-                        
-                        // FALLBACK LAYER: If a raw chunk is received without standard data headers, pass it straight to rendering blocks
                         if (!cleanLine) continue;
+                        
+                        // FIXED ACCUMULATOR FALLBACK: Captures raw unformatted network text strings cleanly if JSON lines break boundary checks
                         if (!cleanLine.startsWith("data: ")) {
                             streamingResponseTracker += cleanLine;
                             textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
@@ -877,15 +895,24 @@
                                 }
                                 citationsAdded = true;
                             } else if(dataPayload.type === "token") {
-                                // FIXED UNBROKEN CHANNEL: Real-time text strings update reliably on screen
                                 streamingResponseTracker += dataPayload.text;
                                 textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
                             }
                         } catch(jsonError) {
-                            // Stitches clipped markdown lines dynamically into active text
-                            if(cleanLine.substring(6)) {
-                                streamingResponseTracker += cleanLine.substring(6);
-                                textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
+                            // FIXED FALLBACK BLOCK: Grabs cut-off string fragments and stitchen them onto the active screen block natively
+                            let fragmentStringText = cleanLine.substring(6);
+                            if(fragmentStringText && fragmentStringText.indexOf('"text":') !== -1) {
+                                try {
+                                    let fixedTokenTextSegment = JSON.parse(fragmentStringText + '}').text;
+                                    streamingResponseTracker += fixedTokenTextSegment;
+                                    textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
+                                } catch(e) {
+                                    // Raw stitching loop handler
+                                    if(cleanLine.indexOf('{"type": "token"') === -1) {
+                                        streamingResponseTracker += cleanLine;
+                                        textBodyBlock.innerHTML = nativeRenderMarkdown(streamingResponseTracker);
+                                    }
+                                }
                             }
                         }
                     }
