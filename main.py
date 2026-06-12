@@ -15,13 +15,12 @@ from passlib.context import CryptContext
 from jose import jwt, JWTError
 from openai import OpenAI
 from tavily import AsyncTavilyClient
-from pinecone import Pinecone
 
 # --- 1. CONFIGURATION INTERFACE & FRAMEWORK STARTUP ---
 app = FastAPI(
     title="KonaAI Multimodal Vision Engine",
     description="Unified API orchestrating SQLite bucket persistence, profile photo structures, clipboard ingestion, and Llama Vision RAG data streams.",
-    version="2.6.1"
+    version="2.6.7"
 )
 
 app.add_middleware(
@@ -46,11 +45,9 @@ if not OPENAI_API_KEY or not TAVILY_API_KEY:
     print("CRITICAL WARNING: Infrastructure keys are missing.")
     openai_client = None
     tavily_async_client = None
-    pc_vector_index = None
 else:
     openai_client = OpenAI(base_url="https://api.groq.com/openai/v1", api_key=OPENAI_API_KEY)
     tavily_async_client = AsyncTavilyClient(api_key=TAVILY_API_KEY)
-    pc_vector_index = Pinecone(api_key=PINECONE_API_KEY).Index("kona-knowledge-base") if PINECONE_API_KEY else None
 
 # --- 2. STORAGE SYSTEM LAYERS (SQLITE MODEL ARCHITECTURE) ---
 DB_DIR = "/data"
@@ -65,13 +62,6 @@ def init_db_schema():
 
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-    
-    try:
-        cursor.execute("SELECT avatar_b64 FROM users LIMIT 1")
-    except sqlite3.OperationalError:
-        print("Migrating user structure tables to ingest custom profile photos context blocks...")
-        cursor.execute("DROP TABLE IF EXISTS users")
-    
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             email TEXT PRIMARY KEY,
@@ -84,7 +74,6 @@ def init_db_schema():
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     """)
-    
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS chats (
             chat_id TEXT PRIMARY KEY,
@@ -98,7 +87,6 @@ def init_db_schema():
     conn.close()
 
 init_db_schema()
-
 RECOVERY_OTP_DB = {}
 
 # --- Pydantic Data Contract Validations ---
@@ -162,14 +150,17 @@ async def aggregate_multimodal_vision_stream(email: str, chat_id: str, history: 
     citations_payload_tracker = []
 
     try:
-        crawl_response = await tavily_async_client.search(query=user_text_prompt, max_results=3)
-        for idx, res in enumerate(crawl_response.get('results', [])):
-            anchor_id = idx + 1
-            context_stream_accumulator += f"[{anchor_id}] Link: {res['url']}\nSummary: {res['content']}\n\n"
-            citations_payload_tracker.append({"id": anchor_id, "title": res.get('title', 'Web Document'), "url": res['url']})
+        if user_text_prompt:
+            crawl_response = await tavily_async_client.search(query=user_text_prompt, max_results=3)
+            for idx, res in enumerate(crawl_response.get('results', [])):
+                anchor_id = idx + 1
+                context_stream_accumulator += f"[{anchor_id}] Link: {res['url']}\nSummary: {res['content']}\n\n"
+                citations_payload_tracker.append({"id": anchor_id, "title": res.get('title', 'Web Document'), "url": res['url']})
     except Exception: pass
 
+    # Clean multi-line syntax flushing
     yield f"data: {json.dumps({'type': 'metadata', 'sources': citations_payload_tracker, 'chat_id': chat_id})}\n\n"
+    await asyncio.sleep(0.01)
 
     try:
         system_rules = (
@@ -206,12 +197,13 @@ async def aggregate_multimodal_vision_stream(email: str, chat_id: str, history: 
             if chunk.choices and chunk.choices[0].delta.content:
                 token = chunk.choices[0].delta.content
                 streaming_response_tracker += token
+                # Formulate explicitly clean string packet terminations
                 yield f"data: {json.dumps({'type': 'token', 'text': token})}\n\n"
 
         updated_history = history.copy()
         updated_history.append(ChatMessage(role="assistant", content=streaming_response_tracker))
         history_str = json.dumps([m.model_dump() for m in updated_history])
-        room_title = user_text_prompt[:30] + "..." if user_text_prompt else "Vision Analysis Search Thread"
+        room_title = user_text_prompt[:30] + "..." if user_text_prompt else "Vision Analysis Thread"
 
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
@@ -250,7 +242,7 @@ async def authenticate_system_user(form_data: OAuth2PasswordRequestForm = Depend
     row = cursor.fetchone()
     conn.close()
     if not row or not verify_hashed_bytes(form_data.password, row[0]):
-        raise HTTPException(status_code=401, detail="Authorization rejected: Invalid Handle or Key.")
+        raise HTTPException(status_code=401, detail="Authorization rejected: Invalid credentials.")
     return {"access_token": sign_access_session_token(data={"sub": form_data.username}), "token_type": "bearer", "email": form_data.username}
 
 @app.post("/api/v1/auth/upload-avatar", tags=["Profile photo Management"])
@@ -275,7 +267,6 @@ async def get_user_profile_node(user_identity: str = Depends(verify_active_sessi
 async def initiate_recovery(payload: ForgotPasswordPayload):
     otp = f"{random.randint(100000, 999999)}"
     RECOVERY_OTP_DB[payload.email] = {"code": otp, "expires_at": datetime.utcnow() + timedelta(minutes=15)}
-    print(f"\n[OTP MACHINE]: {otp}\n")
     return {"message": "Code generated.", "mock_debug_otp": otp}
 
 @app.post("/api/v1/auth/verify-otp", tags=["Password Recovery"])
@@ -308,12 +299,16 @@ async def get_chat(chat_id: str, user_identity: str = Depends(verify_active_sess
     cursor.execute("SELECT chat_id, title, history_json FROM chats WHERE chat_id = ? AND email = ?", (chat_id, user_identity))
     row = cursor.fetchone()
     conn.close()
+    if not row:
+        raise HTTPException(status_code=404, detail="Chat not found.")
     return {"chat_id": row[0], "title": row[1], "history": json.loads(row[2])}
 
 @app.post("/api/v1/search")
 async def run_search(payload: SearchPayload, user_identity: str = Depends(verify_active_session)):
+    if not payload.history:
+        raise HTTPException(status_code=400, detail="History payload context missing.")
     target_chat_id = payload.chat_id if payload.chat_id else str(uuid.uuid4())
     return StreamingResponse(aggregate_multimodal_vision_stream(user_identity, target_chat_id, payload.history), media_type="text/event-stream")
 
 @app.get("/")
-async def headcount(): return {"status": "online", "framework": "Multimodal Vision Node Connected"}
+async def health_check(): return {"status": "online", "framework": "Multimodal Vision Node Connected"}
